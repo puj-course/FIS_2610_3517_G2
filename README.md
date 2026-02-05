@@ -1,6 +1,6 @@
 # Gruber 🚚
 
-# ![logo Gruver](https://github.com/user-attachments/assets/f358b1f9-c165-4f42-ae82-2853da9c6074)
+## ![logo Gruver](https://github.com/user-attachments/assets/f358b1f9-c165-4f42-ae82-2853da9c6074)
 
 
 ## Propuesta de Valor y Diferenciador
