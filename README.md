@@ -37,26 +37,33 @@
 - Distribución de tareas semanales.
 - Apoyo transversal a backend, frontend y QA.
 - Creador del logo de la compañia y posicionamiento de marca a los clientes.
+- Verificacion del mantenimiento del repositorio
+- Validacion y distribucion de actividades realizadas por los miembros del equipo
+- Soporte adjunto Nivel 3 para Back-End, Front-End
 
 ### 🧠 Backend Developer – Juan Pablo Álvarez
+- Soporte y programacion Nivel 1 de la logica del programa
 - Diseño e implementación de la lógica principal del sistema.
 - Desarrollo de la capa de persistencia.
 - Exposición de datos al frontend mediante servicios.
 
 ### 🎨 Frontend Developer – Nicolás Sánchez
+- Soporte y programacion Nivel 1 de la interfaz visual del programa
 - Diseño y construcción de la interfaz de usuario.
 - Implementación del mapa, formularios y vistas principales.
+- Interfaz visual del sistema
 
 ### 📝 Documentador / Repo Manager – Lucas Rincón
 - Redacción y mantenimiento de la documentación del proyecto.
-- Organización de la wiki o carpeta `/docs`.
+- Organización de la wiki y estrucutura del boilerplate del proyecto.
 - Actualización del repositorio con entregables y diagramas.
+- Realizacion de los diagramas UML del proyecto
 
 ### 🧪 Tester / QA – David Orjuela
 - Definición y ejecución de pruebas funcionales y de persistencia.
 - Validación del cumplimiento de requisitos.
 - Apoyo en la detección y corrección de errores.
-
+- Soporte Nivel 2 para Back-End y Front-End
 ---
 
 ## Descripción y Alcance del Proyecto
