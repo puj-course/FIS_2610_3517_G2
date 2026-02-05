@@ -5,7 +5,7 @@
 
 ## Propuesta de Valor y Diferenciador
 
-### ¿Por qué usar Gruber?
+### ¿Por qué usar Gruver?
 - Disminuye los tiempos de respuesta en la solicitud de grúas, evitando pérdidas económicas por la inmovilización de vehículos.
 - Aumenta la productividad y la satisfacción del cliente final de las aseguradoras.
 
@@ -22,7 +22,7 @@
 
 | **Elemento** | **Detalle** |
 | --- | --- |
-| **Nombre** | Gruber |
+| **Nombre** | Gruver |
 | **Propuesta** | Servicio de grúas en minutos vía aplicación, orientado a empresas y aseguradoras |
 | **Usuarios** | Aseguradoras y empresas (clientes directos); usuarios finales a través de la cobertura del seguro |
 | **Interfaz** | Mapa tipo Uber con grúas simuladas y flujo básico de solicitud |
@@ -62,7 +62,7 @@
 ## Descripción y Alcance del Proyecto
 
 ### Descripción
-**Gruber** es una startup ficticia orientada a ofrecer a **empresas y aseguradoras** una solución de software que permita solicitar servicios de grúa en tiempo récord, reduciendo tiempos muertos y pérdidas económicas asociadas a siniestros o fallas vehiculares.
+**Gruver** es una startup ficticia orientada a ofrecer a **empresas y aseguradoras** una solución de software que permita solicitar servicios de grúa en tiempo récord, reduciendo tiempos muertos y pérdidas económicas asociadas a siniestros o fallas vehiculares.
 
 ### Tipo de problema
 - Organizacional y de productividad.
