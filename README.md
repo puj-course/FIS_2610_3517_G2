@@ -90,5 +90,5 @@
 
 ## Materia
 
-**Fundamentos de Desarrollo de Software**  
+**Fundamentos de Ingenieria de Software**  
 Proyecto académico desarrollado como parte del curso.
