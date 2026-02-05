@@ -1,4 +1,4 @@
-# Gruver 🚚 - Gruas a un clic, en minutos
+# Gruver 🚚 - Un clic, una grua, en minutos
 
 ## ![logo Gruver](https://github.com/user-attachments/assets/f358b1f9-c165-4f42-ae82-2853da9c6074)
 
