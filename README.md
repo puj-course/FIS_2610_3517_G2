@@ -36,6 +36,7 @@
 - Coordinación de reuniones y comunicación con el profesor (cliente).
 - Distribución de tareas semanales.
 - Apoyo transversal a backend, frontend y QA.
+- Creador del logo de la compañia y posicionamiento de marca a los clientes.
 
 ### 🧠 Backend Developer – Juan Pablo Álvarez
 - Diseño e implementación de la lógica principal del sistema.
@@ -45,7 +46,6 @@
 ### 🎨 Frontend Developer – Nicolás Sánchez
 - Diseño y construcción de la interfaz de usuario.
 - Implementación del mapa, formularios y vistas principales.
-- Integración del logo y lineamientos visuales de la marca Gruber.
 
 ### 📝 Documentador / Repo Manager – Lucas Rincón
 - Redacción y mantenimiento de la documentación del proyecto.
