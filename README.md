@@ -148,7 +148,7 @@ La solución es viable en dos stacks:
 - **Implementación principal:** **Python** (motor de cálculo probabilístico, consumo de APIs, procesamiento de datos).
 - **Alternativa viable:** **Java** (backend robusto y escalable para la lógica de negocio y servicios).
 
-> Para el alcance académico del proyecto, el equipo puede implementar el backend en Python, manteniendo el diseño modular para permitir migración o extensión a Java si se requiere.
+> Para el alcance académico del proyecto, el equipo a lo largo del semestre implementarara el backend en Python, manteniendo el diseño modular para permitir migración o extensión a Java si se requiere.
 
 ---
 
