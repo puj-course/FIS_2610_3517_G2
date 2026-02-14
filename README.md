@@ -1,10 +1,12 @@
 # 🎾 OddsEngine  
-### _Un análisis, una combinada, una probabilidad real._
+<p align="center">
+  <img src="oddsengine-logo.png" alt="OddsEngine Logo" width="300"/>
+</p>
+
+<h1 align="center">🎾 OddsEngine</h1>
+<p align="center"><i>Un análisis, una combinada, una probabilidad real.</i></p>
 
 ---
-<p align="center">
-  <img src="Odds%20Engine.png" alt="OddsEngine Logo" width="280"/>
-</p>
 
 
 ## 🏢 Startup
