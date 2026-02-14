@@ -88,7 +88,7 @@ Optimización del proceso de análisis de apuestas deportivas mediante un motor 
 ---
 
 ## 🎨 Frontend Lead / Sprint Planner  
-**Nicolás Sánchez**
+**Nicolás Sánchez & Lucas Rincón**
 
 - Descomposición de historias de usuario en tareas.
 - Organización del Sprint Backlog.
@@ -99,7 +99,7 @@ Optimización del proceso de análisis de apuestas deportivas mediante un motor 
 ---
 
 ## ⚙️ Configuration Manager / Documentation Lead  
-**Lucas Rincón**
+**Nicolás Sánchez & Lucas Rincón**
 
 - Administración del repositorio en GitHub.
 - Control de ramas y Gitflow.
@@ -144,7 +144,7 @@ En el análisis de apuestas deportivas en tenis:
 # 🏗 Enfoque Tecnológico
 
 - Aplicación web responsive.
-- Backend implementado en Python (principal) o Java (alternativa viable).
+- Backend implementado en **Python** (principal) o **Java** (alternativa viable).
 - Integración con APIs deportivas de tenis.
 - Implementación de modelos probabilísticos básicos.
 - Motor de cálculo de probabilidades combinadas.
