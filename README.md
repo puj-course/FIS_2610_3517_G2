@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Odds%20Engine.png" alt="OddsEngine Logo" width="300"/>
+  <img src="Odds%20Engine.png" alt="OddsEngine Logo" width="420"/>
 </p>
 
 <h1 align="center">🎾 OddsEngine</h1>
