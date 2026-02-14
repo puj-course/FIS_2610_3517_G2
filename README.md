@@ -1,101 +1,162 @@
-# Gruver 🚚 - Un clic, una grua, en minutos
-
-## ![logo Gruver](https://github.com/user-attachments/assets/f358b1f9-c165-4f42-ae82-2853da9c6074)
-
-
-## Propuesta de Valor y Diferenciador
-
-### ¿Por qué usar Gruver?
-- Disminuye los tiempos de respuesta en la solicitud de grúas, evitando pérdidas económicas por la inmovilización de vehículos.
-- Aumenta la productividad y la satisfacción del cliente final de las aseguradoras.
-
-### Beneficio principal
-- Optimización del proceso de solicitud de grúas mediante flujos digitales, eliminando la dependencia de múltiples llamadas telefónicas y gestiones manuales dispersas.
-
-### Diferenciador
-- Solución centrada en **software y aplicación móvil**, sin depender de call centers extensos.
-- Enfoque visual tipo **Uber**, orientado a rapidez y claridad en la gestión de siniestros.
+# 🎾 OddsEngine  
+### _Un análisis, una combinada, una probabilidad real._
 
 ---
 
-## Información General del Proyecto
+## 🏢 Startup
 
-| **Elemento** | **Detalle** |
-| --- | --- |
-| **Nombre** | Gruver |
-| **Propuesta** | Servicio de grúas en minutos vía aplicación, orientado a empresas y aseguradoras |
-| **Usuarios** | Aseguradoras y empresas (clientes directos); usuarios finales a través de la cobertura del seguro |
-| **Interfaz** | Mapa tipo Uber con grúas simuladas y flujo básico de solicitud |
-| **Entregables** | Presentación PDF, Lean Canvas, README, documentación/wiki y boilerplate en GitHub |
+**OddsEngine Analytics**
+
+Iniciativa tecnológica enfocada en el diseño y desarrollo de soluciones de software especializadas en el análisis probabilístico aplicado al tenis.
 
 ---
 
-## Roles y Responsabilidades del Equipo
+# 🚀 Propuesta de Valor y Diferenciador
 
-### 🧑‍💼 Project Manager / Scrum Master – John Rubio
-- Coordinación de reuniones y comunicación con el profesor (cliente).
-- Distribución de tareas semanales.
-- Apoyo transversal a backend, frontend y QA.
-- Creador del logo de la compañia y posicionamiento de marca a los clientes.
-- Verificacion del mantenimiento del repositorio
-- Validacion y distribucion de actividades realizadas por los miembros del equipo
-- Soporte adjunto Nivel 3 para Back-End, Front-End
+## ¿Por qué usar OddsEngine?
 
-### 🧠 Backend Developer – Juan Pablo Álvarez
-- Soporte y programacion Nivel 1 de la logica del programa
-- Diseño e implementación de la lógica principal del sistema.
-- Desarrollo de la capa de persistencia.
-- Exposición de datos al frontend mediante servicios.
-
-### 🎨 Frontend Developer – Nicolás Sánchez
-- Soporte y programacion Nivel 1 de la interfaz visual del programa
-- Diseño y construcción de la interfaz de usuario.
-- Implementación del mapa, formularios y vistas principales.
-- Interfaz visual del sistema
-
-### 📝 Documentador / Repo Manager – Lucas Rincón
-- Redacción y mantenimiento de la documentación del proyecto.
-- Organización de la wiki y estrucutura del boilerplate del proyecto.
-- Actualización del repositorio con entregables y diagramas.
-- Realizacion de los diagramas UML del proyecto
-
-### 🧪 Tester / QA – David Orjuela
-- Definición y ejecución de pruebas funcionales y de persistencia.
-- Validación del cumplimiento de requisitos.
-- Apoyo en la detección y corrección de errores.
-- Soporte Nivel 2 para Back-End y Front-End
----
-
-## Descripción y Alcance del Proyecto
-
-### Descripción
-**Gruver** es una startup ficticia orientada a ofrecer a **empresas y aseguradoras** una solución de software que permita solicitar servicios de grúa en tiempo récord, reduciendo tiempos muertos y pérdidas económicas asociadas a siniestros o fallas vehiculares.
-
-### Tipo de problema
-- Organizacional y de productividad.
-- Procesos actuales lentos, manuales y poco centralizados.
-
-### Público objetivo
-- **Directo:** aseguradoras y empresas que gestionan flotas o siniestros.
-- **Indirecto:** usuarios finales que acceden al servicio mediante su aseguradora.
+- Centraliza datos deportivos de tenis en una sola plataforma.
+- Calcula probabilidades combinadas de forma matemática y estructurada.
+- Reduce el análisis manual y la consulta de múltiples fuentes.
+- Permite tomar decisiones basadas en datos y no en intuición.
+- Mejora la precisión en predicciones deportivas.
 
 ---
 
-## Alcance Funcional de la Demo
+## 🎯 Beneficio Principal
 
-- Aplicación con interfaz de mapa tipo Uber.
-- Visualización de grúas disponibles de forma simulada.
-- Registro de solicitudes de grúa desde un origen hasta un destino.
-- Simulación de disponibilidad de grúas mediante lógica simple o generación aleatoria.
-
-### Simulación
-- No existe conexión con grúas reales.
-- Las posiciones y estados de las grúas son simulados.
-- La simulación es coherente con el flujo funcional explicado en la presentación del proyecto.
+Optimización del proceso de análisis de apuestas deportivas mediante un motor probabilístico que procesa datos históricos y actuales, generando porcentajes estimados de acierto fundamentados estadísticamente.
 
 ---
 
-## Materia
+## 🔎 Diferenciador
 
-**Fundamentos de Ingenieria de Software**  
-Proyecto académico desarrollado como parte del curso.
+- Plataforma especializada exclusivamente en tenis.
+- Cálculo automático de probabilidades combinadas.
+- Fundamentación estadística transparente.
+- Arquitectura web con backend robusto en Java.
+- Enfoque analítico y académico del modelo probabilístico.
+
+---
+
+# 📌 Información General del Proyecto
+
+| Elemento | Detalle |
+|----------|---------|
+| **Nombre Startup** | OddsEngine Analytics |
+| **Nombre del Proyecto** | OddsEngine Platform |
+| **Propuesta** | Plataforma web para análisis probabilístico deportivo enfocado en tenis |
+| **Usuarios** | Aficionados al tenis, analistas deportivos y usuarios de apuestas deportivas |
+| **Interfaz** | Plataforma web con ingreso de combinadas y visualización de probabilidad estimada |
+| **Entregables** | Presentación PDF, Lean Canvas, README, Wiki en GitHub y gestión Scrum |
+
+---
+
+# 👥 Roles y Responsabilidades del Equipo
+
+## 🧑‍⚖️ Scrum Masters  
+**David Orjuela & Juan Pablo Álvarez**
+
+- Planificación y organización de Sprints.
+- Coordinación de ceremonias Scrum.
+- Seguimiento del tablero GitHub Projects.
+- Gestión de impedimentos.
+- Supervisión del avance general del proyecto.
+
+---
+
+## 🧠 Product Owner  
+**Juan Pablo Álvarez**
+
+- Definición de historias de usuario.
+- Priorización del Product Backlog.
+- Validación de entregables funcionales.
+- Definición de criterios de aceptación.
+- Supervisión del desarrollo del motor probabilístico.
+
+---
+
+## 🧪 Quality Assurance Lead  
+**David Orjuela**
+
+- Verificación del cumplimiento de criterios de evaluación.
+- Validación de cálculos probabilísticos.
+- Revisión de calidad técnica y documental.
+- Reporte de defectos y riesgos.
+- Control del cumplimiento de tareas por Sprint.
+
+---
+
+## 🎨 Frontend Lead / Sprint Planner  
+**Nicolás Sánchez**
+
+- Descomposición de historias de usuario en tareas.
+- Organización del Sprint Backlog.
+- Desarrollo de la interfaz web.
+- Implementación de vistas y experiencia de usuario.
+- Seguimiento operativo de tareas del Sprint.
+
+---
+
+## ⚙️ Configuration Manager / Documentation Lead  
+**Lucas Rincón**
+
+- Administración del repositorio en GitHub.
+- Control de ramas y Gitflow.
+- Revisión y aprobación de Pull Requests.
+- Organización de la Wiki.
+- Documentación técnica y funcional del proyecto.
+
+---
+
+# 🧩 Descripción y Alcance del Proyecto
+
+## 📖 Descripción
+
+**OddsEngine** es una plataforma web desarrollada en Java que integra datos deportivos de tenis provenientes de APIs especializadas, aplicando modelos estadísticos y probabilísticos para calcular probabilidades estimadas de acierto en apuestas individuales y combinadas.
+
+---
+
+## ⚠ Problema Identificado
+
+En el análisis de apuestas deportivas en tenis:
+
+- No existe acceso centralizado a datos procesados.
+- Los usuarios consultan múltiples fuentes manualmente.
+- No hay herramientas que calculen probabilidades combinadas de forma estructurada.
+- Las decisiones se basan en intuición y sesgos subjetivos.
+
+---
+
+## 🎯 Público Objetivo
+
+### Directo
+- Usuarios de apuestas deportivas.
+- Aficionados al tenis interesados en análisis avanzado.
+- Analistas deportivos.
+
+### Indirecto
+- Casas de apuestas interesadas en integrar análisis probabilístico.
+- Comunidades deportivas digitales.
+
+---
+
+# 🏗 Enfoque Tecnológico
+
+- Aplicación web responsive.
+- Backend implementado en Python (principal) o Java (alternativa viable).
+- Integración con APIs deportivas de tenis.
+- Implementación de modelos probabilísticos básicos.
+- Motor de cálculo de probabilidades combinadas.
+- Persistencia de datos para trazabilidad histórica.
+
+---
+
+# 🎓 Contexto Académico
+
+Proyecto desarrollado para la materia:
+
+**Fundamentos de Ingeniería de Software**  
+Pontificia Universidad Javeriana  
+Facultad de Ingeniería  
+2026
