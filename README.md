@@ -37,9 +37,7 @@
 ---
 # 🚀 Lean Canvas
 
-
-
-
+![Lean Canvas](lean%20canvas%20oddsengine%202.png)
 
 
 ---
