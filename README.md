@@ -1,18 +1,25 @@
+<h1 align="center">🎾 OddsEngine</h1>
 <p align="center">
   <img src="Odds%20Engine.png" alt="OddsEngine Logo" width="500"/>
 </p>
 
-<h1 align="center">🎾 OddsEngine</h1>
 <p align="center"><i>Un análisis, una combinada, una probabilidad real.</i></p>
+
+> **OddsEngine** es la plataforma analítica diseñada para transformar el análisis de apuestas en tenis en un proceso estructurado y basado en datos. Actuamos como un motor probabilístico que centraliza información deportiva y calcula automáticamente las probabilidades de acierto en apuestas individuales y combinadas, eliminando la consulta manual de múltiples fuentes y reemplazando la intuición por estadística real.
 
 ---
 
 
-## 🏢 Startup
+## 🏢 Indice
+- [Propuesta de Valor y Diferenciador](#-propuesta-de-valor-y-diferenciador)
+- [Información General del Proyecto](#-información-general-del-proyecto)
+- [Roles y Responsabilidades del Equipo](#-roles-y-responsabilidades-del-equipo)
+- [Descripción y Alcance del Proyecto](#-descripción-y-alcance-del-proyecto)
+- [Stack Tecnológico](#-stack-tecnológico-lenguaje)
+- [Enfoque Tecnológico](#-enfoque-tecnológico)
+- [Contexto Académico](#-contexto-académico)
 
-**OddsEngine Analytics**
 
-Iniciativa tecnológica enfocada en el diseño y desarrollo de soluciones de software especializadas en el análisis probabilístico aplicado al tenis.
 
 ---
 
@@ -25,6 +32,15 @@ Iniciativa tecnológica enfocada en el diseño y desarrollo de soluciones de sof
 - Reduce el análisis manual y la consulta de múltiples fuentes.
 - Permite tomar decisiones basadas en datos y no en intuición.
 - Mejora la precisión en predicciones deportivas.
+
+
+---
+# 🚀 Lean Canvas
+
+
+
+
+
 
 ---
 
