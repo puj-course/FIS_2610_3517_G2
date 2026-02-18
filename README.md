@@ -12,8 +12,10 @@
 
 ## 🏢 Indice
 - [Propuesta de Valor y Diferenciador](#-propuesta-de-valor-y-diferenciador)
+- [Lean Canvas](#-lean-canvas)
 - [Información General del Proyecto](#-información-general-del-proyecto)
-- [Roles y Responsabilidades del Equipo](#-roles-y-responsabilidades-del-equipo)
+- [Equipo y Roles](#-equipo-y-roles)
+- [Roles SCRUM](#-roles-scrum)
 - [Descripción y Alcance del Proyecto](#-descripción-y-alcance-del-proyecto)
 - [Stack Tecnológico](#-stack-tecnológico-lenguaje)
 - [Enfoque Tecnológico](#-enfoque-tecnológico)
@@ -71,66 +73,34 @@ Optimización del proceso de análisis de apuestas deportivas mediante un motor 
 
 ---
 
-# 👥 Roles y Responsabilidades del Equipo
+# 👥 Equipo y Roles 
 
-## 🧑‍⚖️ Scrum Masters  
-**David Orjuela & Juan Pablo Álvarez**
+De acuerdo con los objetivos de ingeniería de software, el equipo se organiza bajo roles técnicos que garantizan una solución robusta, escalable y correctamente documentada.
 
-- Planificación y organización de Sprints.
-- Coordinación de ceremonias Scrum.
-- Seguimiento del tablero GitHub Projects.
-- Gestión de impedimentos.
-- Supervisión del avance general del proyecto.
-
----
-
-## 🧠 Product Owner  
-**Juan Pablo Álvarez**
-
-- Definición de historias de usuario.
-- Priorización del Product Backlog.
-- Validación de entregables funcionales.
-- Definición de criterios de aceptación.
-- Supervisión del desarrollo del motor probabilístico.
+| Nombre | Rol Técnico | Responsabilidad |
+|--------|------------|----------------|
+| **Nicolás Sánchez** | Frontend Lead | Desarrollo de la interfaz web, implementación de vistas, componentes y experiencia de usuario (UX/UI). |
+| **Lucas Rincón** | Frontend Developer | Apoyo en el desarrollo de la interfaz, integración de componentes y validación funcional del frontend. |
+| **David Orjuela** | QA Lead | Validación de criterios de aceptación, verificación de cálculos probabilísticos, control de calidad técnica y reporte de defectos y riesgos. |
+| **Nicolás Sánchez** | Configuration Manager / Documentation Lead | Administración del repositorio en GitHub, gestión de ramas bajo Gitflow, revisión de Pull Requests y mantenimiento de la documentación técnica y funcional. |
 
 ---
 
-## 🧪 Quality Assurance Lead  
-**David Orjuela**
+# 🔄 Roles SCRUM
 
-- Verificación del cumplimiento de criterios de evaluación.
-- Validación de cálculos probabilísticos.
-- Revisión de calidad técnica y documental.
-- Reporte de defectos y riesgos.
-- Control del cumplimiento de tareas por Sprint.
+Siguiendo la metodología SCRUM, se definen los siguientes roles para garantizar la gestión ágil y organizada del proyecto.
 
----
-
-## 🎨 Frontend Lead / Sprint Planner  
-**Nicolás Sánchez & Lucas Rincón**
-
-- Descomposición de historias de usuario en tareas.
-- Organización del Sprint Backlog.
-- Desarrollo de la interfaz web.
-- Implementación de vistas y experiencia de usuario.
-- Seguimiento operativo de tareas del Sprint.
-
----
-
-## ⚙️ Configuration Manager / Documentation Lead  
-**Nicolás Sánchez & Lucas Rincón**
-
-- Administración del repositorio en GitHub.
-- Control de ramas y Gitflow.
-- Revisión y aprobación de Pull Requests.
-- Organización de la Wiki.
-- Documentación técnica y funcional del proyecto.
+| Nombre | Rol SCRUM | Responsabilidad |
+|--------|----------|----------------|
+| **David Orjuela** | Scrum Master | Planificación y organización de Sprints, coordinación de ceremonias Scrum, gestión de impedimentos y seguimiento del avance general del proyecto. |
+| **Juan Pablo Álvarez** | Product Owner | Definición y priorización de historias de usuario, gestión del Product Backlog, validación de entregables funcionales y definición de criterios de aceptación. |
+| **Nicolás Sánchez** | Sprint Planner | Descomposición de historias en tareas, organización del Sprint Backlog y seguimiento operativo de tareas del sprint. |
 
 ---
 
 # 🧩 Descripción y Alcance del Proyecto
 
-## 📖 Descripción
+📖 Descripción
 
 **OddsEngine** es una plataforma web que integra datos deportivos de tenis provenientes de APIs especializadas, aplicando modelos estadísticos y probabilísticos para calcular probabilidades estimadas de acierto en apuestas individuales y combinadas.
 
