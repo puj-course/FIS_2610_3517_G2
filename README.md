@@ -160,3 +160,5 @@ Proyecto desarrollado para la materia:
 Pontificia Universidad Javeriana  
 Facultad de Ingeniería  
 2026
+
+Nicolás Sánchez https://github.com/Nicosanlucon
