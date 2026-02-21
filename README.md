@@ -26,11 +26,11 @@
 ## Equipo del Proyecto
 | Nombre        | Rol                   | GitHub / Perfil |
 |--------------|-----------------------|-----------------|
-| Nicolás Sánchez | Sprint Planner          | github.com/usuario1 |
-| David Orjuela | Scrum Master         | github.com/usuario2 |
-| Lucas Rincón | Product Owner        | github.com/usuario3 |
-| Juan Álvarez | Configuration Manager | github.com/usuario4 |
-| David Orjuela | QA Lead               | github.com/usuario5 |
+| Nicolás Sánchez | Sprint Planner          | github.com/nicosanlucon |
+| David Orjuela | Scrum Master         | github.com/Kerosene21 |
+| Lucas Rincón | Product Owner        | github.com/Lcks07 |
+| Juan Álvarez | Configuration Manager | github.com/Sleppyhed |
+| David Orjuela | QA Lead               | github.com/kerosene21 |
 
 ---
 
