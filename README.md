@@ -167,5 +167,5 @@ Facultad de Ingeniería
 
 ---
 
-#💼 Equipo de Trabajo
+# 💼 Equipo de Trabajo
 Nicolás Sánchez https://github.com/Nicosanlucon
