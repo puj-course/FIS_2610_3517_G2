@@ -34,6 +34,24 @@
 
 ---
 
+## Tecnologías Utilizadas
+- **Frontend:** PyQt
+- **Backend:** Python 
+- **Base de Datos:** Oracle Database
+- **IA / Data Science:** Python, Pandas, Api-Tenis
+- **DevOps:** GitHub Actions, Docker, SonarQube
+- **Control de versiones:** Git
+
+---
+
+## Instalación y Ejecución
+**Requisitos**
+- Docker y Docker Compose
+- Git
+- Python 3.10+
+
+---
+
 # 🚀 Propuesta de Valor y Diferenciador
 
 ## ¿Por qué usar OddsEngine?
@@ -82,18 +100,6 @@ Optimización del proceso de análisis de apuestas deportivas mediante un motor 
 
 ---
 
-# 👥 Equipo y Roles 
-
-De acuerdo con los objetivos de ingeniería de software, el equipo se organiza bajo roles técnicos que garantizan una solución robusta, escalable y correctamente documentada.
-
-| Nombre | Rol Técnico | Responsabilidad |
-|--------|------------|----------------|
-| **Nicolás Sánchez** | Frontend Lead | Desarrollo de la interfaz web, implementación de vistas, componentes y experiencia de usuario (UX/UI). |
-| **Lucas Rincón** | Frontend Developer | Apoyo en el desarrollo de la interfaz, integración de componentes y validación funcional del frontend. |
-| **David Orjuela** | QA Lead | Validación de criterios de aceptación, verificación de cálculos probabilísticos, control de calidad técnica y reporte de defectos y riesgos. |
-| **Nicolás Sánchez** | Configuration Manager / Documentation Lead | Administración del repositorio en GitHub, gestión de ramas bajo Gitflow, revisión de Pull Requests y mantenimiento de la documentación técnica y funcional. |
-
----
 
 # 🔄 Roles SCRUM
 
