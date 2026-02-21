@@ -152,6 +152,10 @@ La solución es viable en dos stacks:
 - **Implementación principal:** **Python** (motor de cálculo probabilístico, consumo de APIs, procesamiento de datos).
 - **Alternativa viable:** **Java** (backend robusto y escalable para la lógica de negocio y servicios).
 
+Las herramientas que se utilizarán serán:
+
+- **Análisis probabilístico en Python** **Librería Pandas**
+- **Frontend** **PyQt QtDesigner**
 > Para el alcance académico del proyecto, el equipo a lo largo del semestre implementarara el backend en Python, manteniendo el diseño modular para permitir migración o extensión a Java si se requiere.
 
 ---
@@ -175,3 +179,8 @@ Proyecto desarrollado para la materia:
 Pontificia Universidad Javeriana  
 Facultad de Ingeniería  
 2026
+
+---
+
+# 💼 Equipo de Trabajo
+Nicolás Sánchez https://github.com/Nicosanlucon
