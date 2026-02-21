@@ -165,5 +165,5 @@ Pontificia Universidad Javeriana
 Facultad de Ingeniería  
 2026
 
-#🧑‍💻quipo de Trabajoquipo de Trabajo
+#💼 Equipo de Trabajoquipo de Trabajo
 Nicolás Sánchez https://github.com/Nicosanlucon
