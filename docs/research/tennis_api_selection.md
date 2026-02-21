@@ -26,3 +26,19 @@ Investigar y proponer una API de tenis para consumir datos de partidos, jugadore
 
 Investigación iniciada.
 
+
+
+\## Opciones de API candidatas
+
+\- API-SPORTS (Tennis): buena cobertura ATP/WTA, JSON, docs claras.
+
+\- RapidAPI (Tennis APIs): varias opciones, pero depende del proveedor.
+
+\- Tennis Live Data / similares: revisar límites y costos.
+
+
+
+\## Próximo paso
+
+Comparar pricing, límites del plan gratis y cobertura de torneos para elegir 1.
+
