@@ -23,14 +23,14 @@
 
 ---
 
-## Equipo del Proyecto
-| Nombre        | Rol                   | GitHub / Perfil |
-|--------------|-----------------------|-----------------|
-| Nicolás Sánchez | Sprint Planner          | github.com/nicosanlucon |
-| David Orjuela | Scrum Master         | github.com/Kerosene21 |
-| Lucas Rincón | Product Owner        | github.com/Lcks07 |
-| Juan Álvarez | Configuration Manager | github.com/Sleppyhed |
-| David Orjuela | QA Lead               | github.com/kerosene21 |
+## 👥 Equipo del Proyecto
+
+| Nombre | Rol Técnico | Rol Scrum | GitHub / Perfil |
+|------|-------------|-----------|----------------|
+| **David Orjuela** | Quality Assurance Lead | Scrum Master | github.com/Kerosene21 |
+| **Juan Pablo Álvarez** | Backend Developer | Product Owner / Scrum Master | github.com/Sleppyhed |
+| **Nicolás Sánchez** | Frontend Lead | Sprint Planner / Configuration Manager | github.com/nicosanlucon |
+| **Lucas Rincón** | Frontend Developer | Documentation Lead | github.com/Lcks07 |
 
 ---
 
