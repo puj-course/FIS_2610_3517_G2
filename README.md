@@ -107,9 +107,10 @@ Siguiendo la metodología SCRUM, se definen los siguientes roles para garantizar
 
 | Nombre | Rol SCRUM | Responsabilidad |
 |--------|----------|----------------|
-| **David Orjuela** | Scrum Master | Planificación y organización de Sprints, coordinación de ceremonias Scrum, gestión de impedimentos y seguimiento del avance general del proyecto. |
-| **Juan Pablo Álvarez** | Product Owner | Definición y priorización de historias de usuario, gestión del Product Backlog, validación de entregables funcionales y definición de criterios de aceptación. |
-| **Nicolás Sánchez** | Sprint Planner | Descomposición de historias en tareas, organización del Sprint Backlog y seguimiento operativo de tareas del sprint. |
+| **David Orjuela** | Scrum Master / QA Lead | Scrum Master / QA Lead | Planificación y organización de Sprints, coordinación de ceremonias Scrum, gestión de impedimentos, aseguramiento de calidad y validación funcional del sistema.|
+| **Juan Pablo Álvarez** | Product Owner / Scrum Master | Definición y priorización de historias de usuario, gestión del Product Backlog, validación de entregables funcionales y supervisión del desarrollo backend. |
+| **Nicolás Sánchez** |  Sprint Planner / Configuration Manager | Organización del Sprint Backlog, administración del repositorio GitHub, control de versiones, gestión de ramas y soporte en el desarrollo frontend. |
+| *Lucas Rincón* | Documentation Lead / Frontend Developer | Desarrollo de la interfaz frontend, documentación técnica y funcional del proyecto, y apoyo en la implementación del sistema. |
 
 ---
 
