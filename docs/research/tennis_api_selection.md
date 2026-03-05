@@ -1,44 +1,39 @@
-\# T1.1 – Selección de API de tenis (Issue #28)
+# T1.1 – Selección de API de tenis (Issue #28)
 
-
-
-\## Objetivo
-
+## Objetivo
 Investigar y proponer una API de tenis para consumir datos de partidos, jugadores y torneos.
 
+## Criterios de evaluación
+- Cobertura de torneos ATP/WTA
+- Facilidad de uso (Compatibilidad con FastAPI y HTTPX)
+- Documentación disponible
+- Formato JSON
+- Plan gratuito disponible
 
+## Estado
+Completado.
 
-\## Criterios de evaluación
+## Opciones de API evaluadas
+- **API-Tennis (api-tennis.com):** Especializada 100% en tenis. Es ideal para nuestra arquitectura asíncrona ya que sus respuestas JSON son ligeras y fáciles de procesar mediante **HTTPX** dentro de los endpoints de **FastAPI**.
+- **RapidAPI (Tennis APIs):** Ofrece variedad, pero la latencia adicional de la plataforma intermedia puede afectar el rendimiento de nuestro servidor **Uvicorn**.
+- **Otras opciones (Sportmonks/Generalistas):** Descartadas por falta de especialización técnica en tenis o planes gratuitos no ajustados a las necesidades del proyecto.
 
-\- Cobertura de torneos ATP/WTA
+## Tabla comparativa
 
-\- Facilidad de uso
+| Criterio | API-Tennis | RapidAPI (Otros) | Alternativas |
+| :--- | :--- | :--- | :--- |
+| **ATP/WTA** | Sí (Especializado) | Varía | Limitada |
+| **Integración Async** | Excelente (JSON limpio) | Media | Media |
+| **Documentación** | Completa para Python | Variable | Básica |
+| **Free Tier** | 1,000 req/mes | Varía | No funcional |
 
-\- Documentación disponible
+## Decisión final justificada
+Se selecciona **API-Tennis** como la API principal. La especialización en el deporte asegura datos más precisos para nuestro motor de predicción. Técnicamente, su estructura es perfecta para consumirse de forma no bloqueante con **HTTPX**, aprovechando al máximo la naturaleza asíncrona de **FastAPI** y la velocidad de ejecución sobre **Uvicorn**. 
 
-\- Formato JSON
+## Plan de fallback
+"si la API falla o no tiene free tier, usamos mock provider"
 
-\- Plan gratuito disponible
+Se implementará un módulo `mock_data_provider.py`. Este componente simulará las funciones de red de **HTTPX**, devolviendo datos locales cuando el servidor detecte fallos en la API externa o se alcance el límite de 1,000 peticiones, permitiendo que el dashboard de FastAPI siga funcionando sin errores.
 
-
-
-\## Estado
-
-Investigación iniciada.
-
-
-
-\## Opciones de API candidatas
-
-\- API-SPORTS (Tennis): buena cobertura ATP/WTA, JSON, docs claras.
-
-\- RapidAPI (Tennis APIs): varias opciones, pero depende del proveedor.
-
-\- Tennis Live Data / similares: revisar límites y costos.
-
-
-
-\## Próximo paso
-
-Comparar pricing, límites del plan gratis y cobertura de torneos para elegir 1.
-
+## Próximo paso
+Crear el cliente asíncrono en FastAPI usando **HTTPX** para mapear los modelos de datos de los jugadores de API-Tennis.
