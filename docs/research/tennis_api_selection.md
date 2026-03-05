@@ -14,8 +14,8 @@ Investigar y proponer una API de tenis para consumir datos de partidos, jugadore
 Completado.
 
 ## Opciones de API evaluadas
-- **API-Tennis (api-tennis.com):** Especializada 100% en tenis. Es ideal para nuestra arquitectura asíncrona ya que sus respuestas JSON son ligeras y fáciles de procesar mediante **HTTPX** dentro de los endpoints de **FastAPI**.
-- **RapidAPI (Tennis APIs):** Ofrece variedad, pero la latencia adicional de la plataforma intermedia puede afectar el rendimiento de nuestro servidor **Uvicorn**.
+- **API-Tennis (api-tennis.com):** Especializada únicamente en tenis. Es ideal para la arquitectura asíncrona ya que sus respuestas JSON son ligeras y fáciles de procesar mediante **HTTPX** dentro de los endpoints de **FastAPI**.
+- **RapidAPI (Tennis APIs):** Ofrece variedad, pero la latencia adicional de la plataforma intermedia puede afectar el rendimiento del servidor utilizado.
 - **Otras opciones (Sportmonks/Generalistas):** Descartadas por falta de especialización técnica en tenis o planes gratuitos no ajustados a las necesidades del proyecto.
 
 ## Tabla comparativa
@@ -28,7 +28,7 @@ Completado.
 | **Free Tier** | 1,000 req/mes | Varía | No funcional |
 
 ## Decisión final justificada
-Se selecciona **API-Tennis** como la API principal. La especialización en el deporte asegura datos más precisos para nuestro motor de predicción. Técnicamente, su estructura es perfecta para consumirse de forma no bloqueante con **HTTPX**, aprovechando al máximo la naturaleza asíncrona de **FastAPI** y la velocidad de ejecución sobre **Uvicorn**. 
+Se selecciona **API-Tennis** como la API principal. La especialización en el deporte asegura datos más precisos para nuestro motor de predicción. Su estructura se acopla más para consumirse de forma no bloqueante con **HTTPX**, aprovechando al máximo la naturaleza asíncrona de **FastAPI** y la velocidad de ejecución sobre **Uvicorn**. 
 
 ## Plan de fallback
 "si la API falla o no tiene free tier, usamos mock provider"
