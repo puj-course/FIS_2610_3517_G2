@@ -1,0 +1,43 @@
+name: CD — Empaquetado del Proyecto
+
+on:
+  push:
+    branches: [ "main", "develop", "feature/pipelines" ]
+  workflow_dispatch:
+
+jobs:
+
+  build-frontend:
+    name: Build Frontend (Vite dist/)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Instalar dependencias
+        working-directory: frontend
+        run: npm install
+
+      - name: Build de produccion (vite build)
+        working-directory: frontend
+        run: npm run build
+
+      - name: Verificar artefacto generado
+        working-directory: frontend
+        run: |
+          ls -lh dist/
+          test -f dist/index.html || (echo "No se genero index.html" && exit 1)
+          echo "Artefacto dist/ generado correctamente"
+
+      - name: Subir artefacto dist/
+        uses: actions/upload-artifact@v4
+        with:
+          name: oddsengine-frontend-dist
+          path: frontend/dist/
+          retention-days: 7
