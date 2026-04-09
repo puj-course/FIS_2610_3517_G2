@@ -2,7 +2,7 @@ name: Sprint report
 
 on:
   schedule:
-    - cron: "0 0 * * 5"  # viernes
+  - cron: "*/2 * * * *"  # cada 2 minutos
 
 jobs:
   sprint:
