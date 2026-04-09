@@ -1,15 +1,20 @@
-name: CI
+name: Auto create issue
 
 on:
   push:
-    branches: [ "main", "develop" ]
-  pull_request:
-    branches: [ "main", "develop" ]
+    branches: [main]
 
 jobs:
-  smoke:
+  create-issue:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Smoke
-        run: echo "CI running"
+      - name: Crear issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Nueva tarea automática",
+              body: "Generada desde pipeline"
+            })
