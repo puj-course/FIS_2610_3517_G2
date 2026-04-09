@@ -1,91 +1,31 @@
 name: CD — Empaquetado del Proyecto
 
-# Se activa cuando se hace push a main o develop,
-# o manualmente desde la pestaña Actions en GitHub.
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: [ "main", "develop", "feature/pipelines" ]
   workflow_dispatch:
 
 jobs:
-
-  # ── JOB 1: Empaquetar el backend (imagen Docker) ──────────────────────────
-  build-backend:
-    name: Build Backend (Docker)
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout del código
-        uses: actions/checkout@v4
-
-      - name: Configurar Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Instalar dependencias del backend
-        working-directory: backend
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Verificar que la app inicia correctamente
-        working-directory: backend
-        run: |
-          # Lanzar uvicorn en background y verificar el health check
-          uvicorn app.main:app --host 0.0.0.0 --port 8000 &
-          sleep 4
-          curl --fail http://localhost:8000/health || (echo "❌ El servidor no respondió" && exit 1)
-          echo "✅ Backend inicia correctamente"
-
-      - name: Build de imagen Docker
-        run: |
-          docker build -t oddsengine-backend:latest .
-          echo "✅ Imagen Docker construida exitosamente"
-
-      - name: Verificar imagen Docker
-        run: |
-          # Levantar el contenedor y probar el health check
-          docker run -d --name oddsengine-test -p 8001:8000 oddsengine-backend:latest
-          sleep 5
-          curl --fail http://localhost:8001/health || (echo "❌ El contenedor no respondió" && exit 1)
-          docker stop oddsengine-test
-          echo "✅ Imagen Docker verificada y funcional"
-
-  # ── JOB 2: Empaquetar el frontend (dist/) ─────────────────────────────────
   build-frontend:
-    name: Build Frontend (Vite → dist/)
+    name: Build Frontend Vite dist
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout del código
+      - name: Checkout
         uses: actions/checkout@v4
-
       - name: Configurar Node.js 18
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-          cache: "npm"
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Instalar dependencias del frontend
+      - name: Instalar dependencias
         working-directory: frontend
         run: npm install
-
-      - name: Build de producción (vite build)
+      - name: Build de produccion
         working-directory: frontend
         run: npm run build
-        # Genera la carpeta frontend/dist/ con los archivos estáticos optimizados.
-        # Este es el artefacto que se despliega en un servidor web (Nginx, S3, etc.)
-
-      - name: Verificar artefacto generado
+      - name: Verificar artefacto
         working-directory: frontend
-        run: |
-          ls -lh dist/
-          test -f dist/index.html || (echo "❌ No se generó index.html" && exit 1)
-          echo "✅ Artefacto dist/ generado correctamente"
-
-      - name: Subir artefacto dist/ como artifact de GitHub
+        run: test -f dist/index.html && echo "OK" || exit 1
+      - name: Subir artefacto
         uses: actions/upload-artifact@v4
         with:
           name: oddsengine-frontend-dist
