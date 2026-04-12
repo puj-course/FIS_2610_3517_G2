@@ -1,0 +1,6 @@
+.tabs { width: 100%; }
+.tabList { display: flex; gap: 4px; border-bottom: 2px solid var(--bg-tertiary); margin-bottom: 20px; }
+.tab { background: none; border: none; padding: 10px 20px; color: var(--text-secondary); cursor: pointer; font-size: 0.95rem; font-weight: 500; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+.tab:hover { color: var(--text-primary); }
+.tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+.tabContent { padding: 8px 0; }
