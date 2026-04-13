@@ -1,5 +1,8 @@
 """
 Modelos Pydantic para estadísticas de jugadores y partidos.
+
+Estos modelos representan la estructura de datos que la API retorna
+para las visualizaciones de estadísticas en el frontend.
 """
 
 from pydantic import BaseModel, Field
@@ -7,6 +10,7 @@ from typing import Optional
 
 
 class PlayerStats(BaseModel):
+    """Estadísticas de un jugador individual."""
     player_id: str
     player_name: str
     overall_win_rate: float = Field(ge=0, le=100, description="Win rate general (%)")
@@ -18,6 +22,7 @@ class PlayerStats(BaseModel):
 
 
 class HeadToHeadMatch(BaseModel):
+    """Resumen de un encuentro en el historial H2H."""
     date: str
     tournament: str
     winner: str
@@ -25,6 +30,7 @@ class HeadToHeadMatch(BaseModel):
 
 
 class HeadToHead(BaseModel):
+    """Historial de enfrentamientos directos entre dos jugadores."""
     player1_id: str
     player2_id: str
     player1_name: str
@@ -36,6 +42,7 @@ class HeadToHead(BaseModel):
 
 
 class MatchStats(BaseModel):
+    """Estadísticas completas de un partido (ambos jugadores + H2H)."""
     match_id: str
     player_home_stats: PlayerStats
     player_away_stats: PlayerStats

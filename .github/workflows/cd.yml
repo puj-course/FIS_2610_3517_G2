@@ -6,36 +6,26 @@ on:
   workflow_dispatch:
 
 jobs:
-
   build-frontend:
-    name: Build Frontend (Vite dist/)
+    name: Build Frontend Vite dist
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout del codigo
+      - name: Checkout
         uses: actions/checkout@v4
-
       - name: Configurar Node.js 18
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-
       - name: Instalar dependencias
         working-directory: frontend
         run: npm install
-
-      - name: Build de produccion (vite build)
+      - name: Build de produccion
         working-directory: frontend
         run: npm run build
-
-      - name: Verificar artefacto generado
+      - name: Verificar artefacto
         working-directory: frontend
-        run: |
-          ls -lh dist/
-          test -f dist/index.html || (echo "No se genero index.html" && exit 1)
-          echo "Artefacto dist/ generado correctamente"
-
-      - name: Subir artefacto dist/
+        run: test -f dist/index.html && echo "OK" || exit 1
+      - name: Subir artefacto
         uses: actions/upload-artifact@v4
         with:
           name: oddsengine-frontend-dist
