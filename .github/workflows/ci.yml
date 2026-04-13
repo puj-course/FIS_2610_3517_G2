@@ -1,15 +1,22 @@
-name: CI
+name: Sprint report
 
 on:
-  push:
-    branches: [ "main", "develop" ]
-  pull_request:
-    branches: [ "main", "develop" ]
+  schedule:
+  - cron: "*/2 * * * *"  # cada 2 minutos
 
 jobs:
-  smoke:
+  sprint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Smoke
-        run: echo "CI running"
+      - name: Obtener métricas
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: "sprint-1",
+              state: "closed"
+            });
+
+            console.log("Tareas completadas:", issues.length);

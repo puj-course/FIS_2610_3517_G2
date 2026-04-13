@@ -1,7 +1,7 @@
 # fis_boilerplate
 ## Descripción de cada directorio y archivos
 ```bash
-project-name/
+OddsEngine/
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
 │   │   ├── bug_report.md
@@ -14,9 +14,6 @@ project-name/
 │   ├── config.yaml
 │   └── settings.json
 ├── docs/
-│   ├── api/
-│   ├── architecture/
-│   └── user_guide/
 ├── jupyter/
 │   ├── notebooks/
 │   │   ├── exploration.ipynb
