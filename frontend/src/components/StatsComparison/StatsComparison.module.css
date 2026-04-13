@@ -1,0 +1,13 @@
+.comparison { display: flex; flex-direction: column; gap: 16px; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.playerName { font-weight: 600; font-size: 1.1rem; }
+.vs { color: var(--text-secondary); font-size: 0.85rem; }
+.statRow { display: flex; align-items: center; gap: 12px; }
+.playerValue { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; min-width: 50px; text-align: center; }
+.barContainer { flex: 1; height: 28px; background: var(--bg-tertiary); border-radius: 14px; display: flex; align-items: center; position: relative; overflow: hidden; }
+.barHome { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 14px 0 0 14px; transition: width 0.6s ease; }
+.barAway { height: 100%; background: linear-gradient(90deg, var(--accent-secondary), #f97316); border-radius: 0 14px 14px 0; margin-left: auto; transition: width 0.6s ease; }
+.barLabel { position: absolute; left: 50%; transform: translateX(-50%); font-size: 0.75rem; color: var(--text-primary); font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.5); z-index: 1; }
+.extra { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--bg-tertiary); font-size: 0.9rem; }
+.extraLabel { color: var(--text-secondary); font-size: 0.85rem; }
+.empty { text-align: center; padding: 2rem; color: var(--text-secondary); }
