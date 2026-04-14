@@ -10,13 +10,12 @@ from enum import Enum
 
 
 class RiskLevel(str, Enum):
-    LOW = "low"       # > 50% → Riesgo bajo
-    MEDIUM = "medium"  # 20-50% → Riesgo medio
-    HIGH = "high"      # < 20% → Riesgo alto
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
 
 
 class ProbabilityFactor(BaseModel):
-    """Factor individual que contribuye al cálculo de probabilidad."""
     name: str
     weight: float = Field(ge=0, le=1, description="Peso del factor (0-1)")
     value: float = Field(ge=0, le=100, description="Valor del factor (0-100)")
@@ -28,7 +27,6 @@ class ProbabilityFactor(BaseModel):
 
 
 class IndividualProbability(BaseModel):
-    """Resultado del cálculo de probabilidad individual de un partido."""
     match_id: str
     player_home_name: str
     player_away_name: str
@@ -36,7 +34,7 @@ class IndividualProbability(BaseModel):
     player_away_probability: float = Field(ge=0, le=100)
     factors_home: list[ProbabilityFactor] = Field(default_factory=list)
     factors_away: list[ProbabilityFactor] = Field(default_factory=list)
-    confidence: str = "medium"  # "high", "medium", "low"
+    confidence: str = "medium"
     message: str = ""
 
     def get_favorite(self) -> str:
@@ -46,7 +44,6 @@ class IndividualProbability(BaseModel):
 
 
 class MatchProbabilityDetail(BaseModel):
-    """Probabilidad de un partido dentro de una combinada."""
     match_id: str
     player_home_name: str
     player_away_name: str
@@ -55,7 +52,6 @@ class MatchProbabilityDetail(BaseModel):
 
 
 class CombinationProbability(BaseModel):
-    """Resultado del cálculo de probabilidad de una combinada."""
     combination_id: str
     total_probability: float = Field(ge=0, le=100)
     risk_level: RiskLevel
