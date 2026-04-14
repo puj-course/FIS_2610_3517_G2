@@ -1,0 +1,20 @@
+.page { padding: 1rem 0; }
+.back { background: none; border: none; color: var(--primary); cursor: pointer; font-size: 0.9rem; margin-bottom: 16px; padding: 6px 0; }
+.back:hover { text-decoration: underline; }
+.title { font-size: 1.5rem; margin-bottom: 20px; }
+.loading { text-align: center; padding: 3rem; color: var(--text-secondary); }
+.info { display: flex; flex-direction: column; gap: 20px; }
+.players { display: flex; align-items: center; justify-content: space-around; }
+.player { text-align: center; }
+.player h3 { font-size: 1.2rem; margin-bottom: 4px; }
+.player span { font-size: 0.85rem; color: var(--text-secondary); }
+.vs { font-size: 1.5rem; color: var(--text-secondary); }
+.details { display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem; }
+.statusBadge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 500; }
+.statusBadge[data-status="upcoming"] { background: rgba(96,165,250,0.15); color: #60a5fa; }
+.statusBadge[data-status="live"] { background: rgba(34,197,94,0.15); color: #22c55e; }
+.statusBadge[data-status="finished"] { background: rgba(148,163,184,0.15); color: #94a3b8; }
+.score { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; }
+.formSection { margin-top: 24px; }
+.formSection h4 { margin-bottom: 12px; }
+.formGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
