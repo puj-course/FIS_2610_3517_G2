@@ -1,0 +1,5 @@
+.page { padding: 1rem 0; }
+.title { font-size: 1.5rem; margin-bottom: 20px; }
+.selections { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+.deleteBtn { background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.3); padding: 10px 20px; border-radius: 8px; cursor: pointer; }
+.deleteBtn:hover { background: rgba(248,113,113,0.2); }

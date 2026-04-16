@@ -1,0 +1,17 @@
+.h2h { display: flex; flex-direction: column; gap: 20px; }
+.score { display: flex; align-items: center; justify-content: center; gap: 24px; }
+.player { display: flex; align-items: center; gap: 12px; }
+.name { font-weight: 600; font-size: 1.1rem; }
+.wins { font-size: 2rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--primary); }
+.divider { text-align: center; }
+.total { font-size: 0.85rem; color: var(--text-secondary); }
+.bar { height: 8px; background: var(--accent-secondary); border-radius: 4px; overflow: hidden; }
+.barP1 { height: 100%; background: var(--primary); border-radius: 4px; transition: width 0.6s ease; }
+.history { display: flex; flex-direction: column; gap: 8px; }
+.historyTitle { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 4px; }
+.match { display: grid; grid-template-columns: 80px 1fr 80px 120px; gap: 8px; padding: 8px 12px; background: var(--bg-tertiary); border-radius: 8px; font-size: 0.85rem; align-items: center; }
+.date { color: var(--text-secondary); }
+.tournament { font-weight: 500; }
+.matchScore { font-family: 'JetBrains Mono', monospace; text-align: center; }
+.winner { color: var(--primary); font-weight: 500; text-align: right; }
+.empty { text-align: center; padding: 2rem; color: var(--text-secondary); font-style: italic; }

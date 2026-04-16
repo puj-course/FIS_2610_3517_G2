@@ -1,0 +1,6 @@
+.empty { text-align: center; padding: 3rem 1.5rem; }
+.icon { font-size: 3rem; display: block; margin-bottom: 12px; }
+.title { font-size: 1.1rem; margin-bottom: 6px; color: var(--text-primary); }
+.message { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px; }
+.button { background: var(--primary); color: #000; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+.button:hover { opacity: 0.85; }

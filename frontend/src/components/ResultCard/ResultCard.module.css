@@ -1,0 +1,7 @@
+.card { text-align: center; padding: 32px; border-radius: 16px; }
+.pct { font-size: 3.5rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+.label { font-size: 1rem; margin-top: 4px; opacity: 0.9; }
+.count { font-size: 0.85rem; margin-top: 8px; opacity: 0.7; }
+.high { background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05)); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+.mid { background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05)); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+.low { background: linear-gradient(135deg, rgba(248,113,113,0.15), rgba(248,113,113,0.05)); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }

@@ -1,0 +1,12 @@
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.2s ease; }
+.dialog { background: var(--bg-secondary); border: 1px solid var(--bg-tertiary); border-radius: 16px; padding: 28px; max-width: 400px; width: 90%; animation: slideUp 0.2s ease; }
+.title { font-size: 1.1rem; margin-bottom: 8px; }
+.message { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.5; }
+.actions { display: flex; gap: 10px; justify-content: flex-end; }
+.cancelBtn { background: var(--bg-tertiary); color: var(--text-primary); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500; }
+.confirmBtn { background: var(--primary); color: #000; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+.danger { background: #f87171; }
+.cancelBtn:hover { opacity: 0.85; }
+.confirmBtn:hover { opacity: 0.85; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
