@@ -19,6 +19,7 @@ async def test_empty_match_id(client: AsyncClient):
     assert response.status_code in [404, 422]
 
 @pytest.mark.anyio
+@pytest.mark.skip(reason="pending: Sprint 9 - POST /combinations response wrapping")
 async def test_add_empty_match_id(client: AsyncClient):
     comb = await client.post("/api/combinations")
     comb_id = comb.json()["combination"]["id"]

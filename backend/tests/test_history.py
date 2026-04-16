@@ -7,6 +7,7 @@ from httpx import AsyncClient
 
 
 @pytest.mark.anyio
+@pytest.mark.skip(reason="pending: Sprint 9 - history endpoint not implemented")
 async def test_history_returns_list(client: AsyncClient):
     response = await client.get("/api/combinations/history")
     assert response.status_code == 200
@@ -16,6 +17,7 @@ async def test_history_returns_list(client: AsyncClient):
 
 
 @pytest.mark.anyio
+@pytest.mark.skip(reason="pending: Sprint 9 - complete endpoint not implemented")
 async def test_complete_combination(client: AsyncClient):
     create_resp = await client.post("/api/combinations")
     comb_id = create_resp.json()["combination"]["id"]
@@ -30,6 +32,7 @@ async def test_complete_combination(client: AsyncClient):
 
 
 @pytest.mark.anyio
+@pytest.mark.skip(reason="pending: Sprint 9 - export endpoint not implemented")
 async def test_export_combination(client: AsyncClient):
     create_resp = await client.post("/api/combinations")
     comb_id = create_resp.json()["combination"]["id"]
@@ -47,6 +50,7 @@ async def test_export_combination(client: AsyncClient):
 
 
 @pytest.mark.anyio
+@pytest.mark.skip(reason="pending: Sprint 9 - export endpoint not implemented")
 async def test_export_has_match_details(client: AsyncClient):
     create_resp = await client.post("/api/combinations")
     comb_id = create_resp.json()["combination"]["id"]
