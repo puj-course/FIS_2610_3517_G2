@@ -190,11 +190,11 @@ class MockStatsProvider:
 
         return None
 
-    def get_match_stats(self, match_id: str) -> Optional[MatchStats]:
+    async def get_match_stats(self, match_id: str) -> Optional[MatchStats]:
         """Obtener estadísticas completas para un partido."""
         from app.services.match_service import get_match_service
         match_service = get_match_service()
-        match = match_service.get_match_by_id(match_id)
+        match = await match_service.get_match_by_id(match_id)
 
         if match is None:
             return None

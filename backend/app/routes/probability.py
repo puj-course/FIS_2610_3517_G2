@@ -13,7 +13,7 @@ router = APIRouter(tags=["Probabilidad"])
 @router.get("/matches/{match_id}/probability", response_model=IndividualProbability)
 async def get_match_probability(match_id: str):
     service = get_probability_service()
-    result = service.calculate_individual(match_id)
+    result = await service.calculate_individual(match_id)
     logger.info(f"GET /matches/{match_id}/probability")
     return result
 
@@ -21,7 +21,7 @@ async def get_match_probability(match_id: str):
 @router.get("/combinations/{combination_id}/probability", response_model=CombinationProbability)
 async def get_combination_probability(combination_id: str):
     service = get_probability_service()
-    result = service.calculate_combination(combination_id)
+    result = await service.calculate_combination(combination_id)
     logger.info(f"GET /combinations/{combination_id}/probability")
     return result
 
@@ -29,7 +29,7 @@ async def get_combination_probability(combination_id: str):
 @router.get("/combinations/{combination_id}/result")
 async def get_combination_result(combination_id: str):
     service = get_probability_service()
-    result = service.calculate_combination(combination_id)
+    result = await service.calculate_combination(combination_id)
     return {
         "combination_id": combination_id,
         "probability": result.total_probability,
