@@ -1,0 +1,9 @@
+.page { padding: 1rem 0; display: flex; flex-direction: column; gap: 20px; }
+.back { background: none; border: none; color: var(--primary); cursor: pointer; font-size: 0.9rem; padding: 6px 0; align-self: flex-start; }
+.title { font-size: 1.5rem; }
+.loading { text-align: center; padding: 3rem; color: var(--text-secondary); }
+.actions { display: flex; gap: 12px; }
+.exportBtn, .copyBtn { padding: 10px 20px; border-radius: 8px; font-weight: 500; cursor: pointer; border: none; transition: opacity 0.2s; }
+.exportBtn { background: var(--primary); color: #000; }
+.copyBtn { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--bg-tertiary); }
+.exportBtn:hover, .copyBtn:hover { opacity: 0.85; }
