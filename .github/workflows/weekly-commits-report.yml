@@ -1,82 +1,43 @@
 name: Reporte Semanal de Commits
-
 on:
   schedule:
-    - cron: '0 22 * * 5'   # Viernes 5:00 PM Bogot√° (UTC-5)
-  workflow_dispatch:         # Permite ejecutarlo manualmente
-
+    - cron: '0 22 * * 5'
+  workflow_dispatch:
 permissions:
   issues: write
   contents: read
-
 jobs:
   weekly-report:
     name: Generar reporte semanal
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout del c√≥digo
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Generar reporte de commits
+      - name: Generar reporte
         id: report
         run: |
-          echo "## Ì≥ä Reporte Semanal de Commits" > report.md
+          echo "## Reporte Semanal de Commits" > report.md
+          echo "**Periodo:** $(date -d '7 days ago' '+%Y-%m-%d') a $(date '+%Y-%m-%d')" >> report.md
           echo "" >> report.md
-          echo "**Periodo:** $(date -d '7 days ago' '+%Y-%m-%d') ‚Üí $(date '+%Y-%m-%d')" >> report.md
+          TOTAL=$(git log --since='7 days ago' --oneline --all | wc -l)
+          echo "**Total commits:** $TOTAL" >> report.md
           echo "" >> report.md
-
-          echo "### Ì≥à Resumen General" >> report.md
-          TOTAL=$(git log --since="7 days ago" --oneline --all | wc -l)
-          echo "- **Total de commits:** $TOTAL" >> report.md
-          BRANCHES=$(git log --since="7 days ago" --all --format='%D' | tr ',' '\n' | grep -v '^$' | sed 's/^ *//' | grep -v HEAD | sort -u | wc -l)
-          echo "- **Ramas activas:** $BRANCHES" >> report.md
-          FILES=$(git log --since="7 days ago" --all --name-only --pretty=format: | sort -u | grep -v '^$' | wc -l)
-          echo "- **Archivos modificados:** $FILES" >> report.md
-          echo "" >> report.md
-
-          echo "### Ì±• Commits por Autor" >> report.md
-          echo "" >> report.md
-          git log --since="7 days ago" --all --format='%aN' | sort | uniq -c | sort -rn | while read count author; do
+          echo "### Commits por Autor" >> report.md
+          git log --since='7 days ago' --all --format='%aN' | sort | uniq -c | sort -rn | while read count author; do
             echo "- **$author**: $count commits" >> report.md
           done
           echo "" >> report.md
-
-          echo "### Ìºø Actividad por Rama" >> report.md
+          echo "### Ultimos 15 Commits" >> report.md
           echo "" >> report.md
-          for branch in $(git branch -r --sort=-committerdate | head -10); do
-            count=$(git log --since="7 days ago" --oneline "$branch" 2>/dev/null | wc -l)
-            if [ "$count" -gt 0 ]; then
-              branch_name=$(echo "$branch" | sed 's|origin/||')
-              echo "- **$branch_name**: $count commits" >> report.md
-            fi
-          done
-          echo "" >> report.md
-
-          echo "### Ì≥ù √öltimos 15 Commits" >> report.md
-          echo "" >> report.md
-          echo "| Fecha | Autor | Mensaje | Rama |" >> report.md
-          echo "|-------|-------|---------|------|" >> report.md
-          git log --since="7 days ago" --all --format='| %ad | %aN | %s | %D |' --date=short | head -15 >> report.md
-          echo "" >> report.md
-
-          echo "---" >> report.md
-          echo "*Generado autom√°ticamente por OddsEngine CI/CD*" >> report.md
-
-          REPORT=$(cat report.md)
-          echo "report<<ENDOFREPORT" >> $GITHUB_OUTPUT
-          echo "$REPORT" >> $GITHUB_OUTPUT
-          echo "ENDOFREPORT" >> $GITHUB_OUTPUT
-
+          git log --since='7 days ago' --all --oneline | head -15 >> report.md
           if [ "$TOTAL" -eq 0 ]; then
             echo "empty=true" >> $GITHUB_OUTPUT
           else
             echo "empty=false" >> $GITHUB_OUTPUT
           fi
-
-      - name: Crear issue con el reporte
+      - name: Crear issue
         if: steps.report.outputs.empty == 'false'
         uses: actions/github-script@v7
         with:
@@ -87,11 +48,7 @@ jobs:
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `Ì≥ä Reporte Semanal ‚Äî ${today}`,
+              title: 'Reporte Semanal ' + today,
               body: report,
-              labels: ['reporte-semanal', 'automatizado']
+              labels: ['reporte-semanal']
             });
-
-      - name: Sin actividad esta semana
-        if: steps.report.outputs.empty == 'true'
-        run: echo "‚ö†Ô∏è No hubo commits esta semana. No se crea issue."
