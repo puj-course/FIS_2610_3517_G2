@@ -1,0 +1,6 @@
+.skeleton { background: var(--bg-secondary); border-radius: 12px; padding: 20px; }
+.line { height: 14px; border-radius: 7px; background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-secondary) 50%, var(--bg-tertiary) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; margin-bottom: 12px; }
+.wide { width: 80%; }
+.medium { width: 60%; }
+.narrow { width: 40%; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }

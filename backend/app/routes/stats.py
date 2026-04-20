@@ -21,6 +21,6 @@ async def get_match_stats(match_id: str):
     Incluye: stats de ambos jugadores, Head-to-Head y superficie.
     """
     service = get_stats_service()
-    stats = service.get_match_stats(match_id)
+    stats = await service.get_match_stats(match_id)
     logger.info(f"GET /matches/{match_id}/stats — retornando estadísticas")
     return stats

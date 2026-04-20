@@ -20,19 +20,19 @@ WEIGHT_SURFACE = 0.30
 
 class ProbabilityService:
 
-    def calculate_individual(self, match_id: str) -> IndividualProbability:
+    async def calculate_individual(self, match_id: str) -> IndividualProbability:
         from app.services.stats_service import get_stats_service
         from app.services.match_service import get_match_service
 
         match_service = get_match_service()
         stats_service = get_stats_service()
 
-        match = match_service.get_match_by_id(match_id)
+        match = await match_service.get_match_by_id(match_id)
         if match is None:
             raise NotFoundException(f"Partido {match_id} no encontrado")
 
         try:
-            stats = stats_service.get_match_stats(match_id)
+            stats = await stats_service.get_match_stats(match_id)
         except NotFoundException:
             return IndividualProbability(
                 match_id=match_id,
@@ -69,11 +69,11 @@ class ProbabilityService:
                                            match.player_away.name, away_prob),
         )
 
-    def calculate_combination(self, combination_id: str) -> CombinationProbability:
+    async def calculate_combination(self, combination_id: str) -> CombinationProbability:
         from app.services.combination_service import get_combination_service
 
         comb_service = get_combination_service()
-        combination = comb_service.get_combination(combination_id)
+        combination = await comb_service.get_combination(combination_id)
 
         if combination.total_selections < 2:
             return CombinationProbability(
@@ -89,7 +89,7 @@ class ProbabilityService:
 
         for sel in combination.selections:
             try:
-                indiv = self.calculate_individual(sel.match_id)
+                indiv = await self.calculate_individual(sel.match_id)
                 prob = max(indiv.player_home_probability, indiv.player_away_probability)
                 favorite = indiv.get_favorite()
             except Exception:

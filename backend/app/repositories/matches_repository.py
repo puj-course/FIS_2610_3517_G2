@@ -24,6 +24,7 @@ class MatchesRepository:
     async def get_all(
         self, status: Optional[str] = None, tournament: Optional[str] = None
     ) -> list[Match]:
+        """Obtener todos los partidos, con filtros opcionales."""
         query = select(MatchDB)
 
         if status:
@@ -38,6 +39,7 @@ class MatchesRepository:
         return [self._to_pydantic(row) for row in rows]
 
     async def get_by_id(self, match_id: str) -> Optional[Match]:
+        """Obtener un partido por ID."""
         query = select(MatchDB).where(MatchDB.id == match_id)
         result = await self.db.execute(query)
         row = result.scalar_one_or_none()
@@ -47,6 +49,7 @@ class MatchesRepository:
         return self._to_pydantic(row)
 
     async def insert_many(self, matches: list[dict]):
+        """Insertar múltiples partidos (para seed)."""
         for match_data in matches:
             db_match = MatchDB(**match_data)
             self.db.add(db_match)
@@ -54,12 +57,14 @@ class MatchesRepository:
         logger.info(f"Insertados {len(matches)} partidos en PostgreSQL")
 
     async def delete_all(self):
+        """Eliminar todos los partidos (para seed con --clean)."""
         from sqlalchemy import delete
         await self.db.execute(delete(MatchDB))
         await self.db.commit()
         logger.info("Todos los partidos eliminados de PostgreSQL")
 
     def _to_pydantic(self, row: MatchDB) -> Match:
+        """Convertir un registro de BD a modelo Pydantic."""
         return Match(
             id=row.id,
             player_home=Player(
