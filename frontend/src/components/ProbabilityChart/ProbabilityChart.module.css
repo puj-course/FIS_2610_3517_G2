@@ -1,0 +1,10 @@
+.chart { display: flex; flex-direction: column; gap: 10px; }
+.title { font-size: 0.95rem; margin-bottom: 4px; }
+.row { display: flex; align-items: center; gap: 12px; }
+.label { min-width: 150px; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar { flex: 1; height: 20px; background: var(--bg-tertiary); border-radius: 10px; overflow: hidden; }
+.fill { height: 100%; border-radius: 10px; transition: width 0.5s ease; }
+.high { background: #22c55e; }
+.mid { background: #fbbf24; }
+.low { background: #f87171; }
+.value { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; min-width: 40px; text-align: right; }
