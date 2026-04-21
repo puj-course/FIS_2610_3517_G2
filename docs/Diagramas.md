@@ -11,6 +11,10 @@ Diagrama de despliegue
 
 <img width="1502" height="771" alt="image" src="https://github.com/user-attachments/assets/7c64ff9c-23ea-4ec4-b990-9a1aa94cb54a" />
 
+Diagrama de Base de datos
+
+<img width="1134" height="724" alt="image" src="https://github.com/user-attachments/assets/d5116e2a-99b7-4ff1-ac99-d700801b75bc" />
+
 
 
 
