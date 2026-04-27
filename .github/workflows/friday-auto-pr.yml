@@ -1,92 +1,48 @@
-name: Auto-PR Viernes (develop â†’ main)
-
+name: Auto-PR Viernes (develop a main)
 on:
   schedule:
-    - cron: '0 22 * * 5'   # Viernes 5:00 PM BogotÃ¡ (UTC-5)
-  workflow_dispatch:         # Permite ejecutarlo manualmente
-
+    - cron: '0 22 * * 5'
+  workflow_dispatch:
 permissions:
   contents: read
   pull-requests: write
-
 jobs:
   create-pr:
-    name: Crear PR develop â†’ main
+    name: Crear PR develop a main
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout del cÃ³digo
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Verificar si hay cambios nuevos
+      - name: Verificar cambios
         id: check
         run: |
           git fetch origin main develop
           AHEAD=$(git rev-list --count origin/main..origin/develop)
           echo "commits_ahead=$AHEAD" >> $GITHUB_OUTPUT
-          if [ "$AHEAD" -eq 0 ]; then
-            echo "í¿¢ develop estÃ¡ al dÃ­a con main. No hay PR que crear."
-          else
-            echo "í´µ develop tiene $AHEAD commits adelante de main."
-          fi
-
-      - name: Generar resumen de cambios
-        if: steps.check.outputs.commits_ahead != '0'
-        id: summary
-        run: |
-          echo "## í´„ Resumen de cambios" > pr_body.md
-          echo "" >> pr_body.md
-          echo "**Commits incluidos:** ${{ steps.check.outputs.commits_ahead }}" >> pr_body.md
-          echo "" >> pr_body.md
-          echo "### Commits" >> pr_body.md
-          echo "" >> pr_body.md
-          git log --oneline origin/main..origin/develop | head -20 >> pr_body.md
-          echo "" >> pr_body.md
-          echo "### Archivos modificados" >> pr_body.md
-          echo "" >> pr_body.md
-          echo '```' >> pr_body.md
-          git diff --stat origin/main..origin/develop | tail -20 >> pr_body.md
-          echo '```' >> pr_body.md
-          echo "" >> pr_body.md
-          echo "---" >> pr_body.md
-          echo "*PR creado automÃ¡ticamente por OddsEngine CI/CD â€” $(date '+%Y-%m-%d')*" >> pr_body.md
-
-      - name: Crear Pull Request
+      - name: Crear PR
         if: steps.check.outputs.commits_ahead != '0'
         uses: actions/github-script@v7
         with:
           script: |
-            const fs = require('fs');
-            const body = fs.readFileSync('pr_body.md', 'utf8');
             const today = new Date().toISOString().split('T')[0];
-
-            // Verificar si ya existe un PR abierto develop â†’ main
-            const { data: existingPRs } = await github.rest.pulls.list({
+            const { data: existing } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head: `${context.repo.owner}:develop`,
+              head: context.repo.owner + ':develop',
               base: 'main',
               state: 'open'
             });
-
-            if (existingPRs.length > 0) {
-              console.log(`âš ï¸ Ya existe un PR abierto: #${existingPRs[0].number}. No se crea otro.`);
+            if (existing.length > 0) {
+              console.log('Ya existe un PR abierto');
               return;
             }
-
-            const { data: pr } = await github.rest.pulls.create({
+            await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `íº€ Release semanal â€” ${today}`,
-              body: body,
+              title: 'Release semanal ' + today,
+              body: 'PR automatico develop a main',
               head: 'develop',
-              base: 'main',
+              base: 'main'
             });
-
-            console.log(`âœ… PR creado: #${pr.number}`);
-
-      - name: Sin cambios pendientes
-        if: steps.check.outputs.commits_ahead == '0'
-        run: echo "âœ… No hay cambios nuevos en develop. No se crea PR."
