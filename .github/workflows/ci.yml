@@ -1,11 +1,9 @@
 name: CI — Integración Continua
-
 on:
   push:
     branches: [ "main", "develop", "feature/pipelines" ]
   pull_request:
     branches: [ "main", "develop" ]
-
 jobs:
   test-backend:
     name: Backend Tests (pytest)
@@ -20,11 +18,17 @@ jobs:
         working-directory: backend
         run: |
           pip install -r requirements.txt
-          pip install anyio[asyncio]
+          pip install anyio[asyncio] pytest-html
       - name: Ejecutar tests
         working-directory: backend
-        run: pytest tests/ -v --tb=short || true
-
+        run: pytest tests/ -v --tb=short --html=test-report.html --self-contained-html || true
+      - name: Subir reporte de pruebas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: oddsengine-test-report
+          path: backend/test-report.html
+          retention-days: 30
   validate-frontend:
     name: Frontend Build
     runs-on: ubuntu-latest
@@ -36,9 +40,9 @@ jobs:
       - name: Instalar dependencias
         working-directory: frontend
         run: npm install
-      - name: Build de producción
+      - name: Build de produccion
         working-directory: frontend
         run: npm run build
       - name: Verificar build
         working-directory: frontend
-        run: test -f dist/index.html && echo "✅ Build exitoso" || exit 1
+        run: test -f dist/index.html && echo "Build exitoso" || exit 1
