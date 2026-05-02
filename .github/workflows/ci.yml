@@ -4,6 +4,7 @@ on:
     branches: [ "main", "develop", "feature/pipelines" ]
   pull_request:
     branches: [ "main", "develop" ]
+    
 jobs:
   test-backend:
     name: Backend Tests (pytest)
