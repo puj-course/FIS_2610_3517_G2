@@ -1,0 +1,4 @@
+.page { padding: 1rem 0; }
+.title { font-size: 1.5rem; margin-bottom: 20px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.loading { text-align: center; padding: 3rem; color: var(--text-secondary); }
