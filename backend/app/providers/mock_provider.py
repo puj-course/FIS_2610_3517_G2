@@ -133,3 +133,10 @@ class MockMatchProvider(BaseMatchProvider):
             ]
 
         return sorted(results, key=lambda m: m.date)
+
+    async def get_match_by_id(self, match_id: str) -> Optional[Match]:
+        """Buscar partido por ID."""
+        for match in self._matches:
+            if match.id == match_id:
+                return match
+        return None

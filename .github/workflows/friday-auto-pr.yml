@@ -1,0 +1,48 @@
+name: Auto-PR Viernes (develop a main)
+on:
+  schedule:
+    - cron: '0 22 * * 5'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  create-pr:
+    name: Crear PR develop a main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verificar cambios
+        id: check
+        run: |
+          git fetch origin main develop
+          AHEAD=$(git rev-list --count origin/main..origin/develop)
+          echo "commits_ahead=$AHEAD" >> $GITHUB_OUTPUT
+      - name: Crear PR
+        if: steps.check.outputs.commits_ahead != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const today = new Date().toISOString().split('T')[0];
+            const { data: existing } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: context.repo.owner + ':develop',
+              base: 'main',
+              state: 'open'
+            });
+            if (existing.length > 0) {
+              console.log('Ya existe un PR abierto');
+              return;
+            }
+            await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Release semanal ' + today,
+              body: 'PR automatico develop a main',
+              head: 'develop',
+              base: 'main'
+            });

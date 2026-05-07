@@ -1,0 +1,33 @@
+name: CD — Empaquetado del Proyecto
+
+on:
+  push:
+    branches: [ "main", "develop", "feature/pipelines" ]
+  workflow_dispatch:
+
+jobs:
+  build-frontend:
+    name: Build Frontend Vite dist
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configurar Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+      - name: Instalar dependencias
+        working-directory: frontend
+        run: npm install
+      - name: Build de produccion
+        working-directory: frontend
+        run: npm run build
+      - name: Verificar artefacto
+        working-directory: frontend
+        run: test -f dist/index.html && echo "OK" || exit 1
+      - name: Subir artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: oddsengine-frontend-dist
+          path: frontend/dist/
+          retention-days: 7

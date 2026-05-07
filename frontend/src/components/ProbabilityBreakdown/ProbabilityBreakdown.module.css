@@ -1,0 +1,18 @@
+.breakdown { display: flex; flex-direction: column; gap: 20px; }
+.mainProb { display: flex; align-items: center; justify-content: center; gap: 32px; }
+.probPlayer { text-align: center; }
+.probValue { display: block; font-size: 2.5rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--primary); }
+.probLabel { font-size: 0.85rem; color: var(--text-secondary); }
+.probVs { font-size: 1.2rem; color: var(--text-secondary); }
+.confidence { padding: 8px 16px; border-radius: 8px; text-align: center; font-weight: 500; }
+.high { background: rgba(34,197,94,0.1); color: #22c55e; }
+.mid { background: rgba(251,191,36,0.1); color: #fbbf24; }
+.low { background: rgba(248,113,113,0.1); color: #f87171; }
+.factors h4 { margin-bottom: 12px; font-size: 0.95rem; }
+.factor { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.factorName { min-width: 120px; font-size: 0.85rem; }
+.factorBar { flex: 1; height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden; }
+.factorFill { height: 100%; background: var(--primary); border-radius: 4px; transition: width 0.5s ease; }
+.factorWeight { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; min-width: 36px; text-align: right; }
+.message { font-size: 0.9rem; color: var(--text-secondary); font-style: italic; padding: 12px; background: var(--bg-tertiary); border-radius: 8px; }
+.empty { text-align: center; padding: 2rem; color: var(--text-secondary); }
