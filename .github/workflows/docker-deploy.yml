@@ -1,0 +1,53 @@
+name: Docker Build & Deploy
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  workflow_dispatch:
+
+jobs:
+  docker-build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -t oddsengine-backend .
+
+      - name: Start services with Docker Compose
+        run: |
+          docker compose up -d
+          sleep 10
+
+      - name: Health check
+        run: |
+          curl --fail http://localhost:8000/health || exit 1
+          echo "Backend is healthy"
+
+      - name: Stop services
+        if: always()
+        run: docker compose down
+
+  docker-push:
+    name: Push to DockerHub
+    runs-on: ubuntu-latest
+    needs: docker-build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/oddsengine-backend:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/oddsengine-backend:${{ github.sha }}
