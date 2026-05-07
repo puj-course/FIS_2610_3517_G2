@@ -10,6 +10,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ .
 
+# Crear carpeta de logs y darle permisos al usuario
+RUN mkdir -p logs && chown -R appuser:appuser /app
+
 USER appuser
 
 EXPOSE 8000
