@@ -44,6 +44,11 @@ services:
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
     depends_on:
       - backend
+<<<<<<< HEAD
 
 volumes:
   postgres_data:
+=======
+    environment:
+      - REACT_APP_API_URL=http://backend:8000
+>>>>>>> 7a8dbe6 (fix:docker-compose changes)
