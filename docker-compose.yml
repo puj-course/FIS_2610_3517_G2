@@ -1,54 +1,24 @@
+version: '3.8'
+
 services:
-
-  db:
-    image: postgres:15-alpine
-    container_name: oddsengine-db
-    environment:
-      POSTGRES_DB: oddsengine
-      POSTGRES_USER: oddsengine_user
-      POSTGRES_PASSWORD: oddsengine_pass
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U oddsengine_user -d oddsengine"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
   backend:
+    image: ${DOCKER_USERNAME}/backend-oddsengine:${IMAGE_TAG:-latest}
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ./backend            
+      dockerfile: Dockerfile         
     container_name: oddsengine-backend
     ports:
-      - "8000:8000"
-    environment:
-      - DATA_MODE=mock
-      - DATABASE_URL=postgresql+asyncpg://oddsengine_user:oddsengine_pass@db:5432/oddsengine
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: unless-stopped
+      - "8000:8000"                  
 
   frontend:
-    image: node:18-alpine
-    container_name: oddsengine-frontend
-    working_dir: /app
+    image: ${DOCKER_USERNAME}/web-oddsengine:${IMAGE_TAG:-latest}
+    build:
+      context: ./frontend            
+      dockerfile: Dockerfile         
+    container_name: oddsengine-web
     ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+      - "80:80"                      
     depends_on:
       - backend
-<<<<<<< HEAD
-
-volumes:
-  postgres_data:
-=======
     environment:
       - REACT_APP_API_URL=http://backend:8000
->>>>>>> 7a8dbe6 (fix:docker-compose changes)
