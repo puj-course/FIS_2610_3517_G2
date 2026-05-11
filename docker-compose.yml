@@ -20,12 +20,6 @@ services:
     container_name: oddsengine-frontend
     ports:
       - "80:80"
-    environment:
-      - VITE_BACKEND_URL=http://backend:8000
-    volumes:
-      - ./frontend/src:/app/src
-      - ./frontend/public:/app/public
-      - /app/node_modules
     depends_on:
       - backend
     restart: unless-stopped
