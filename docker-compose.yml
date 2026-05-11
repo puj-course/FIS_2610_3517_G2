@@ -1,24 +1,31 @@
-version: '3.8'
-
 services:
+
   backend:
-    image: ${DOCKER_USERNAME}/backend-oddsengine:${IMAGE_TAG:-latest}
     build:
-      context: ./backend            
-      dockerfile: Dockerfile         
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: oddsengine-backend
     ports:
-      - "8000:8000"                  
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app
+    restart: unless-stopped
 
   frontend:
-    image: ${DOCKER_USERNAME}/web-oddsengine:${IMAGE_TAG:-latest}
     build:
-      context: ./frontend            
-      dockerfile: Dockerfile         
-    container_name: oddsengine-web
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: oddsengine-frontend
     ports:
-      - "80:80"                      
+      - "80:80"
+    environment:
+      - VITE_BACKEND_URL=http://backend:8000
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - /app/node_modules
     depends_on:
       - backend
-    environment:
-      - REACT_APP_API_URL=http://backend:8000
+    restart: unless-stopped
