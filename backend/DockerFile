@@ -1,0 +1,30 @@
+# ============================================================
+# OddsEngine — Backend Dockerfile
+# Imagen base: Python 3.12 slim para menor tamaño
+# ============================================================
+ 
+FROM python:3.12-slim
+ 
+# Crear usuario sin privilegios para mayor seguridad
+RUN useradd -m oddsengine
+ 
+# Directorio de trabajo dentro del contenedor
+WORKDIR /app
+ 
+# Copiar dependencias primero (aprovecha cache de Docker)
+COPY --chown=oddsengine:oddsengine backend/requirements.txt .
+ 
+# Instalar dependencias sin cache para imagen más liviana
+RUN pip install --no-cache-dir -r requirements.txt
+ 
+# Copiar el código del backend al contenedor
+COPY --chown=oddsengine:oddsengine backend/ .
+ 
+# Cambiar al usuario sin privilegios
+USER oddsengine
+ 
+# Puerto en el que corre FastAPI con uvicorn
+EXPOSE 8000
+ 
+# Comando de inicio de la aplicación
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
