@@ -1,70 +1,64 @@
-# ============================================================
-# OddsEngine — Docker Compose
-# Orquesta 3 servicios: db (PostgreSQL), backend (FastAPI),
-# frontend (React/Vite servido con nginx)
-# ============================================================
- 
-version: "3.8"
- 
 services:
- 
-  # ----------------------------------------------------------
-  # Base de datos PostgreSQL
-  # ----------------------------------------------------------
-  db:
-    image: postgres:15-alpine
-    container_name: oddsengine-db
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: oddsengine
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
- 
-  # ----------------------------------------------------------
-  # Backend FastAPI
-  # ----------------------------------------------------------
+
+  # ── Backend FastAPI ────────────────────────────────────────────────
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     container_name: oddsengine-backend
-    environment:
-      DATA_MODE: database
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/oddsengine
-      DATABASE_SYNC_URL: postgresql://postgres:postgres@db:5432/oddsengine
-      API_PROVIDER: mock
-      DEBUG: "false"
     ports:
       - "8000:8000"
-    depends_on:
-      db:
-        condition: service_healthy
+    env_file:
+      - .env
+    volumes:
+      # Hot-reload: los cambios en código se reflejan al instante
+      - ./backend:/app
     restart: unless-stopped
- 
-  # ----------------------------------------------------------
-  # Frontend React/Vite (servido con nginx)
-  # ----------------------------------------------------------
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # ── Frontend React/Vite ────────────────────────────────────────────
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: oddsengine-frontend
     ports:
-      - "80:80"
+      - "5173:5173"
+    environment:
+      # Le dice a Vite dónde está el backend DENTRO de la red Docker
+      - VITE_BACKEND_URL=http://backend:8000
+    volumes:
+      # Hot-reload del frontend
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      # Evita que los node_modules del host sobreescriban los del contenedor
+      - /app/node_modules
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     restart: unless-stopped
- 
-# ----------------------------------------------------------
-# Volúmenes persistentes
-# ----------------------------------------------------------
+
+  # ── PostgreSQL (solo si DATA_MODE=database) ────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: oddsengine-db
+    environment:
+      POSTGRES_DB: oddsengine
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    profiles:
+      # Solo arranca si ejecutas: docker compose --profile database up
+      - database
+
 volumes:
-  postgres_data:
+  pgdata:
