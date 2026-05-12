@@ -4,6 +4,7 @@ on:
     branches: [ "main", "develop", "feature/pipelines" ]
   pull_request:
     branches: [ "main", "develop" ]
+    
 jobs:
   test-backend:
     name: Backend Tests (pytest)
@@ -46,3 +47,16 @@ jobs:
       - name: Verificar build
         working-directory: frontend
         run: test -f dist/index.html && echo "Build exitoso" || exit 1
+   sonarqube-analysis:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    needs: [test-backend]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   
