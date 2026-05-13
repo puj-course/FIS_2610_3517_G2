@@ -1,31 +1,19 @@
 services:
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: juanpa1703/oddsengine-backend:latest
     container_name: oddsengine-backend
     ports:
       - "8000:8000"
     env_file:
       - .env
-    volumes:
-      - ./backend:/app
     restart: unless-stopped
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: juanpa1703/oddsengine-frontend:latest
     container_name: oddsengine-frontend
     ports:
       - "80:80"
-    environment:
-      - VITE_BACKEND_URL=http://backend:8000
-    volumes:
-      - ./frontend/src:/app/src
-      - ./frontend/public:/app/public
-      - /app/node_modules
     depends_on:
       - backend
     restart: unless-stopped
