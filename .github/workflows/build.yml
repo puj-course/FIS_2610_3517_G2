@@ -16,23 +16,32 @@ jobs:
         with:
           python-version: "3.10"
       - name: Instalar dependencias
-        working-directory: backend
-        run: |
-          pip install -r requirements.txt
-          pip install anyio[asyncio] pytest-cov coverage
-      - name: Generar cobertura
         run: |
           cd backend
-          python -m pytest tests/ -v --cov=app --cov-report=xml:../coverage.xml --cov-report=term || true
-      - name: Verificar cobertura
+          pip install -r requirements.txt
+          pip install anyio[asyncio] pytest-cov
+      - name: Generar cobertura desde raiz
         run: |
+          cd backend
+          python -m pytest tests/ -v --cov=app --cov-report=xml --cov-report=term || true
+          echo "=== coverage.xml generado ==="
           ls -la coverage.xml
-          head -8 coverage.xml
-      - name: Ajustar rutas en coverage.xml
+          echo "=== source path ==="
+          grep -o '<source>[^<]*</source>' coverage.xml
+      - name: Copiar y ajustar coverage
         run: |
-          sed -i 's|<source>.*</source>|<source>backend/app</source>|g' coverage.xml
-          echo "=== Source ajustado ==="
-          grep "<source>" coverage.xml
+          cp backend/coverage.xml coverage.xml
+          python -c "
+import re
+with open('coverage.xml','r') as f: c=f.read()
+c=re.sub(r'<source>[^<]*</source>','<source>backend/app</source>',c)
+with open('coverage.xml','w') as f: f.write(c)
+print('Fixed source paths')
+          "
+          echo "=== Verificacion ==="
+          grep -o '<source>[^<]*</source>' coverage.xml
+          echo "=== line-rate ==="
+          grep -o 'line-rate="[^"]*"' coverage.xml | head -1
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
