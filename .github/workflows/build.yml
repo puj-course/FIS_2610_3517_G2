@@ -16,18 +16,26 @@ jobs:
         with:
           python-version: "3.10"
       - name: Instalar dependencias
-        working-directory: backend
         run: |
+          cd backend
           pip install -r requirements.txt
-          pip install anyio[asyncio] pytest-cov
+          pip install anyio[asyncio] pytest-cov coverage
+          echo "=== pytest-cov instalado? ==="
+          pip show pytest-cov
       - name: Generar cobertura
-        working-directory: backend
-        run: pytest tests/ -v --cov=app --cov-report=xml:../backend-coverage.xml || true
-      - name: Verificar cobertura
         run: |
-          echo "=== Verificando coverage.xml ==="
-          ls -la backend-coverage.xml || echo "NO EXISTE en raiz"
-          head -5 backend-coverage.xml || echo "No se puede leer"
+          cd backend
+          echo "=== Corriendo pytest con coverage ==="
+          python -m pytest tests/ -v --cov=app --cov-report=xml:coverage.xml --cov-report=term || true
+          echo "=== Archivos generados ==="
+          ls -la coverage.xml 2>/dev/null || echo "coverage.xml NO existe en backend/"
+          ls -la ../coverage.xml 2>/dev/null || echo "coverage.xml NO existe en raiz"
+      - name: Mover coverage a raiz
+        run: |
+          cp backend/coverage.xml ./coverage.xml 2>/dev/null || echo "No se pudo copiar"
+          ls -la coverage.xml || echo "coverage.xml NO existe"
+          echo "=== Primeras 10 lineas ==="
+          head -10 coverage.xml 2>/dev/null || echo "No se puede leer"
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
