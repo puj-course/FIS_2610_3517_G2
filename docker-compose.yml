@@ -1,5 +1,18 @@
 services:
 
+  db:
+    image: postgres:16-alpine
+    container_name: oddsengine-db
+    environment:
+      POSTGRES_DB: oddsengine
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
   backend:
     image: juanpa1703/oddsengine-backend:latest
     container_name: oddsengine-backend
@@ -7,6 +20,8 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    depends_on:
+      - db
     restart: unless-stopped
 
   frontend:
@@ -17,3 +32,6 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+
+volumes:
+  pgdata:
