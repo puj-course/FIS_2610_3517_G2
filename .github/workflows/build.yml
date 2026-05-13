@@ -15,12 +15,19 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-      - name: Instalar dependencias y generar cobertura
+      - name: Instalar dependencias
         working-directory: backend
         run: |
           pip install -r requirements.txt
           pip install anyio[asyncio] pytest-cov
-          pytest tests/ -v --cov=app --cov-report=xml:coverage.xml || true
+      - name: Generar cobertura
+        working-directory: backend
+        run: pytest tests/ -v --cov=app --cov-report=xml:../backend-coverage.xml || true
+      - name: Verificar cobertura
+        run: |
+          echo "=== Verificando coverage.xml ==="
+          ls -la backend-coverage.xml || echo "NO EXISTE en raiz"
+          head -5 backend-coverage.xml || echo "No se puede leer"
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
