@@ -22,6 +22,7 @@ export default function ConfirmDialog({ isOpen, title, message, onConfirm, onCan
         ref={dialogRef}
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-title"
