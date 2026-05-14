@@ -36,7 +36,10 @@ def setup_logging(log_level: str = "INFO", log_file: str = "oddsengine.log") -> 
 
     # Handler de archivo
     log_path = Path("logs")
-    log_path.mkdir(exist_ok=True)
+    # Fix: Usar /tmp que siempre tiene permisos de escritura
+    import tempfile
+    log_path = Path(tempfile.gettempdir()) / "oddsengine_logs"
+    log_path.mkdir(exist_ok=True, parents=True)
     file_handler = logging.FileHandler(log_path / log_file, encoding="utf-8")
     file_handler.setFormatter(file_format)
 

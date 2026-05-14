@@ -1,11 +1,19 @@
 FROM python:3.10-slim
 
+RUN useradd --create-home appuser
+
 WORKDIR /app
 
 COPY backend/requirements.txt .
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ .
+
+# Crear carpeta de logs y darle permisos al usuario
+RUN mkdir -p logs && chown -R appuser:appuser /app
+
+USER appuser
 
 EXPOSE 8000
 
