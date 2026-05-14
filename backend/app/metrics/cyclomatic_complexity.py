@@ -264,7 +264,7 @@ def analyze_directory(directory: str, exclude: Optional[list] = None) -> CCRepor
         functions=all_functions,
         warnings=warnings,
         critical=critical,
-        passed=len(critical) == 0,
+        passed=not critical,
     )
 
 
