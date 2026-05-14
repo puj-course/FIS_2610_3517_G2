@@ -20,10 +20,7 @@ Instrucciones para levantar el proyecto con Docker en **Windows, Mac y Linux**.
 git clone https://github.com/puj-course/FIS_2610_3517_G2
 cd FIS_2610_3517_G2
 
-# 2. Ir a la carpeta del proyecto
-cd OE_FINAL_V2
-
-# 3. Levantar todo con Docker
+# 2. Levantar todo con Docker
 docker compose up --build
 ```
 
@@ -34,20 +31,6 @@ Listo. Abre tu navegador en:
 | Frontend  | http://localhost:5173      |
 | Backend   | http://localhost:8000      |
 | API Docs  | http://localhost:8000/docs |
-
----
-
-## 🗄️ Con base de datos PostgreSQL (opcional)
-
-Por defecto el proyecto corre en modo `mock` (sin BD). Si quieres activar PostgreSQL:
-
-```bash
-# Edita el .env y cambia:
-DATA_MODE=database
-
-# Luego levanta incluyendo el perfil de base de datos:
-docker compose --profile database up --build
-```
 
 ---
 
