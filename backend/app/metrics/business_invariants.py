@@ -183,7 +183,7 @@ def check_risk_level_coherence(
             expected_risk = level
             break
     # Caso borde: probabilidad exactamente 0
-    if total_probability == 0.0:
+    if math.isclose(total_probability, 0.0, abs_tol=1e-9):
         expected_risk = "high"
 
     passed = risk_level == expected_risk
