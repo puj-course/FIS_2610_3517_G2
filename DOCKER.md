@@ -13,7 +13,7 @@ Instrucciones para levantar el proyecto con Docker en **Windows, Mac y Linux**.
 
 ---
 
-## 🚀 Levantar el proyecto (modo rápido)
+## 🚀 Levantar el proyecto
 
 ```bash
 # 1. Clonar el repo
@@ -65,7 +65,6 @@ Se actualizo el workflow de CI para que, en cada push a main, develop o feature/
 ## Mejora en el workflow (docker-deploy.yml)
 Se mejoro el workflow de Docker para que, al pasar el build, construya y suba automaticamente las imagenes a Docker Hub usando los secrets
 DOCKERHUB_USERNAME y DOCKERHUB_TOKEN configurados en los Settings del repositorio.
-
 ---
 
 ## ❓ Problemas frecuentes
