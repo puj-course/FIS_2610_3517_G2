@@ -25,6 +25,12 @@ cd FIS_2610_3517_G2
 docker compose up --build
 ```
 
+si acaso no funciona (que no es comun que pase) hacerlo en la rama de feature/docker-deploy
+
+```bash
+git checkout feature/docker-deploy
+```
+
 Listo. Abre tu navegador en:
 
 | Servicio  | URL                        |
