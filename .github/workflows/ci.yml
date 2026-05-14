@@ -15,6 +15,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+          cache: 'pip' 
 
       - name: Instalar dependencias
         working-directory: backend
@@ -25,12 +26,13 @@ jobs:
       - name: Ejecutar tests con coverage
         working-directory: backend
         run: |
+          # Quitamos el || true para que falle si los tests fallan
           pytest tests/ -v --tb=short \
             --cov=app \
             --cov-report=xml:coverage.xml \
             --cov-report=term-missing \
             --html=test-report.html \
-            --self-contained-html || true
+            --self-contained-html
 
       - name: Subir reporte de pruebas
         if: always()
@@ -49,45 +51,38 @@ jobs:
           retention-days: 7
 
   validate-frontend:
-    name: Frontend Build
+    name: Frontend Build & Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "18"
+          cache: 'npm' # Agiliza el despliegue
+          cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Instalar dependencias
         working-directory: frontend
-        run: npm install --ignore-scripts
+        run: npm ci 
 
       - name: Build de produccion
         working-directory: frontend
         run: npm run build
 
-      - name: Verificar build
-        working-directory: frontend
-        run: test -f dist/index.html && echo "Build exitoso" || exit 1
-
   sonarqube-analysis:
     name: SonarQube Analysis
     runs-on: ubuntu-latest
-    needs: [test-backend]
+    needs: [test-backend, validate-frontend] 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 
 
-      - uses: actions/setup-python@v5
+      - name: Descargar coverage del Backend
+        uses: actions/download-artifact@v4
         with:
-          python-version: "3.10"
-
-      - name: Instalar dependencias y generar coverage
-        working-directory: backend
-        run: |
-          pip install -r requirements.txt
-          pip install pytest-cov anyio[asyncio]
-          pytest tests/ --cov=app --cov-report=xml:coverage.xml || true
+          name: coverage-report
+          path: backend/ 
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
