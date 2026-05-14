@@ -25,12 +25,6 @@ jobs:
           cd backend
           python -m pytest tests/ -v --cov=app --cov-report=xml --cov-report=term || true
           cp coverage.xml ../coverage.xml
-      - name: Ajustar rutas coverage
-        run: sed -i 's|/home/runner/work/FIS_2610_3517_G2/FIS_2610_3517_G2/backend/app|backend/app|g' coverage.xml
-      - name: Verificar
-        run: |
-          grep -o '<source>[^<]*</source>' coverage.xml
-          grep -o 'line-rate="[^"]*"' coverage.xml | head -1
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
     name: SonarQube
