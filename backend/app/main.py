@@ -15,6 +15,7 @@ from app.routes import probability, history
 from app.core.error_handlers import register_error_handlers
 from app.core.logging_config import setup_logging
 from app.core.config import get_settings
+from app.core.metrics import setup_metrics
 
 setup_logging(log_level="INFO")
 logger = logging.getLogger("oddsengine")
@@ -38,6 +39,8 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+setup_metrics(app)
 
 app.add_middleware(
     CORSMiddleware,
@@ -84,3 +87,5 @@ async def health_detailed():
         except Exception:
             db_status = "disconnected"
     return {"status": "ok", "service": "OddsEngine", "version": "1.0.0", "data_mode": settings.data_mode, "database": db_status}
+
+
