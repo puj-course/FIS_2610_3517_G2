@@ -28,7 +28,7 @@ async def seed_matches(session, clean=False):
         print("🗑️  Partidos eliminados")
 
     provider = MockMatchProvider()
-    matches = provider.get_matches()
+    matches = await provider.get_matches()
 
     for m in matches:
         db_match = MatchDB(
