@@ -1,0 +1,54 @@
+name: Reporte Semanal de Commits
+on:
+  schedule:
+    - cron: '0 22 * * 5'
+  workflow_dispatch:
+permissions:
+  issues: write
+  contents: read
+jobs:
+  weekly-report:
+    name: Generar reporte semanal
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Generar reporte
+        id: report
+        run: |
+          echo "## Reporte Semanal de Commits" > report.md
+          echo "**Periodo:** $(date -d '7 days ago' '+%Y-%m-%d') a $(date '+%Y-%m-%d')" >> report.md
+          echo "" >> report.md
+          TOTAL=$(git log --since='7 days ago' --oneline --all | wc -l)
+          echo "**Total commits:** $TOTAL" >> report.md
+          echo "" >> report.md
+          echo "### Commits por Autor" >> report.md
+          git log --since='7 days ago' --all --format='%aN' | sort | uniq -c | sort -rn | while read count author; do
+            echo "- **$author**: $count commits" >> report.md
+          done
+          echo "" >> report.md
+          echo "### Ultimos 15 Commits" >> report.md
+          echo "" >> report.md
+          git log --since='7 days ago' --all --oneline | head -15 >> report.md
+          if [ "$TOTAL" -eq 0 ]; then
+            echo "empty=true" >> $GITHUB_OUTPUT
+          else
+            echo "empty=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Crear issue
+        if: steps.report.outputs.empty == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('report.md', 'utf8');
+            const today = new Date().toISOString().split('T')[0];
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Reporte Semanal ' + today,
+              body: report,
+              labels: ['reporte-semanal']
+            });

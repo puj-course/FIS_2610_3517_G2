@@ -1,0 +1,39 @@
+name: SonarCloud Analysis
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  sonarqube:
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Instalar dependencias
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pip install anyio[asyncio] pytest-cov
+      - name: Generar cobertura
+        run: |
+          cd backend
+          python -m pytest tests/ -v --cov=app --cov-report=xml --cov-report=term || true
+          cp coverage.xml ../coverage.xml
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+    name: SonarQube
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602 # v6.0.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

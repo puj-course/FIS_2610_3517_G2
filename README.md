@@ -21,7 +21,34 @@
 - [Enfoque Tecnológico](#-enfoque-tecnológico)
 - [Contexto Académico](#-contexto-académico)
 
+---
 
+## 👥 Equipo del Proyecto
+
+| Nombre | Rol Técnico | Rol Scrum | GitHub / Perfil |
+|------|-------------|-----------|----------------|
+| **David Orjuela** | Quality Assurance Lead | Scrum Master | github.com/Kerosene21 |
+| **Juan Pablo Álvarez** | Backend Developer | Product Owner / Scrum Master | github.com/Sleppyhed |
+| **Nicolás Sánchez** | Frontend Lead | Sprint Planner / Configuration Manager | github.com/nicosanlucon |
+| **Lucas Rincón** | Frontend Developer | Documentation Lead | github.com/Lcks07 |
+
+---
+
+## Tecnologías Utilizadas
+- **Frontend:** PyQt
+- **Backend:** Python 
+- **Base de Datos:** Oracle Database
+- **IA / Data Science:** Python, Pandas, Api-Tenis
+- **DevOps:** GitHub Actions, Docker, SonarQube
+- **Control de versiones:** Git
+
+---
+
+## Instalación y Ejecución
+**Requisitos**
+- Docker y Docker Compose
+- Git
+- Python 3.10+
 
 ---
 
@@ -73,18 +100,6 @@ Optimización del proceso de análisis de apuestas deportivas mediante un motor 
 
 ---
 
-# 👥 Equipo y Roles 
-
-De acuerdo con los objetivos de ingeniería de software, el equipo se organiza bajo roles técnicos que garantizan una solución robusta, escalable y correctamente documentada.
-
-| Nombre | Rol Técnico | Responsabilidad |
-|--------|------------|----------------|
-| **Nicolás Sánchez** | Frontend Lead | Desarrollo de la interfaz web, implementación de vistas, componentes y experiencia de usuario (UX/UI). |
-| **Lucas Rincón** | Frontend Developer | Apoyo en el desarrollo de la interfaz, integración de componentes y validación funcional del frontend. |
-| **David Orjuela** | QA Lead | Validación de criterios de aceptación, verificación de cálculos probabilísticos, control de calidad técnica y reporte de defectos y riesgos. |
-| **Nicolás Sánchez** | Configuration Manager / Documentation Lead | Administración del repositorio en GitHub, gestión de ramas bajo Gitflow, revisión de Pull Requests y mantenimiento de la documentación técnica y funcional. |
-
----
 
 # 🔄 Roles SCRUM
 
@@ -92,9 +107,10 @@ Siguiendo la metodología SCRUM, se definen los siguientes roles para garantizar
 
 | Nombre | Rol SCRUM | Responsabilidad |
 |--------|----------|----------------|
-| **David Orjuela** | Scrum Master | Planificación y organización de Sprints, coordinación de ceremonias Scrum, gestión de impedimentos y seguimiento del avance general del proyecto. |
-| **Juan Pablo Álvarez** | Product Owner | Definición y priorización de historias de usuario, gestión del Product Backlog, validación de entregables funcionales y definición de criterios de aceptación. |
-| **Nicolás Sánchez** | Sprint Planner | Descomposición de historias en tareas, organización del Sprint Backlog y seguimiento operativo de tareas del sprint. |
+| **David Orjuela** | Scrum Master / QA Lead |  Planificación y organización de Sprints, coordinación de ceremonias Scrum, gestión de impedimentos, aseguramiento de calidad y validación funcional del sistema.|
+| **Juan Pablo Álvarez** | Product Owner / Scrum Master | Definición y priorización de historias de usuario, gestión del Product Backlog, validación de entregables funcionales y supervisión del desarrollo backend. |
+| **Nicolás Sánchez** |  Sprint Planner / Configuration Manager | Organización del Sprint Backlog, administración del repositorio GitHub, control de versiones, gestión de ramas y soporte en el desarrollo frontend. |
+| **Lucas Rincón** | Documentation Lead / Frontend Developer | Desarrollo de la interfaz frontend, documentación técnica y funcional del proyecto, y apoyo en la implementación del sistema. |
 
 ---
 
@@ -137,6 +153,10 @@ La solución es viable en dos stacks:
 - **Implementación principal:** **Python** (motor de cálculo probabilístico, consumo de APIs, procesamiento de datos).
 - **Alternativa viable:** **Java** (backend robusto y escalable para la lógica de negocio y servicios).
 
+Las herramientas que se utilizarán serán:
+
+- **Análisis probabilístico en Python** **Librería Pandas**
+- **Frontend** **PyQt QtDesigner**
 > Para el alcance académico del proyecto, el equipo a lo largo del semestre implementarara el backend en Python, manteniendo el diseño modular para permitir migración o extensión a Java si se requiere.
 
 ---
@@ -160,3 +180,8 @@ Proyecto desarrollado para la materia:
 Pontificia Universidad Javeriana  
 Facultad de Ingeniería  
 2026
+
+---
+
+# 💼 Equipo de Trabajo
+Nicolás Sánchez https://github.com/Nicosanlucon

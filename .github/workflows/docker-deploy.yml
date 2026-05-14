@@ -1,0 +1,61 @@
+name: Docker Build & Deploy
+
+on:
+  push:
+    branches: [ "main", "develop", "feature/docker-deploy" ]
+  workflow_dispatch:
+
+jobs:
+  docker-build:
+    name: Build y verificar imágenes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Crear .env para CI
+        run: echo -e "DATA_MODE=mock\nDEBUG=true" > .env
+
+      - name: Build con docker compose
+        run: docker compose build
+
+      - name: Levantar servicios
+        run: docker compose up -d && sleep 15
+
+      - name: Health check backend
+        run: curl --fail http://localhost:8000/health || exit 1
+
+      - name: Detener servicios
+        if: always()
+        run: docker compose down
+
+  docker-push:
+    name: Subir imágenes a Docker Hub
+    runs-on: ubuntu-latest
+    needs: docker-build
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/docker-deploy'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login a Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build y push backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/oddsengine-backend:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/oddsengine-backend:${{ github.sha }}
+
+      - name: Build y push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/oddsengine-frontend:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/oddsengine-frontend:${{ github.sha }}

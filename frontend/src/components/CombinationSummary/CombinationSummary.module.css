@@ -1,0 +1,8 @@
+.summary { display: flex; flex-direction: column; gap: 12px; padding: 16px; background: var(--bg-tertiary); border-radius: 10px; }
+.totalProb { text-align: center; }
+.probValue { display: block; font-size: 2rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--primary); }
+.probLabel { font-size: 0.8rem; color: var(--text-secondary); }
+.progressBar { height: 6px; background: var(--bg-secondary); border-radius: 3px; overflow: hidden; }
+.progressFill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 3px; transition: width 0.5s ease; }
+.info { text-align: center; padding: 12px; font-size: 0.85rem; color: var(--text-secondary); }
+.loading { text-align: center; padding: 12px; color: var(--text-secondary); }
