@@ -11,22 +11,8 @@ export default function ConfirmDialog({ isOpen, title, message, onConfirm, onCan
   if (!isOpen) return null;
 
   return (
-    <div
-      className={styles.overlay}
-      onClick={onCancel}
-      onKeyDown={(e) => e.key === 'Escape' && onCancel()}
-      role="presentation"
-    >
-      <div
-        className={styles.dialog}
-        ref={dialogRef}
-        tabIndex={-1}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="confirm-title"
-      >
+    <div className={styles.overlay} onClick={onCancel}>
+      <div className={styles.dialog} ref={dialogRef} tabIndex={-1} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="confirm-title">
         <h3 id="confirm-title" className={styles.title}>{title}</h3>
         {message && <p className={styles.message}>{message}</p>}
         <div className={styles.actions}>
