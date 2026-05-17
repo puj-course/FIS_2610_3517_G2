@@ -47,7 +47,7 @@ def sample_match_db():
         player_away_ranking=2,
         tournament_id="tour_1",
         tournament_name="Wimbledon",
-        tournament_surface="GRASS",
+        tournament_surface="grass",
         tournament_category="Grand Slam",
         tournament_location="London",
         date=datetime.now(),
@@ -76,7 +76,7 @@ def sample_match_pydantic():
         tournament=Tournament(
             id="tour_1",
             name="Wimbledon",
-            surface=Surface.GRASS,
+            surface=Surface.grass,
             category="Grand Slam",
             location="London",
         ),
@@ -265,7 +265,7 @@ class TestMatchesRepository:
         assert result.player_away.country == "Unknown"
         assert result.player_away.ranking == 0
         assert result.tournament.name == "Unknown Tournament"
-        assert result.tournament.surface == Surface.HARD
+        assert result.tournament.surface == Surface.hard
         assert result.tournament.category == "Unknown"
         assert result.tournament.location == "Unknown"
         assert result.status == MatchStatus.SCHEDULED
@@ -332,7 +332,7 @@ class TestMatchesRepository:
         result = await repository.get_by_id("match_no_surface")
 
         assert result is not None
-        assert result.tournament.surface == Surface.HARD  # Valor por defecto
+        assert result.tournament.surface == Surface.hard  # Valor por defecto
 
     @pytest.mark.asyncio
     async def test_get_all_with_case_insensitive_tournament_filter(self, repository, mock_db_session):
@@ -356,7 +356,7 @@ class TestMatchesRepository:
         mock_result.scalars.return_value = mock_scalars
         mock_db_session.execute.return_value = mock_result
 
-        result = await repository.get_all(status="SCHEDULED", tournament="Wimbledon")
+        result = await repository.get_all(status="upcoming", tournament="Wimbledon")
 
         assert len(result) == 1
         mock_db_session.execute.assert_called_once()
