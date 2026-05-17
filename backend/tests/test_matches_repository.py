@@ -179,8 +179,8 @@ class TestMatchesRepository:
 
     def test_to_pydantic_with_minimal_data(self, repository, match_factory):
         """Test: Conversión a Pydantic con datos mínimos."""
-        # Usar factory para crear match con datos mínimos
-        minimal_match = match_factory.create_minimal_match(id="minimal_id")
+        # Usar factory para crear match con datos mínimos; forzamos status para el assert
+        minimal_match = match_factory.create_minimal_match(id="minimal_id", status="upcoming")
         
         result = repository._to_pydantic(minimal_match)
         
@@ -253,11 +253,10 @@ class TestMatchesRepository:
 
     @pytest.mark.asyncio
     async def test_get_by_id_with_nonexistent_tournament_surface(self, repository, db_session, match_factory):
-        """Test: Manejo de superficie de torneo con valor por defecto cuando no es reconocida."""
-        # Crear match con superficie válida en BD pero no reconocida por el enum
+        """Test: La superficie 'carpet' se convierte correctamente al enum Surface."""
         match = match_factory.create(
             id="unknown_surface_match",
-            tournament_surface="carpet",  # superficie válida en BD (NOT NULL)
+            tournament_surface="carpet",
         )
         db_session.add(match)
         await db_session.commit()
@@ -265,8 +264,8 @@ class TestMatchesRepository:
         result = await repository.get_by_id("unknown_surface_match")
 
         assert result is not None
-        # "carpet" no está en el enum Surface principal, debe caer en HARD por defecto
-        assert result.tournament.surface in [Surface.HARD, Surface.CLAY, Surface.GRASS]
+        # "carpet" es un valor válido del enum Surface
+        assert result.tournament.surface == Surface.CARPET
 
     @pytest.mark.asyncio
     async def test_get_all_with_case_insensitive_tournament_filter(self, repository, db_session, match_factory):
