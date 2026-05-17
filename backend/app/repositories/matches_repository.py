@@ -161,6 +161,7 @@ from app.models.db_models import MatchDB
 
 class TestMatchesRepositoryFullCoverage:
     """Pruebas para cubrir todas las líneas del repositorio."""
+    LOGGER_PATH = 'app.repositories.matches_repository.logger'
 
     @pytest.mark.asyncio
     async def test_insert_many_success_with_logging(self, repository, mock_db_session):
@@ -180,7 +181,7 @@ class TestMatchesRepositoryFullCoverage:
         ]
 
         # Mock del logger
-        with patch('app.repositories.matches_repository.logger') as mock_logger:
+        with patch(LOGGER_PATH) as mock_logger:
             await repository.insert_many(matches_data)
             
             # Verificar que se llamó al logger.info (línea 79)
@@ -199,7 +200,7 @@ class TestMatchesRepositoryFullCoverage:
         # Simular error en commit
         mock_db_session.commit.side_effect = SQLAlchemyError("Database error")
 
-        with patch('app.repositories.matches_repository.logger') as mock_logger:
+        with patch(LOGGER_PATH) as mock_logger:
             with pytest.raises(SQLAlchemyError):
                 await repository.insert_many(matches_data)
             
@@ -216,7 +217,7 @@ class TestMatchesRepositoryFullCoverage:
         mock_result = MagicMock(spec=Result)
         mock_db_session.execute.return_value = mock_result
 
-        with patch('app.repositories.matches_repository.logger') as mock_logger:
+        with patch(LOGGER_PATH) as mock_logger:
             await repository.delete_all()
             
             # Verificar logger.info (línea 98)
@@ -231,7 +232,7 @@ class TestMatchesRepositoryFullCoverage:
         """Cubrir líneas 99-103: delete_all con error y logging."""
         mock_db_session.commit.side_effect = SQLAlchemyError("Database error")
 
-        with patch('app.repositories.matches_repository.logger') as mock_logger:
+        with patch(LOGGER_PATH) as mock_logger:
             with pytest.raises(SQLAlchemyError):
                 await repository.delete_all()
             
