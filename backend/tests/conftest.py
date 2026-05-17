@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 
 from app.core.database import Base
 from app.repositories.matches_repository import MatchesRepository
-from tests.factories import MatchFactory
+from tests.factories.match_factory import MatchFactory
 
 # URL para SQLite en memoria
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
