@@ -8,6 +8,7 @@ Endpoints:
     DELETE /api/combinations/{id}                         — Eliminar combinada
     POST   /api/combinations/{id}/matches                 — Agregar partido
     DELETE /api/combinations/{id}/matches/{match_id}      — Eliminar partido
+    POST   /api/combinations/{id}/save                    — Guardar combinada en BD
 """
 
 import logging
@@ -140,4 +141,18 @@ async def remove_match_from_combination(combination_id: str, match_id: str):
     logger.info(
         f"DELETE /combinations/{combination_id}/matches/{match_id}"
     )
+    return result
+
+
+@router.post("/{combination_id}/save", status_code=200)
+async def save_combination(combination_id: str):
+    """
+    Persiste la combinada activa en la base de datos (PostgreSQL).
+
+    Guarda tanto la combinada como todas sus selecciones actuales.
+    Si la combinada ya existía en BD, actualiza sus selecciones.
+    """
+    service = get_combination_service()
+    result = await service.save_combination_to_db(combination_id)
+    logger.info(f"POST /combinations/{combination_id}/save — guardada en BD")
     return result

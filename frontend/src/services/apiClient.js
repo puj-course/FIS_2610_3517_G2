@@ -65,6 +65,16 @@ export const removeMatchFromCombination = async (combinationId, matchId) => {
   return data;
 };
 
+// ==================== GUARDAR COMBINADA ====================
+/**
+ * Persiste la combinada activa en la base de datos.
+ * Llama a POST /api/combinations/{id}/save
+ */
+export const saveCombination = async (combinationId) => {
+  const { data } = await api.post(`/combinations/${combinationId}/save`);
+  return data;
+};
+
 // ==================== COMPLETAR COMBINADA ====================
 export const completeCombination = async (combinationId) => {
   const { data } = await api.post(`/combinations/${combinationId}/complete`);

@@ -14,6 +14,7 @@ export default function CombinationPanel() {
     createCombination,
     removeMatch,
     deleteCombination,
+    saveCombination,
   } = useCombination();
 
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -80,6 +81,16 @@ export default function CombinationPanel() {
       </div>
 
       <div className={styles.footer}>
+        {/* Botón guardar combinada en la base de datos */}
+        <button
+          className={styles.saveBtn}
+          onClick={saveCombination}
+          disabled={loading || selections.length === 0}
+          title={selections.length === 0 ? 'Agrega al menos un partido para guardar' : 'Guardar combinada en la base de datos'}
+        >
+          {loading ? 'Guardando...' : 'Guardar Combinada'}
+        </button>
+
         <button
           className={`${styles.deleteBtn} ${confirmDelete ? styles.confirmDelete : ''}`}
           onClick={handleDelete}

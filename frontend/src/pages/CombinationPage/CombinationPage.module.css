@@ -1,5 +1,44 @@
 .page { padding: 1rem 0; }
 .title { font-size: 1.5rem; margin-bottom: 20px; }
 .selections { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
-.deleteBtn { background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.3); padding: 10px 20px; border-radius: 8px; cursor: pointer; }
-.deleteBtn:hover { background: rgba(248,113,113,0.2); }
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.saveBtn {
+  background: var(--primary);
+  color: var(--text-inverse);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.saveBtn:hover:not(:disabled) {
+  background: var(--primary-hover);
+  box-shadow: var(--shadow-glow);
+}
+
+.saveBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.deleteBtn {
+  background: rgba(248,113,113,0.1);
+  color: #f87171;
+  border: 1px solid rgba(248,113,113,0.3);
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.deleteBtn:hover:not(:disabled) { background: rgba(248,113,113,0.2); }
+.deleteBtn:disabled { opacity: 0.5; cursor: not-allowed; }
