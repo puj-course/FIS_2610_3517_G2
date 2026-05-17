@@ -1,19 +1,51 @@
-name: Build
+name: SonarCloud Analysis
+
 on:
   push:
-    branches:
-      - main
+    branches: [ "main", "develop" ]
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
   sonarqube:
-    name: SonarQube
+    name: SonarCloud Scan
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602 # v6.0.0
+          fetch-depth: 0
+          
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          
+      - name: Instalar dependencias
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-asyncio pytest-mock
+          pip install aiosqlite sqlalchemy
+          
+      - name: Generar cobertura
+        run: |
+          cd backend
+          python -m pytest tests/test_matches_repository.py \
+            -v \
+            --cov=app/repositories \
+            --cov-report=xml:coverage.xml \
+            --cov-report=html \
+            --cov-branch
+          
+          # Verificar que se generó el archivo
+          ls -la coverage.xml
+          
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.python.coverage.reportPaths=backend/coverage.xml
+            -Dsonar.coverage.exclusions=**/tests/**,**/migrations/**,**/__pycache__/**
+            -Dsonar.python.coverage.ignoredLines=^import\\s+,^from\\s+.*\\s+import\\s+
