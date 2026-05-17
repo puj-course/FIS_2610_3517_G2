@@ -18,6 +18,7 @@ from datetime import datetime
 from sqlalchemy.engine.result import Result
 
 from app.models.db_models import MatchDB
+from app.repositories.matches_repository import MatchesRepository
 
 @pytest.fixture
 def anyio_backend():
@@ -63,3 +64,19 @@ def sample_match_db():
         status="upcoming",
         score="",
     )
+ 
+ @pytest.fixture
+def mock_db_session():
+    """Fixture para mock de sesión de base de datos."""
+    session = AsyncMock(spec=AsyncSession)
+    session.execute = AsyncMock()
+    session.add = MagicMock()
+    session.commit = AsyncMock()
+    session.rollback = AsyncMock()
+    return session
+
+
+@pytest.fixture
+def repository(mock_db_session):
+    """Fixture del repositorio con mock de sesión."""
+    return MatchesRepository(mock_db_session)

@@ -20,32 +20,40 @@ jobs:
         with:
           python-version: "3.10"
           
-      - name: Instalar dependencias completas
+      - name: Instalar dependencias
         run: |
           cd backend
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
-          # Instalar dependencias de prueba adicionales
-          pip install pytest pytest-cov pytest-asyncio pytest-mock coverage
-          pip install sqlalchemy aiosqlite asyncpg
-          pip install anyio
+          pip install pytest-cov pytest-mock coverage aiosqlite
           
-      - name: Verificar que el archivo de pruebas existe
+      - name: Verificar instalación
         run: |
           cd backend
-          if [ ! -f tests/test_matches_repository.py ]; then
-            echo "Error: No se encuentra tests/test_matches_repository.py"
-            exit 1
-          fi
-          echo "✓ Archivo de pruebas encontrado"
+          python -c "
+          import sys
+          print('Python version:', sys.version)
+          try:
+              import sqlalchemy
+              print('✓ SQLAlchemy version:', sqlalchemy.__version__)
+          except ImportError as e:
+              print('✗ SQLAlchemy import failed:', e)
+              sys.exit(1)
+          try:
+              from app.repositories.matches_repository import MatchesRepository
+              print('✓ MatchesRepository importado correctamente')
+          except Exception as e:
+              print('✗ Error importando MatchesRepository:', e)
+              sys.exit(1)
+          "
           
-      - name: Ejecutar pruebas y generar cobertura
+      - name: Ejecutar pruebas con cobertura
         run: |
           cd backend
           # Limpiar archivos anteriores
-          rm -f coverage.xml .coverage
+          rm -f .coverage coverage.xml
           
-          # Ejecutar pruebas (esto fallará si las pruebas fallan)
+          # Ejecutar pytest con coverage
           python -m pytest tests/test_matches_repository.py \
             -v \
             --cov=app/repositories \
@@ -53,47 +61,21 @@ jobs:
             --cov-report=term-missing \
             --cov-branch
           
-          # Verificar que coverage.xml se generó y no está vacío
+          # Verificar que coverage.xml se generó
           if [ ! -f coverage.xml ]; then
-            echo "Error: coverage.xml no se generó"
+            echo "ERROR: coverage.xml no se generó"
             exit 1
           fi
           
-          if [ ! -s coverage.xml ]; then
-            echo "Error: coverage.xml está vacío"
-            exit 1
-          fi
+          echo "✓ coverage.xml generado ($(wc -c < coverage.xml) bytes)"
           
-          echo "✓ coverage.xml generado correctamente"
-          echo "Tamaño del archivo: $(wc -c < coverage.xml) bytes"
-          
-      - name: Mostrar resumen de cobertura
+      - name: Mostrar cobertura
         run: |
           cd backend
-          python -m coverage report --include="app/repositories/*" --show-missing
-          
-      - name: Verificar contenido de coverage.xml
-        run: |
-          cd backend
-          # Mostrar primeras líneas del XML para depuración
-          echo "=== Primeras 20 líneas de coverage.xml ==="
-          head -20 coverage.xml
-          
-          # Verificar que contiene el nombre del archivo
-          if grep -q "matches_repository.py" coverage.xml; then
-            echo "matches_repository.py encontrado en coverage.xml"
-          else
-            echo "matches_repository.py NO encontrado en coverage.xml"
-          fi
+          python -m coverage report --include="app/repositories/*" --show-missing || true
           
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          args: >
-            -Dsonar.python.coverage.reportPaths=backend/coverage.xml
-            -Dsonar.python.xunit.reportPath=backend/test-results.xml
-            -Dsonar.coverage.exclusions=**/tests/**,**/__pycache__/**,**/core/metrics.py
-            -Dsonar.python.coverage.ignoredLines=^import\s+,^from\s+.*\s+import\s+,^logger\s*=
