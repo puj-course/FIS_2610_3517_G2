@@ -24,8 +24,32 @@ async def lifespan(app: FastAPI):
         from app.core.database import create_tables
         await create_tables()
         logger.info("Tablas PostgreSQL verificadas")
+
+    bot_app = None
+    if settings.telegram_bot_token:
+        try:
+            from app.telegram import create_bot_application
+            bot_app = create_bot_application(settings.telegram_bot_token)
+            await bot_app.initialize()
+            await bot_app.start()
+            await bot_app.updater.start_polling()
+            logger.info("Telegram Bot iniciado")
+        except Exception:
+            logger.exception("Error iniciando Telegram Bot")
+            bot_app = None
+
     logger.info(f"OddsEngine v1.0.0 iniciado — modo: {settings.data_mode}")
     yield
+
+    if bot_app:
+        try:
+            await bot_app.updater.stop()
+            await bot_app.stop()
+            await bot_app.shutdown()
+            logger.info("Telegram Bot detenido")
+        except Exception:
+            logger.exception("Error deteniendo Telegram Bot")
+
     logger.info("OddsEngine detenido")
 
 
