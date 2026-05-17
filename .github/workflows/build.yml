@@ -25,7 +25,7 @@ jobs:
           cd backend
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest-cov pytest-mock coverage aiosqlite
+          pip install pytest-cov pytest-mock coverage 
           
       - name: Verificar instalación
         run: |
