@@ -6,11 +6,12 @@ Responsabilidades:
 - Agregar partidos (con validación de duplicados)
 - Eliminar partidos
 - Consultar combinada activa
+- Guardar combinada en base de datos
 - Validar que los partidos existan antes de agregarlos
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from app.models.combination import (
@@ -87,7 +88,7 @@ class CombinationService:
 
         # Agregar a la combinada
         combination.selections.append(selection)
-        combination.updated_at = datetime.now()
+        combination.updated_at = datetime.now(timezone.utc)
         self._storage.save_combination(combination)
 
         logger.info(
@@ -128,7 +129,7 @@ class CombinationService:
         combination.selections = [
             s for s in combination.selections if s.match_id != match_id
         ]
-        combination.updated_at = datetime.now()
+        combination.updated_at = datetime.now(timezone.utc)
         self._storage.save_combination(combination)
 
         logger.info(
@@ -157,6 +158,97 @@ class CombinationService:
     async def list_combinations(self) -> list[Combination]:
         """Lista todas las combinadas activas."""
         return self._storage.list_combinations()
+
+    async def save_combination_to_db(self, combination_id: str) -> dict:
+        """
+        Persiste la combinada y sus selecciones en PostgreSQL.
+
+        Si la combinada ya existe en BD, borra sus selecciones anteriores
+        y las reinserta con el estado actual (upsert completo).
+
+        Requiere que DATA_MODE=database esté configurado.
+        """
+        from app.core.config import get_settings
+        settings = get_settings()
+
+        combination = await self.get_combination(combination_id)
+
+        if settings.data_mode != "database":
+            # En modo memoria no hay BD real — devolver confirmación igualmente
+            # para no romper el flujo en desarrollo local sin PostgreSQL.
+            logger.warning(
+                f"save_combination_to_db llamado en modo '{settings.data_mode}': "
+                "sin persistencia real en BD."
+            )
+            return {
+                "message": (
+                    f"Combinada '{combination_id}' guardada "
+                    f"({combination.total_selections} selecciones). "
+                    "Nota: el servidor está en modo memoria; configura DATA_MODE=database "
+                    "para persistencia real."
+                ),
+                "combination_id": combination_id,
+                "total_selections": combination.total_selections,
+                "saved": False,
+            }
+
+        # Modo database: persistir en PostgreSQL
+        from app.core.database import AsyncSessionLocal
+        from app.models.db_models import CombinationDB, SelectionDB
+        from sqlalchemy import select, delete
+
+        async with AsyncSessionLocal() as session:
+            async with session.begin():
+                # Verificar si ya existe en BD
+                result = await session.execute(
+                    select(CombinationDB).where(CombinationDB.id == combination_id)
+                )
+                db_combination = result.scalar_one_or_none()
+
+                if db_combination is None:
+                    # Insertar nueva
+                    db_combination = CombinationDB(
+                        id=combination.id,
+                        created_at=combination.created_at,
+                        updated_at=combination.updated_at,
+                    )
+                    session.add(db_combination)
+                else:
+                    # Actualizar timestamps
+                    db_combination.updated_at = datetime.now(timezone.utc)
+
+                # Borrar selecciones anteriores (para hacer upsert limpio)
+                await session.execute(
+                    delete(SelectionDB).where(
+                        SelectionDB.combination_id == combination_id
+                    )
+                )
+
+                # Reinsertar selecciones actuales
+                for sel in combination.selections:
+                    db_sel = SelectionDB(
+                        id=sel.id,
+                        combination_id=combination_id,
+                        match_id=sel.match_id,
+                        player_home_name=sel.player_home_name,
+                        player_away_name=sel.player_away_name,
+                        tournament_name=sel.tournament_name,
+                        match_date=sel.match_date,
+                        added_at=sel.added_at,
+                    )
+                    session.add(db_sel)
+
+        logger.info(
+            f"Combinada {combination_id} persistida en BD "
+            f"({combination.total_selections} selecciones)"
+        )
+
+        return {
+            "message": f"Combinada guardada correctamente con {combination.total_selections} selecciones.",
+            "combination_id": combination_id,
+            "total_selections": combination.total_selections,
+            "saved": True,
+        }
 
 
 # Singleton
