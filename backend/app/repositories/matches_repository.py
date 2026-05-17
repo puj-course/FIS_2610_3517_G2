@@ -121,27 +121,25 @@ class MatchesRepository:
         return Match(
             id=row.id,
             player_home=Player(
-                id=row.player_home_id,
+                id=row.player_home_id or "",
                 name=row.player_home_name or "Unknown",
                 country=row.player_home_country or "Unknown",
                 ranking=row.player_home_ranking or 0,
             ),
             player_away=Player(
-                id=row.player_away_id,
+                id=row.player_away_id or "",
                 name=row.player_away_name or "Unknown",
                 country=row.player_away_country or "Unknown",
                 ranking=row.player_away_ranking or 0,
             ),
             tournament=Tournament(
-                id=row.tournament_id,
+                id=row.tournament_id or "",
                 name=row.tournament_name or "Unknown Tournament",
-                surface=Surface(row.tournament_surface)
-                if row.tournament_surface
-                else Surface.HARD,
+                surface=Surface(row.tournament_surface.lower()) if row.tournament_surface else Surface.HARD,
                 category=row.tournament_category or "Unknown",
                 location=row.tournament_location or "Unknown",
             ),
             date=row.date,
-            status=MatchStatus(row.status) if row.status else MatchStatus.SCHEDULED,
+            status=MatchStatus(row.status.lower()) if row.status else MatchStatus.UPCOMING,
             score=row.score,
         )
