@@ -65,7 +65,7 @@ def sample_match_db():
         score="",
     )
  
- @pytest.fixture
+@pytest.fixture
 def mock_db_session():
     """Fixture para mock de sesión de base de datos."""
     session = AsyncMock(spec=AsyncSession)
