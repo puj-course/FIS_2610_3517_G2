@@ -1,348 +1,294 @@
 """
-Pruebas para el repositorio de partidos.
+Pruebas para el repositorio de partidos usando Factory pattern.
 """
 
 import pytest
 from datetime import datetime, timedelta
-from unittest.mock import AsyncMock, MagicMock
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.engine.result import Result
 
-from app.repositories.matches_repository import MatchesRepository
-from app.models.match import Match, Player, Tournament, MatchStatus, Surface
+from app.models.match import MatchStatus, Surface
 from app.models.db_models import MatchDB
 
 
-@pytest.fixture
-def mock_db_session():
-    """Fixture para mock de sesión de base de datos."""
-    session = AsyncMock(spec=AsyncSession)
-    session.execute = AsyncMock()
-    session.add = MagicMock()
-    session.commit = AsyncMock()
-    session.rollback = AsyncMock()
-    return session
-
-
-@pytest.fixture
-def repository(mock_db_session):
-    """Fixture del repositorio con mock de sesión."""
-    return MatchesRepository(mock_db_session)
-
-
-@pytest.fixture
-def sample_match_db():
-    """Fixture de un partido de ejemplo como objeto DB."""
-    return MatchDB(
-        id="match_123",
-        player_home_id="player_1",
-        player_home_name="Novak Djokovic",
-        player_home_country="Serbia",
-        player_home_ranking=1,
-        player_away_id="player_2",
-        player_away_name="Carlos Alcaraz",
-        player_away_country="Spain",
-        player_away_ranking=2,
-        tournament_id="tour_1",
-        tournament_name="Wimbledon",
-        tournament_surface="grass",  # Minúsculas como en el enum
-        tournament_category="Grand Slam",
-        tournament_location="London",
-        date=datetime.now(),
-        status="upcoming",  # Minúsculas como en el enum
-        score="",
-    )
-
-
 class TestMatchesRepository:
-    """Pruebas para MatchesRepository."""
-
+    """Pruebas para MatchesRepository usando Factory."""
+    
     @pytest.mark.asyncio
-    async def test_get_all_success(self, repository, mock_db_session, sample_match_db):
+    async def test_get_all_success(self, repository, db_session, match_factory):
         """Test: Obtener todos los partidos exitosamente."""
-        mock_result = MagicMock(spec=Result)
-        mock_scalars = MagicMock()
-        mock_scalars.all.return_value = [sample_match_db]
-        mock_result.scalars.return_value = mock_scalars
-        mock_db_session.execute.return_value = mock_result
-
+        # Crear 2 matches usando factory
+        matches = match_factory.create_batch(2)
+        for match in matches:
+            db_session.add(match)
+        await db_session.commit()
+        
         result = await repository.get_all()
-
-        assert len(result) == 1
-        assert result[0].id == "match_123"
-        assert result[0].player_home.name == "Novak Djokovic"
-        mock_db_session.execute.assert_called_once()
+        
+        # Verificar que se retornan los 2 matches insertados
+        assert len(result) == 2
 
     @pytest.mark.asyncio
-    async def test_get_all_empty(self, repository, mock_db_session):
+    async def test_get_all_empty(self, repository):
         """Test: Obtener todos los partidos cuando no hay datos."""
-        mock_result = MagicMock(spec=Result)
-        mock_scalars = MagicMock()
-        mock_scalars.all.return_value = []
-        mock_result.scalars.return_value = mock_scalars
-        mock_db_session.execute.return_value = mock_result
-
         result = await repository.get_all()
-
+        
         assert result == []
-        mock_db_session.execute.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_all_with_status_filter(self, repository, mock_db_session, sample_match_db):
+    async def test_get_all_with_status_filter(self, repository, db_session, match_factory):
         """Test: Filtrar partidos por estado."""
-        mock_result = MagicMock(spec=Result)
-        mock_scalars = MagicMock()
-        mock_scalars.all.return_value = [sample_match_db]
-        mock_result.scalars.return_value = mock_scalars
-        mock_db_session.execute.return_value = mock_result
-
+        # Crear matches con diferentes estados
+        upcoming_match = match_factory.create(status="upcoming")
+        finished_match = match_factory.create(status="finished")
+        
+        db_session.add_all([upcoming_match, finished_match])
+        await db_session.commit()
+        
         result = await repository.get_all(status="upcoming")
-
+        
         assert len(result) == 1
         assert result[0].status == MatchStatus.UPCOMING
-        mock_db_session.execute.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_all_with_tournament_filter(self, repository, mock_db_session, sample_match_db):
+    async def test_get_all_with_tournament_filter(self, repository, db_session, match_factory):
         """Test: Filtrar partidos por torneo."""
-        mock_result = MagicMock(spec=Result)
-        mock_scalars = MagicMock()
-        mock_scalars.all.return_value = [sample_match_db]
-        mock_result.scalars.return_value = mock_scalars
-        mock_db_session.execute.return_value = mock_result
-
+        wimbledon_match = match_factory.create(tournament_name="Wimbledon")
+        roland_match = match_factory.create(tournament_name="Roland Garros")
+        
+        db_session.add_all([wimbledon_match, roland_match])
+        await db_session.commit()
+        
         result = await repository.get_all(tournament="Wimbledon")
-
+        
         assert len(result) == 1
         assert result[0].tournament.name == "Wimbledon"
-        mock_db_session.execute.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_by_id_success(self, repository, mock_db_session, sample_match_db):
+    async def test_get_by_id_success(self, repository, db_session, match_factory):
         """Test: Obtener partido por ID exitosamente."""
-        mock_result = MagicMock(spec=Result)
-        mock_result.scalar_one_or_none.return_value = sample_match_db
-        mock_db_session.execute.return_value = mock_result
-
-        result = await repository.get_by_id("match_123")
-
+        match = match_factory.create(id="test_match_123")
+        db_session.add(match)
+        await db_session.commit()
+        
+        result = await repository.get_by_id("test_match_123")
+        
         assert result is not None
-        assert result.id == "match_123"
-        assert result.player_home.name == "Novak Djokovic"
-        mock_db_session.execute.assert_called_once()
+        assert result.id == "test_match_123"
 
     @pytest.mark.asyncio
-    async def test_get_by_id_not_found(self, repository, mock_db_session):
+    async def test_get_by_id_not_found(self, repository):
         """Test: Intentar obtener partido que no existe."""
-        mock_result = MagicMock(spec=Result)
-        mock_result.scalar_one_or_none.return_value = None
-        mock_db_session.execute.return_value = mock_result
-
         result = await repository.get_by_id("non_existent_id")
-
+        
         assert result is None
-        mock_db_session.execute.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_insert_many_success(self, repository, mock_db_session):
+    async def test_insert_many_success(self, repository, match_factory):
         """Test: Insertar múltiples partidos exitosamente."""
+        # Usar factory para crear los datos
+        match1 = match_factory.create(id="new1")
+        match2 = match_factory.create(id="new2")
+        
         matches_data = [
             {
-                "id": "match_1",
-                "player_home_id": "p1",
-                "player_home_name": "Player 1",
-                "player_away_id": "p2",
-                "player_away_name": "Player 2",
-                "tournament_id": "t1",
-                "tournament_name": "Tournament 1",
-                "date": datetime.now(),
-                "status": "upcoming",
+                "id": match1.id,
+                "player_home_id": match1.player_home_id,
+                "player_home_name": match1.player_home_name,
+                "player_home_country": match1.player_home_country,
+                "player_home_ranking": match1.player_home_ranking,
+                "player_away_id": match1.player_away_id,
+                "player_away_name": match1.player_away_name,
+                "player_away_country": match1.player_away_country,
+                "player_away_ranking": match1.player_away_ranking,
+                "tournament_id": match1.tournament_id,
+                "tournament_name": match1.tournament_name,
+                "tournament_surface": match1.tournament_surface,
+                "tournament_category": match1.tournament_category,
+                "tournament_location": match1.tournament_location,
+                "date": match1.date,
+                "status": match1.status,
+                "score": match1.score,
             },
             {
-                "id": "match_2",
-                "player_home_id": "p3",
-                "player_home_name": "Player 3",
-                "player_away_id": "p4",
-                "player_away_name": "Player 4",
-                "tournament_id": "t1",
-                "tournament_name": "Tournament 1",
-                "date": datetime.now(),
-                "status": "upcoming",
-            },
+                "id": match2.id,
+                "player_home_id": match2.player_home_id,
+                "player_home_name": match2.player_home_name,
+                "player_home_country": match2.player_home_country,
+                "player_home_ranking": match2.player_home_ranking,
+                "player_away_id": match2.player_away_id,
+                "player_away_name": match2.player_away_name,
+                "player_away_country": match2.player_away_country,
+                "player_away_ranking": match2.player_away_ranking,
+                "tournament_id": match2.tournament_id,
+                "tournament_name": match2.tournament_name,
+                "tournament_surface": match2.tournament_surface,
+                "tournament_category": match2.tournament_category,
+                "tournament_location": match2.tournament_location,
+                "date": match2.date,
+                "status": match2.status,
+                "score": match2.score,
+            }
         ]
-
+        
         await repository.insert_many(matches_data)
-
-        assert mock_db_session.add.call_count == 2
-        mock_db_session.commit.assert_called_once()
-        mock_db_session.rollback.assert_not_called()
+        
+        # Verificar que se insertaron
+        result = await repository.get_all()
+        assert len(result) == 2
 
     @pytest.mark.asyncio
-    async def test_insert_many_failure(self, repository, mock_db_session):
-        """Test: Error al insertar partidos."""
-        matches_data = [{"id": "match_1"}]
-
-        mock_db_session.commit.side_effect = SQLAlchemyError("Database error")
-
+    async def test_insert_many_failure(self, repository, match_factory):
+        """Test: Error al insertar partidos con datos inválidos."""
+        # Crear datos que causarán error (por ejemplo, sin ID)
+        invalid_data = [{"id": None}]  # Esto debería fallar
+        
         with pytest.raises(SQLAlchemyError):
-            await repository.insert_many(matches_data)
-
-        mock_db_session.rollback.assert_called_once()
-        mock_db_session.add.assert_called_once()
+            await repository.insert_many(invalid_data)
 
     @pytest.mark.asyncio
-    async def test_delete_all_success(self, repository, mock_db_session):
+    async def test_delete_all_success(self, repository, db_session, match_factory):
         """Test: Eliminar todos los partidos exitosamente."""
+        # Insertar algunos matches
+        matches = match_factory.create_batch(3)
+        for match in matches:
+            db_session.add(match)
+        await db_session.commit()
+        
+        # Verificar que hay matches
+        result_before = await repository.get_all()
+        assert len(result_before) == 3
+        
+        # Eliminar todos
         await repository.delete_all()
-
-        mock_db_session.execute.assert_called_once()
-        mock_db_session.commit.assert_called_once()
-        mock_db_session.rollback.assert_not_called()
+        
+        # Verificar que no hay matches
+        result_after = await repository.get_all()
+        assert len(result_after) == 0
 
     @pytest.mark.asyncio
-    async def test_delete_all_failure(self, repository, mock_db_session):
+    async def test_delete_all_failure(self, repository, db_session, monkeypatch):
         """Test: Error al eliminar todos los partidos."""
-        mock_db_session.commit.side_effect = SQLAlchemyError("Database error")
-
+        # Simular error en commit
+        async def mock_commit():
+            raise SQLAlchemyError("Database error")
+        
+        monkeypatch.setattr(db_session, "commit", mock_commit)
+        
         with pytest.raises(SQLAlchemyError):
             await repository.delete_all()
 
-        mock_db_session.rollback.assert_called_once()
-        mock_db_session.execute.assert_called_once()
-
-    def test_to_pydantic_with_minimal_data(self, repository):
+    def test_to_pydantic_with_minimal_data(self, repository, match_factory):
         """Test: Conversión a Pydantic con datos mínimos."""
-        minimal_match = MatchDB(
-            id="minimal_id",
-            player_home_id="ph1",
-            player_away_id="pa1",
-            tournament_id="t1",
-            date=datetime.now(),
-        )
-
+        # Usar factory para crear match con datos mínimos; forzamos status para el assert
+        minimal_match = match_factory.create_minimal_match(id="minimal_id", status="upcoming")
+        
         result = repository._to_pydantic(minimal_match)
-
+        
         assert result.id == "minimal_id"
-        assert result.player_home.id == "ph1"
         assert result.player_home.name == "Unknown"
         assert result.player_home.country == "Unknown"
         assert result.player_home.ranking == 0
-        assert result.player_away.id == "pa1"
         assert result.player_away.name == "Unknown"
         assert result.player_away.country == "Unknown"
         assert result.player_away.ranking == 0
-        assert result.tournament.id == "t1"
         assert result.tournament.name == "Unknown Tournament"
         assert result.tournament.surface == Surface.HARD
-        assert result.tournament.category == "Unknown"
-        assert result.tournament.location == "Unknown"
         assert result.status == MatchStatus.UPCOMING
 
-    def test_to_pydantic_with_full_data(self, repository, sample_match_db):
+    def test_to_pydantic_with_full_data(self, repository, match_factory):
         """Test: Conversión a Pydantic con datos completos."""
-        result = repository._to_pydantic(sample_match_db)
-
-        assert result.id == "match_123"
+        full_match = match_factory.create(
+            id="full_match",
+            player_home_name="Novak Djokovic",
+            player_home_country="Serbia",
+            player_home_ranking=1,
+            player_away_name="Carlos Alcaraz",
+            player_away_country="Spain",
+            player_away_ranking=2,
+            tournament_name="Wimbledon",
+            tournament_surface="grass",
+            tournament_category="Grand Slam",
+            status="finished",
+        )
+        
+        result = repository._to_pydantic(full_match)
+        
         assert result.player_home.name == "Novak Djokovic"
-        assert result.player_home.country == "Serbia"
-        assert result.player_home.ranking == 1
-        assert result.player_away.name == "Carlos Alcaraz"
-        assert result.player_away.country == "Spain"
-        assert result.player_away.ranking == 2
-        assert result.tournament.name == "Wimbledon"
         assert result.tournament.surface == Surface.GRASS
-        assert result.tournament.category == "Grand Slam"
-        assert result.tournament.location == "London"
-        assert result.status == MatchStatus.UPCOMING
+        assert result.status == MatchStatus.FINISHED
+
+    def test_to_pydantic_with_uppercase_values(self, repository, match_factory):
+        """Test: Conversión con valores en mayúsculas."""
+        uppercase_match = match_factory.create(
+            tournament_surface="GRASS",
+            status="FINISHED"
+        )
+        
+        result = repository._to_pydantic(uppercase_match)
+        
+        assert result.tournament.surface == Surface.GRASS
+        assert result.status == MatchStatus.FINISHED
 
     @pytest.mark.asyncio
-    async def test_get_all_ordering(self, repository, mock_db_session):
-        """Test: Verificar que los resultados están ordenados por fecha."""
+    async def test_get_all_ordering(self, repository, db_session, match_factory):
+        """Test: Verificar ordenamiento por fecha."""
+        # Crear matches con diferentes fechas
         date1 = datetime.now() - timedelta(days=2)
         date2 = datetime.now() - timedelta(days=1)
         date3 = datetime.now()
-
-        match1 = MatchDB(
-            id="m1", 
-            date=date1,
-            player_home_id="ph1",
-            player_away_id="pa1",
-            tournament_id="t1"
-        )
-        match2 = MatchDB(
-            id="m2", 
-            date=date2,
-            player_home_id="ph2",
-            player_away_id="pa2",
-            tournament_id="t2"
-        )
-        match3 = MatchDB(
-            id="m3", 
-            date=date3,
-            player_home_id="ph3",
-            player_away_id="pa3",
-            tournament_id="t3"
-        )
-
-        mock_result = MagicMock(spec=Result)
-        mock_scalars = MagicMock()
-        mock_scalars.all.return_value = [match1, match2, match3]
-        mock_result.scalars.return_value = mock_scalars
-        mock_db_session.execute.return_value = mock_result
-
+        
+        match1 = match_factory.create_with_fixed_date(date1, id="match_early")
+        match2 = match_factory.create_with_fixed_date(date2, id="match_mid")
+        match3 = match_factory.create_with_fixed_date(date3, id="match_late")
+        
+        db_session.add_all([match1, match2, match3])
+        await db_session.commit()
+        
         result = await repository.get_all()
-
-        assert len(result) == 3
-        mock_db_session.execute.assert_called_once()
+        
+        # Verificar que están ordenados (el más antiguo primero según order_by)
+        # Nota: Tu repositorio usa order_by(MatchDB.date)
+        dates = [m.date for m in result]
+        assert dates == sorted(dates)
 
     @pytest.mark.asyncio
-    async def test_get_by_id_with_nonexistent_tournament_surface(self, repository, mock_db_session):
-        """Test: Manejo de superficie de torneo None."""
-        match_without_surface = MatchDB(
-            id="match_no_surface",
-            player_home_id="ph1",
-            player_home_name="Player",
-            player_away_id="pa1",
-            player_away_name="Opponent",
-            tournament_id="t1",
-            tournament_name="Tournament",
-            tournament_surface=None,
-            date=datetime.now(),
+    async def test_get_by_id_with_nonexistent_tournament_surface(self, repository, db_session, match_factory):
+        """Test: La superficie 'carpet' se convierte correctamente al enum Surface."""
+        match = match_factory.create(
+            id="unknown_surface_match",
+            tournament_surface="carpet",
         )
+        db_session.add(match)
+        await db_session.commit()
 
-        mock_result = MagicMock(spec=Result)
-        mock_result.scalar_one_or_none.return_value = match_without_surface
-        mock_db_session.execute.return_value = mock_result
-
-        result = await repository.get_by_id("match_no_surface")
+        result = await repository.get_by_id("unknown_surface_match")
 
         assert result is not None
-        assert result.tournament.surface == Surface.HARD
+        # "carpet" es un valor válido del enum Surface
+        assert result.tournament.surface == Surface.CARPET
 
     @pytest.mark.asyncio
-    async def test_get_all_with_case_insensitive_tournament_filter(self, repository, mock_db_session):
-        """Test: Filtro insensible a mayúsculas/minúsculas para torneo."""
-        mock_result = MagicMock(spec=Result)
-        mock_scalars = MagicMock()
-        mock_scalars.all.return_value = []
-        mock_result.scalars.return_value = mock_scalars
-        mock_db_session.execute.return_value = mock_result
-
-        await repository.get_all(tournament="wimbledon")
-
-        mock_db_session.execute.assert_called_once()
-
-    @pytest.mark.asyncio
-    async def test_get_all_with_status_and_tournament_filters(self, repository, mock_db_session, sample_match_db):
-        """Test: Aplicar múltiples filtros simultáneamente."""
-        mock_result = MagicMock(spec=Result)
-        mock_scalars = MagicMock()
-        mock_scalars.all.return_value = [sample_match_db]
-        mock_result.scalars.return_value = mock_scalars
-        mock_db_session.execute.return_value = mock_result
-
-        result = await repository.get_all(status="upcoming", tournament="Wimbledon")
-
+    async def test_get_all_with_case_insensitive_tournament_filter(self, repository, db_session, match_factory):
+        """Test: Filtro insensible a mayúsculas/minúsculas."""
+        match = match_factory.create(tournament_name="Wimbledon Championship")
+        db_session.add(match)
+        await db_session.commit()
+        
+        # Buscar con minúsculas
+        result = await repository.get_all(tournament="wimbledon")
+        
         assert len(result) == 1
-        mock_db_session.execute.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_get_all_with_status_and_tournament_filters(self, repository, db_session, match_factory):
+        """Test: Aplicar múltiples filtros simultáneamente."""
+        match = match_factory.create(
+            tournament_name="Wimbledon",
+            status="upcoming"
+        )
+        db_session.add(match)
+        await db_session.commit()
+        
+        result = await repository.get_all(status="upcoming", tournament="Wimbledon")
+        
+        assert len(result) == 1

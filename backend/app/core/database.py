@@ -13,7 +13,7 @@ Uso:
 """
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import declarative_base
 from app.core.config import get_settings
 
 settings = get_settings()
@@ -32,8 +32,7 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 
-class Base(DeclarativeBase):
-    pass
+Base = declarative_base()
 
 
 async def get_db():

@@ -1,4 +1,5 @@
 name: SonarCloud Analysis
+
 on:
   push:
     branches: [ "main", "develop" ]
@@ -9,6 +10,7 @@ jobs:
   sonarqube:
     name: SonarCloud Scan
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,24 +23,59 @@ jobs:
       - name: Instalar dependencias
         run: |
           cd backend
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-cov pytest-asyncio pytest-mock coverage
+          pip install pytest-cov pytest-mock coverage 
           
-      - name: Generar cobertura
+      - name: Verificar instalación
         run: |
           cd backend
-          # Genera coverage.xml dentro de /backend
+          python -c "
+          import sys
+          print('Python version:', sys.version)
+          try:
+              import sqlalchemy
+              print('✓ SQLAlchemy version:', sqlalchemy.__version__)
+          except ImportError as e:
+              print('✗ SQLAlchemy import failed:', e)
+              sys.exit(1)
+          try:
+              from app.repositories.matches_repository import MatchesRepository
+              print('✓ MatchesRepository importado correctamente')
+          except Exception as e:
+              print('✗ Error importando MatchesRepository:', e)
+              sys.exit(1)
+          "
+          
+      - name: Ejecutar pruebas con cobertura
+        run: |
+          cd backend
+          # Limpiar archivos anteriores
+          rm -f .coverage coverage.xml
+          
+          # Ejecutar pytest con coverage
           python -m pytest tests/test_matches_repository.py \
+            -v \
             --cov=app/repositories \
             --cov-report=xml:coverage.xml \
-            --cov-report=term \
+            --cov-report=term-missing \
             --cov-branch
           
-          # Verifica que el archivo se creó
-          ls -la coverage.xml
+          # Verificar que coverage.xml se generó
+          if [ ! -f coverage.xml ]; then
+            echo "ERROR: coverage.xml no se generó"
+            exit 1
+          fi
+          
+          echo "✓ coverage.xml generado ($(wc -c < coverage.xml) bytes)"
+          
+      - name: Mostrar cobertura
+        run: |
+          cd backend
+          python -m coverage report --include="app/repositories/*" --show-missing || true
           
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
