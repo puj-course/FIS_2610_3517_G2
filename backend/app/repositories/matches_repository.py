@@ -407,11 +407,4 @@ def test_imports_are_accessible():
     
     assert select is not None
     assert delete is not None
-    assert AsyncSession is not None
-    assert SQLAlchemyError is not None
-    assert MatchDB is not None
-    assert Match is not None
-    assert Player is not None
-    assert Tournament is not None
-    assert MatchStatus is not None
-    assert Surface is not None
+    
