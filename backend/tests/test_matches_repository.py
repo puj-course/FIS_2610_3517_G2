@@ -51,7 +51,7 @@ def sample_match_db():
         tournament_category="Grand Slam",
         tournament_location="London",
         date=datetime.now(),
-        status="SCHEDULED",
+        status="upcoming",
         score="",
     )
 
@@ -81,7 +81,7 @@ def sample_match_pydantic():
             location="London",
         ),
         date=datetime.now(),
-        status=MatchStatus.SCHEDULED,
+        status=MatchStatus.upcoming,
         score="",
     )
 
@@ -131,10 +131,10 @@ class TestMatchesRepository:
         mock_result.scalars.return_value = mock_scalars
         mock_db_session.execute.return_value = mock_result
 
-        result = await repository.get_all(status="SCHEDULED")
+        result = await repository.get_all(status="upcoming")
 
         assert len(result) == 1
-        assert result[0].status == MatchStatus.SCHEDULED
+        assert result[0].status == MatchStatus.upcoming
         mock_db_session.execute.assert_called_once()
 
     @pytest.mark.asyncio
@@ -191,7 +191,7 @@ class TestMatchesRepository:
                 "tournament_id": "t1",
                 "tournament_name": "Tournament 1",
                 "date": datetime.now(),
-                "status": "SCHEDULED",
+                "status": "upcoming",
             },
             {
                 "id": "match_2",
@@ -202,7 +202,7 @@ class TestMatchesRepository:
                 "tournament_id": "t1",
                 "tournament_name": "Tournament 1",
                 "date": datetime.now(),
-                "status": "SCHEDULED",
+                "status": "upcoming",
             },
         ]
 
@@ -268,7 +268,7 @@ class TestMatchesRepository:
         assert result.tournament.surface == Surface.hard
         assert result.tournament.category == "Unknown"
         assert result.tournament.location == "Unknown"
-        assert result.status == MatchStatus.SCHEDULED
+        assert result.status == MatchStatus.upcoming
 
     def test_to_pydantic_with_full_data(self, repository, sample_match_db):
         """Test: Conversión a Pydantic con datos completos."""
@@ -285,7 +285,7 @@ class TestMatchesRepository:
         assert result.tournament.surface == Surface.GRASS
         assert result.tournament.category == "Grand Slam"
         assert result.tournament.location == "London"
-        assert result.status == MatchStatus.SCHEDULED
+        assert result.status == MatchStatus.upcoming
 
     @pytest.mark.asyncio
     async def test_get_all_ordering(self, repository, mock_db_session):
