@@ -22,7 +22,7 @@ async def get_combinations_history():
     Ordenadas por fecha de creación (más reciente primero).
     """
     service = get_combination_service()
-    combinations = service.list_combinations()
+    combinations = await service.list_combinations()
     return {
         "total": len(combinations),
         "combinations": combinations,
@@ -38,10 +38,10 @@ async def complete_combination(combination_id: str):
     comb_service = get_combination_service()
     prob_service = get_probability_service()
 
-    combination = comb_service.get_combination(combination_id)
+    combination = await comb_service.get_combination(combination_id)
 
     # Calcular resultado final
-    result = prob_service.calculate_combination(combination_id)
+    result = await prob_service.calculate_combination(combination_id)
 
     logger.info(
         f"Combinada {combination_id} completada — "
@@ -66,8 +66,8 @@ async def export_combination(combination_id: str):
     comb_service = get_combination_service()
     prob_service = get_probability_service()
 
-    combination = comb_service.get_combination(combination_id)
-    result = prob_service.calculate_combination(combination_id)
+    combination = await comb_service.get_combination(combination_id)
+    result = await prob_service.calculate_combination(combination_id)
 
     export_data = {
         "export_info": {

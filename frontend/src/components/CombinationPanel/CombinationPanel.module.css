@@ -105,6 +105,32 @@
 .footer {
   padding: 1rem 1.25rem;
   border-top: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Botón guardar — acción primaria positiva */
+.saveBtn {
+  width: 100%;
+  padding: 0.65rem;
+  background: var(--primary);
+  color: var(--text-inverse);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  border: none;
+}
+
+.saveBtn:hover:not(:disabled) {
+  background: var(--primary-hover);
+  box-shadow: var(--shadow-glow);
+}
+
+.saveBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .deleteBtn {

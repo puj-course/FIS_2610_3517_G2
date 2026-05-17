@@ -13,41 +13,32 @@ Instrucciones para levantar el proyecto con Docker en **Windows, Mac y Linux**.
 
 ---
 
-## 🚀 Levantar el proyecto (modo rápido)
+## 🚀 Levantar el proyecto
 
 ```bash
 # 1. Clonar el repo
 git clone https://github.com/puj-course/FIS_2610_3517_G2
+
 cd FIS_2610_3517_G2
 
-# 2. Ir a la carpeta del proyecto
-cd OE_FINAL_V2
-
-# 3. Levantar todo con Docker
+# 2. Levantar todo con Docker
 docker compose up --build
+```
+
+si acaso no funciona (que no es comun que pase) hacerlo en la rama de feature/docker-deploy
+
+```bash
+git checkout feature/docker-deploy
 ```
 
 Listo. Abre tu navegador en:
 
 | Servicio  | URL                        |
 |-----------|----------------------------|
-| Frontend  | http://localhost:5173      |
-| Backend   | http://localhost:8000      |
-| API Docs  | http://localhost:8000/docs |
-
----
-
-## 🗄️ Con base de datos PostgreSQL (opcional)
-
-Por defecto el proyecto corre en modo `mock` (sin BD). Si quieres activar PostgreSQL:
-
-```bash
-# Edita el .env y cambia:
-DATA_MODE=database
-
-# Luego levanta incluyendo el perfil de base de datos:
-docker compose --profile database up --build
-```
+| Frontend  | http://localhost     |
+| Backend  | http://localhost:8000/health|
+| Docks   | http://localhost:8000/docs      |
+| API Docs  | http://localhost:8000 |
 
 ---
 
@@ -65,13 +56,15 @@ docker compose down -v
 
 ## 🔄 Después de cambiar código
 
-Los cambios en el código se recargan automáticamente (hot-reload).  
-Si agregas una **dependencia nueva** (pip o npm), reconstruye las imágenes:
+Se actualizo el workflow de CI para que, en cada push a main, develop o feature/docker-deploy, se ejecuten los siguientes pasos: 
+1.  Instalacion de dependencias Python (incluyendo pytest-cov). 
+2. Ejecucion de tests con cobertura: genera coverage.xml. 
+3. Build del frontend con Node.js 18 para verificar que compila correctamente. 
+4.  Analisis de SonarCloud usando el reporte de cobertura generado.
 
-```bash
-docker compose up --build
-```
-
+## Mejora en el workflow (docker-deploy.yml)
+Se mejoro el workflow de Docker para que, al pasar el build, construya y suba automaticamente las imagenes a Docker Hub usando los secrets
+DOCKERHUB_USERNAME y DOCKERHUB_TOKEN configurados en los Settings del repositorio.
 ---
 
 ## ❓ Problemas frecuentes

@@ -11,6 +11,7 @@ from httpx import AsyncClient, ASGITransport
 
 from app.main import app
 from app.core.storage import reset_storage
+from app.services.auth_service import reset_auth_service
 
 from unittest.mock import AsyncMock, MagicMock
 from datetime import datetime
@@ -27,8 +28,10 @@ def anyio_backend():
 def clean_storage():
     """Limpia el almacenamiento antes y después de cada test."""
     reset_storage()
+    reset_auth_service()
     yield
     reset_storage()
+    reset_auth_service()
 
 
 @pytest.fixture
