@@ -22,7 +22,7 @@ async def get_combinations_history():
     Ordenadas por fecha de creación (más reciente primero).
     """
     service = get_combination_service()
-    combinations = service.list_combinations()
+    combinations = await service.list_combinations()
     return {
         "total": len(combinations),
         "combinations": combinations,

@@ -29,7 +29,7 @@ class ProbabilityService:
 
         match = await match_service.get_match_by_id(match_id)
         if match is None:
-            raise NotFoundException(f"Partido {match_id} no encontrado")
+            raise NotFoundException(resource="Partido", resource_id=match_id)
 
         try:
             stats = await stats_service.get_match_stats(match_id)
