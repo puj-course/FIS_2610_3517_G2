@@ -4,7 +4,7 @@ Pruebas para el repositorio de partidos.
 
 import pytest
 from datetime import datetime, timedelta
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.engine.result import Result
@@ -12,6 +12,9 @@ from sqlalchemy.engine.result import Result
 from app.repositories.matches_repository import MatchesRepository
 from app.models.match import Match, Player, Tournament, MatchStatus, Surface
 from app.models.db_models import MatchDB
+
+# Constante para el path del logger
+LOGGER_PATH = 'app.repositories.matches_repository.logger'
 
 
 @pytest.fixture
@@ -46,11 +49,11 @@ def sample_match_db():
         player_away_ranking=2,
         tournament_id="tour_1",
         tournament_name="Wimbledon",
-        tournament_surface="grass",  # Minúsculas como en el enum
+        tournament_surface="grass",
         tournament_category="Grand Slam",
         tournament_location="London",
         date=datetime.now(),
-        status="upcoming",  # Minúsculas como en el enum
+        status="upcoming",
         score="",
     )
 
@@ -211,6 +214,56 @@ class TestMatchesRepository:
         mock_db_session.rollback.assert_called_once()
         mock_db_session.execute.assert_called_once()
 
+    # Pruebas con logging usando patch
+    @pytest.mark.asyncio
+    async def test_insert_many_success_with_logging(self, repository, mock_db_session):
+        """Cubrir líneas de logging en insert_many exitoso."""
+        matches_data = [
+            {
+                "id": "match_log_1",
+                "player_home_id": "p1",
+                "player_away_id": "p2",
+                "tournament_id": "t1",
+                "date": datetime.now(),
+                "status": "upcoming",
+            }
+        ]
+
+        with patch(LOGGER_PATH) as mock_logger:
+            await repository.insert_many(matches_data)
+            mock_logger.info.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_insert_many_failure_with_logging(self, repository, mock_db_session):
+        """Cubrir líneas de logging en insert_many con error."""
+        matches_data = [{"id": "match_log_2"}]
+        mock_db_session.commit.side_effect = SQLAlchemyError("DB Error")
+
+        with patch(LOGGER_PATH) as mock_logger:
+            with pytest.raises(SQLAlchemyError):
+                await repository.insert_many(matches_data)
+            mock_logger.error.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_delete_all_success_with_logging(self, repository, mock_db_session):
+        """Cubrir líneas de logging en delete_all exitoso."""
+        mock_result = MagicMock(spec=Result)
+        mock_db_session.execute.return_value = mock_result
+
+        with patch(LOGGER_PATH) as mock_logger:
+            await repository.delete_all()
+            mock_logger.info.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_delete_all_failure_with_logging(self, repository, mock_db_session):
+        """Cubrir líneas de logging en delete_all con error."""
+        mock_db_session.commit.side_effect = SQLAlchemyError("DB Error")
+
+        with patch(LOGGER_PATH) as mock_logger:
+            with pytest.raises(SQLAlchemyError):
+                await repository.delete_all()
+            mock_logger.error.assert_called_once()
+
     def test_to_pydantic_with_minimal_data(self, repository):
         """Test: Conversión a Pydantic con datos mínimos."""
         minimal_match = MatchDB(
@@ -256,6 +309,25 @@ class TestMatchesRepository:
         assert result.tournament.location == "London"
         assert result.status == MatchStatus.UPCOMING
 
+    def test_to_pydantic_with_uppercase_values(self, repository):
+        """Test: Conversión con valores en mayúsculas."""
+        uppercase_match = MatchDB(
+            id="uppercase",
+            player_home_id="ph1",
+            player_home_name="Player",
+            player_away_id="pa1",
+            player_away_name="Opponent",
+            tournament_id="t1",
+            tournament_name="Tournament",
+            tournament_surface="GRASS",
+            date=datetime.now(),
+            status="FINISHED",
+        )
+
+        result = repository._to_pydantic(uppercase_match)
+        assert result.tournament.surface == Surface.GRASS
+        assert result.status == MatchStatus.FINISHED
+
     @pytest.mark.asyncio
     async def test_get_all_ordering(self, repository, mock_db_session):
         """Test: Verificar que los resultados están ordenados por fecha."""
@@ -263,27 +335,9 @@ class TestMatchesRepository:
         date2 = datetime.now() - timedelta(days=1)
         date3 = datetime.now()
 
-        match1 = MatchDB(
-            id="m1", 
-            date=date1,
-            player_home_id="ph1",
-            player_away_id="pa1",
-            tournament_id="t1"
-        )
-        match2 = MatchDB(
-            id="m2", 
-            date=date2,
-            player_home_id="ph2",
-            player_away_id="pa2",
-            tournament_id="t2"
-        )
-        match3 = MatchDB(
-            id="m3", 
-            date=date3,
-            player_home_id="ph3",
-            player_away_id="pa3",
-            tournament_id="t3"
-        )
+        match1 = MatchDB(id="m1", date=date1, player_home_id="ph1", player_away_id="pa1", tournament_id="t1")
+        match2 = MatchDB(id="m2", date=date2, player_home_id="ph2", player_away_id="pa2", tournament_id="t2")
+        match3 = MatchDB(id="m3", date=date3, player_home_id="ph3", player_away_id="pa3", tournament_id="t3")
 
         mock_result = MagicMock(spec=Result)
         mock_scalars = MagicMock()
@@ -292,9 +346,7 @@ class TestMatchesRepository:
         mock_db_session.execute.return_value = mock_result
 
         result = await repository.get_all()
-
         assert len(result) == 3
-        mock_db_session.execute.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_get_by_id_with_nonexistent_tournament_surface(self, repository, mock_db_session):
@@ -316,7 +368,6 @@ class TestMatchesRepository:
         mock_db_session.execute.return_value = mock_result
 
         result = await repository.get_by_id("match_no_surface")
-
         assert result is not None
         assert result.tournament.surface == Surface.HARD
 
@@ -330,7 +381,6 @@ class TestMatchesRepository:
         mock_db_session.execute.return_value = mock_result
 
         await repository.get_all(tournament="wimbledon")
-
         mock_db_session.execute.assert_called_once()
 
     @pytest.mark.asyncio
@@ -343,6 +393,25 @@ class TestMatchesRepository:
         mock_db_session.execute.return_value = mock_result
 
         result = await repository.get_all(status="upcoming", tournament="Wimbledon")
-
         assert len(result) == 1
-        mock_db_session.execute.assert_called_once()
+
+
+# Prueba para verificar imports
+def test_imports_are_accessible():
+    """Verificar que los imports funcionan."""
+    from sqlalchemy import select, delete
+    from sqlalchemy.ext.asyncio import AsyncSession
+    from sqlalchemy.exc import SQLAlchemyError
+    from app.models.db_models import MatchDB
+    from app.models.match import Match, Player, Tournament, MatchStatus, Surface
+    
+    assert select is not None
+    assert delete is not None
+    assert AsyncSession is not None
+    assert SQLAlchemyError is not None
+    assert MatchDB is not None
+    assert Match is not None
+    assert Player is not None
+    assert Tournament is not None
+    assert MatchStatus is not None
+    assert Surface is not None

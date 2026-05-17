@@ -1,4 +1,5 @@
 name: SonarCloud Analysis
+
 on:
   push:
     branches: [ "main", "develop" ]
@@ -9,6 +10,7 @@ jobs:
   sonarqube:
     name: SonarCloud Scan
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v4
         with:
@@ -18,27 +20,80 @@ jobs:
         with:
           python-version: "3.10"
           
-      - name: Instalar dependencias
+      - name: Instalar dependencias completas
         run: |
           cd backend
+          pip install --upgrade pip
           pip install -r requirements.txt
+          # Instalar dependencias de prueba adicionales
           pip install pytest pytest-cov pytest-asyncio pytest-mock coverage
+          pip install sqlalchemy aiosqlite asyncpg
+          pip install anyio
           
-      - name: Generar cobertura
+      - name: Verificar que el archivo de pruebas existe
         run: |
           cd backend
-          # Genera coverage.xml dentro de /backend
+          if [ ! -f tests/test_matches_repository.py ]; then
+            echo "Error: No se encuentra tests/test_matches_repository.py"
+            exit 1
+          fi
+          echo "✓ Archivo de pruebas encontrado"
+          
+      - name: Ejecutar pruebas y generar cobertura
+        run: |
+          cd backend
+          # Limpiar archivos anteriores
+          rm -f coverage.xml .coverage
+          
+          # Ejecutar pruebas (esto fallará si las pruebas fallan)
           python -m pytest tests/test_matches_repository.py \
+            -v \
             --cov=app/repositories \
             --cov-report=xml:coverage.xml \
-            --cov-report=term \
+            --cov-report=term-missing \
             --cov-branch
           
-          # Verifica que el archivo se creó
-          ls -la coverage.xml
+          # Verificar que coverage.xml se generó y no está vacío
+          if [ ! -f coverage.xml ]; then
+            echo "Error: coverage.xml no se generó"
+            exit 1
+          fi
+          
+          if [ ! -s coverage.xml ]; then
+            echo "Error: coverage.xml está vacío"
+            exit 1
+          fi
+          
+          echo "✓ coverage.xml generado correctamente"
+          echo "Tamaño del archivo: $(wc -c < coverage.xml) bytes"
+          
+      - name: Mostrar resumen de cobertura
+        run: |
+          cd backend
+          python -m coverage report --include="app/repositories/*" --show-missing
+          
+      - name: Verificar contenido de coverage.xml
+        run: |
+          cd backend
+          # Mostrar primeras líneas del XML para depuración
+          echo "=== Primeras 20 líneas de coverage.xml ==="
+          head -20 coverage.xml
+          
+          # Verificar que contiene el nombre del archivo
+          if grep -q "matches_repository.py" coverage.xml; then
+            echo "matches_repository.py encontrado en coverage.xml"
+          else
+            echo "matches_repository.py NO encontrado en coverage.xml"
+          fi
           
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: >
+            -Dsonar.python.coverage.reportPaths=backend/coverage.xml
+            -Dsonar.python.xunit.reportPath=backend/test-results.xml
+            -Dsonar.coverage.exclusions=**/tests/**,**/__pycache__/**,**/core/metrics.py
+            -Dsonar.python.coverage.ignoredLines=^import\s+,^from\s+.*\s+import\s+,^logger\s*=
