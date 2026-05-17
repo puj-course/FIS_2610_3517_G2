@@ -6,6 +6,15 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+// Interceptor de request — inyectar token JWT si existe
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('oddsengine_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -112,6 +121,22 @@ export const getCombinationHistory = async () => {
 // ==================== EXPORTAR ====================
 export const exportCombinationResult = async (combinationId) => {
   const { data } = await api.get(`/combinations/${combinationId}/export`);
+  return data;
+};
+
+// ==================== AUTENTICACIÓN ====================
+export const loginUser = async (credentials) => {
+  const { data } = await api.post('/auth/login', credentials);
+  return data;
+};
+
+export const registerUser = async (userData) => {
+  const { data } = await api.post('/auth/register', userData);
+  return data;
+};
+
+export const getCurrentUser = async () => {
+  const { data } = await api.get('/auth/me');
   return data;
 };
 
