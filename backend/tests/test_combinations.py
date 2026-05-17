@@ -136,7 +136,6 @@ async def test_get_nonexistent_combination(client: AsyncClient):
 
 
 @pytest.mark.anyio
-@pytest.mark.skip(reason="pending: test isolation — storage not reset between tests")
 async def test_list_combinations(client: AsyncClient):
     """Listar combinadas retorna todas las activas."""
     await create_combination(client)
