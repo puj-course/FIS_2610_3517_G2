@@ -1,7 +1,3 @@
-"""
-Punto de entrada de la aplicación OddsEngine.
-Configura FastAPI, CORS, logging, handlers de errores, rutas y base de datos.
-"""
 
 import time
 import logging
