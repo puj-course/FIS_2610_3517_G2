@@ -94,7 +94,7 @@ jobs:
           
           let status = highComplexityCount === 0 ? "Excelente" : "Requiere atención";
           
-          const comment = `## ${emoji} Reporte de Complejidad Ciclomática
+          const comment = `## Reporte de Complejidad Ciclomática
           
           ### Estado: **${status}**
           
