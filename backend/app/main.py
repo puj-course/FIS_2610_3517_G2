@@ -34,8 +34,8 @@ async def lifespan(app: FastAPI):
             await bot_app.start()
             await bot_app.updater.start_polling()
             logger.info("Telegram Bot iniciado")
-        except Exception as e:
-            logger.error(f"Error iniciando Telegram Bot: {e}")
+        except Exception:
+            logger.exception("Error iniciando Telegram Bot")
             bot_app = None
 
     logger.info(f"OddsEngine v1.0.0 iniciado — modo: {settings.data_mode}")
@@ -47,8 +47,8 @@ async def lifespan(app: FastAPI):
             await bot_app.stop()
             await bot_app.shutdown()
             logger.info("Telegram Bot detenido")
-        except Exception as e:
-            logger.error(f"Error deteniendo Telegram Bot: {e}")
+        except Exception:
+            logger.exception("Error deteniendo Telegram Bot")
 
     logger.info("OddsEngine detenido")
 
