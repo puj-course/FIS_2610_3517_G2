@@ -1,0 +1,134 @@
+name: Análisis de Complejidad Ciclomática
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  radon-complexity:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+    
+    - name: Configurar Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    
+    - name: Instalar radon
+      run: pip install radon
+    
+    - name: Analizar complejidad ciclomática
+      run: |
+        echo "Analizando complejidad ciclomática..."
+        echo ""
+        
+        # Mostrar resumen en consola
+        radon cc backend/ src/ -s -a --total-average
+        echo ""
+        
+        # Guardar reportes
+        radon cc backend/ src/ -s -a --json > complejidad_report.json
+        radon cc backend/ src/ -s -a > complejidad_report.txt
+        
+        # Mostrar funciones problemáticas (si existen)
+        echo " Buscando funciones con alta complejidad (>10)..."
+        echo ""
+        
+        if radon cc backend/ src/ -s -n C 2>/dev/null | grep -q .; then
+          echo " Se encontraron funciones con complejidad > 10:"
+          echo "----------------------------------------"
+          radon cc backend/ src/ -s -n C
+          echo "----------------------------------------"
+          echo ""
+          echo " Esto es solo informativo. El pipeline NO fallará."
+        else
+          echo "No se encontraron funciones con complejidad > 10"
+        fi
+    
+    - name: Generar reporte HTML
+      run: |
+        python scripts/radon_to_html.py complejidad_report.json complejidad_report.html || true
+        echo "Reporte HTML generado"
+    
+    - name: Subir artefactos (siempre)
+      uses: actions/upload-artifact@v4
+      with:
+        name: complejidad-ciclomatica-reporte
+        path: |
+          complejidad_report.html
+          complejidad_report.json
+          complejidad_report.txt
+        retention-days: 30
+    
+    - name: Comentario informativo en Pull Request
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          
+          // Leer el reporte
+          let report = "No se pudo generar el reporte";
+          let highComplexityCount = 0;
+          
+          try {
+            const reportText = fs.readFileSync('complejidad_report.txt', 'utf8');
+            const lines = reportText.split('\n');
+            
+            // Contar funciones con complejidad > 10
+            highComplexityCount = lines.filter(line => {
+              const match = line.match(/-\s[CDEF]\s\((\d+)\)/);
+              return match && parseInt(match[1]) > 10;
+            }).length;
+            
+            // Extraer las primeras líneas del reporte
+            report = lines.slice(0, 30).join('\n');
+          } catch(e) {
+            report = "Reporte no disponible";
+          }
+          
+          let status = highComplexityCount === 0 ? "Excelente" : "Requiere atención";
+          
+          const comment = `## ${emoji} Reporte de Complejidad Ciclomática
+          
+          ### Estado: **${status}**
+          
+          | Métrica | Valor |
+          |---------|-------|
+          | Funciones con complejidad > 10 | **${highComplexityCount}** |
+          | Umbral aceptable | ≤ 10 |
+          
+          ### Resumen del análisis:
+          \`\`\`
+          ${report}
+          \`\`\`
+          
+          ### Reporte completo:
+          Descarga el artefacto **complejidad-ciclomatica-reporte** para ver:
+          - Reporte HTML interactivo con todos los detalles
+          - JSON con los datos completos
+          
+          ### Nota:
+          Este análisis es **solo informativo**. El pipeline NO bloquea el merge.
+          La recomendación es mantener la complejidad ≤ 10 por calidad de código.
+          `;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+    
+    - name: Finalizar sin error
+      run: |
+        echo "========================================="
+        echo "     Análisis completado"
+        echo "  Este pipeline NUNCA falla"
+        echo "  Los reportes están en los artefactos"
+        echo "========================================="
