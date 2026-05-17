@@ -9,30 +9,36 @@ jobs:
   sonarqube:
     name: SonarCloud Scan
     runs-on: ubuntu-latest
-    
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+          
       - name: Instalar dependencias
         run: |
           cd backend
           pip install -r requirements.txt
-          pip install anyio[asyncio] pytest-cov
+          pip install pytest pytest-cov pytest-asyncio pytest-mock coverage
+          
       - name: Generar cobertura
         run: |
           cd backend
-          python -m pytest tests/ -v --cov=app --cov-report=xml --cov-report=term || true
-          cp coverage.xml ../coverage.xml
+          # Genera coverage.xml dentro de /backend
+          python -m pytest tests/test_matches_repository.py \
+            --cov=app/repositories \
+            --cov-report=xml:coverage.xml \
+            --cov-report=term \
+            --cov-branch
+          
+          # Verifica que el archivo se creó
+          ls -la coverage.xml
+          
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.python.coverage.reportPaths=backend/coverage.xml
-            -Dsonar.coverage.exclusions=**/tests/**,**/migrations/**,**/__pycache__/**
-            -Dsonar.python.coverage.ignoredLines=^import\\s+,^from\\s+.*\\s+import\\s+
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
