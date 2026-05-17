@@ -20,6 +20,11 @@ class Settings(BaseSettings):
     # Modo de datos: "mock" usa datos en memoria, "database" usa PostgreSQL
     data_mode: str = "mock"
 
+    # JWT — Autenticación
+    jwt_secret_key: str = "oddsengine-dev-secret-key-change-in-production"
+    jwt_algorithm: str = "HS256"
+    jwt_expire_minutes: int = 60
+
     class Config:
         env_file = ".env"
 

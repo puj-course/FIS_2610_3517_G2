@@ -15,6 +15,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
 }
 
 .logo {
@@ -23,6 +24,7 @@
   gap: 0.5rem;
   text-decoration: none;
   color: var(--text-primary);
+  flex-shrink: 0;
 }
 
 .logoIcon {
@@ -63,4 +65,102 @@
 .active {
   color: var(--primary);
   background: var(--primary-muted);
+}
+
+/* ===== Auth section ===== */
+.auth {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.username {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 0.35rem 0.75rem;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.logoutBtn {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--danger);
+  background: var(--danger-muted);
+  border: 1px solid rgba(231, 76, 60, 0.2);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logoutBtn:hover {
+  background: rgba(231, 76, 60, 0.2);
+  border-color: rgba(231, 76, 60, 0.4);
+}
+
+.authLink {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+
+.authLink:hover {
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.registerBtn {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-inverse);
+  text-decoration: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  transition: all 0.2s;
+}
+
+.registerBtn:hover {
+  background: var(--primary-hover);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .inner {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+  }
+
+  .nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    gap: 0.125rem;
+  }
+
+  .link {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.7rem;
+  }
+
+  .auth {
+    order: 2;
+  }
+
+  .username {
+    display: none;
+  }
 }

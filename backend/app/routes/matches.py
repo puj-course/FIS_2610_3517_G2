@@ -23,18 +23,34 @@ router = APIRouter(tags=["matches"])
 async def list_matches(
     status: Optional[MatchStatus] = Query(None, description="Filtrar por estado del partido"),
     tournament: Optional[str] = Query(None, description="Filtrar por nombre de torneo"),
+    page: int = Query(1, description="Número de página (desde 1)"),
+    limit: int = Query(10, description="Partidos por página"),
 ):
     """
     Lista los partidos de tenis disponibles.
 
     Soporta filtros opcionales por estado (upcoming, live, finished)
     y por nombre de torneo (búsqueda parcial).
+    Soporta paginación con page y limit.
     """
-    logger.info(f"GET /matches — status={status}, tournament={tournament}")
+    from app.core.exceptions import ValidationException
+
+    if page < 1:
+        raise ValidationException("El parámetro 'page' debe ser >= 1")
+    if limit < 1:
+        raise ValidationException("El parámetro 'limit' debe ser >= 1")
+
+    logger.info(f"GET /matches — status={status}, tournament={tournament}, page={page}, limit={limit}")
     service = get_match_service()
     matches = await service.get_matches(status=status, tournament=tournament)
-    logger.info(f"Retornando {len(matches)} partidos")
-    return matches
+
+    # Paginación: aplicar después de filtros
+    start = (page - 1) * limit
+    end = start + limit
+    paginated = matches[start:end]
+
+    logger.info(f"Retornando {len(paginated)} partidos (página {page}, total {len(matches)})")
+    return paginated
 
 
 @router.get("/matches/{match_id}", response_model=Match)

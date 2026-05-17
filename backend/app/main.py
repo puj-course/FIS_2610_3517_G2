@@ -7,7 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes import matches, combinations, stats
-from app.routes import probability, history
+from app.routes import probability, history, auth
 from app.core.error_handlers import register_error_handlers
 from app.core.logging_config import setup_logging
 from app.core.config import get_settings
@@ -63,6 +63,7 @@ app.include_router(combinations.router, prefix="/api")
 app.include_router(stats.router, prefix="/api")
 app.include_router(probability.router, prefix="/api")
 app.include_router(history.router, prefix="/api")
+app.include_router(auth.router, prefix="/api")
 
 
 @app.get("/health")
