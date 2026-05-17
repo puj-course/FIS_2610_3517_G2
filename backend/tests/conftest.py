@@ -4,6 +4,7 @@ Configuración global de pytest y fixtures.
 
 import pytest
 from datetime import datetime
+from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 
 from app.core.database import Base
@@ -58,3 +59,18 @@ def sample_match(match_factory):
 def sample_matches_batch(match_factory):
     """Fixture que devuelve 3 matches válidos."""
     return match_factory.create_batch(3)
+
+
+@pytest.fixture
+async def client():
+    """
+    Cliente HTTP asíncrono para tests de integración.
+    Levanta la app FastAPI en memoria sin necesidad de servidor real.
+    """
+    from app.main import app
+
+    async with AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url="http://test",
+    ) as ac:
+        yield ac
