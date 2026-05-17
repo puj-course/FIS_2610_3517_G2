@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     jwt_expire_minutes: int = 60
 
+    # Telegram Bot (opcional — si vacío, el bot no inicia)
+    telegram_bot_token: str = ""
+
     class Config:
         env_file = ".env"
 
