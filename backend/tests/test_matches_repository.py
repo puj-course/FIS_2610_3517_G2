@@ -4,10 +4,9 @@ Pruebas para el repositorio de partidos.
 
 import pytest
 from datetime import datetime, timedelta
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.base import Executable
 from sqlalchemy.engine.result import Result
 
 from app.repositories.matches_repository import MatchesRepository
@@ -47,41 +46,11 @@ def sample_match_db():
         player_away_ranking=2,
         tournament_id="tour_1",
         tournament_name="Wimbledon",
-        tournament_surface="grass",
+        tournament_surface="grass",  # Minúsculas como en el enum
         tournament_category="Grand Slam",
         tournament_location="London",
         date=datetime.now(),
-        status="upcoming",
-        score="",
-    )
-
-
-@pytest.fixture
-def sample_match_pydantic():
-    """Fixture de un partido de ejemplo como modelo Pydantic."""
-    return Match(
-        id="match_123",
-        player_home=Player(
-            id="player_1",
-            name="Novak Djokovic",
-            country="Serbia",
-            ranking=1,
-        ),
-        player_away=Player(
-            id="player_2",
-            name="Carlos Alcaraz",
-            country="Spain",
-            ranking=2,
-        ),
-        tournament=Tournament(
-            id="tour_1",
-            name="Wimbledon",
-            surface=Surface.grass,
-            category="Grand Slam",
-            location="London",
-        ),
-        date=datetime.now(),
-        status=MatchStatus.upcoming,
+        status="upcoming",  # Minúsculas como en el enum
         score="",
     )
 
@@ -92,13 +61,10 @@ class TestMatchesRepository:
     @pytest.mark.asyncio
     async def test_get_all_success(self, repository, mock_db_session, sample_match_db):
         """Test: Obtener todos los partidos exitosamente."""
-        # Crear mock del resultado
         mock_result = MagicMock(spec=Result)
         mock_scalars = MagicMock()
         mock_scalars.all.return_value = [sample_match_db]
         mock_result.scalars.return_value = mock_scalars
-        
-        # Configurar execute para retornar el mock_result (no una corrutina)
         mock_db_session.execute.return_value = mock_result
 
         result = await repository.get_all()
@@ -134,7 +100,7 @@ class TestMatchesRepository:
         result = await repository.get_all(status="upcoming")
 
         assert len(result) == 1
-        assert result[0].status == MatchStatus.upcoming
+        assert result[0].status == MatchStatus.UPCOMING
         mock_db_session.execute.assert_called_once()
 
     @pytest.mark.asyncio
@@ -258,17 +224,20 @@ class TestMatchesRepository:
         result = repository._to_pydantic(minimal_match)
 
         assert result.id == "minimal_id"
+        assert result.player_home.id == "ph1"
         assert result.player_home.name == "Unknown"
         assert result.player_home.country == "Unknown"
         assert result.player_home.ranking == 0
+        assert result.player_away.id == "pa1"
         assert result.player_away.name == "Unknown"
         assert result.player_away.country == "Unknown"
         assert result.player_away.ranking == 0
+        assert result.tournament.id == "t1"
         assert result.tournament.name == "Unknown Tournament"
-        assert result.tournament.surface == Surface.hard
+        assert result.tournament.surface == Surface.HARD
         assert result.tournament.category == "Unknown"
         assert result.tournament.location == "Unknown"
-        assert result.status == MatchStatus.upcoming
+        assert result.status == MatchStatus.UPCOMING
 
     def test_to_pydantic_with_full_data(self, repository, sample_match_db):
         """Test: Conversión a Pydantic con datos completos."""
@@ -285,7 +254,7 @@ class TestMatchesRepository:
         assert result.tournament.surface == Surface.GRASS
         assert result.tournament.category == "Grand Slam"
         assert result.tournament.location == "London"
-        assert result.status == MatchStatus.upcoming
+        assert result.status == MatchStatus.UPCOMING
 
     @pytest.mark.asyncio
     async def test_get_all_ordering(self, repository, mock_db_session):
@@ -294,9 +263,27 @@ class TestMatchesRepository:
         date2 = datetime.now() - timedelta(days=1)
         date3 = datetime.now()
 
-        match1 = MatchDB(id="m1", date=date1)
-        match2 = MatchDB(id="m2", date=date2)
-        match3 = MatchDB(id="m3", date=date3)
+        match1 = MatchDB(
+            id="m1", 
+            date=date1,
+            player_home_id="ph1",
+            player_away_id="pa1",
+            tournament_id="t1"
+        )
+        match2 = MatchDB(
+            id="m2", 
+            date=date2,
+            player_home_id="ph2",
+            player_away_id="pa2",
+            tournament_id="t2"
+        )
+        match3 = MatchDB(
+            id="m3", 
+            date=date3,
+            player_home_id="ph3",
+            player_away_id="pa3",
+            tournament_id="t3"
+        )
 
         mock_result = MagicMock(spec=Result)
         mock_scalars = MagicMock()
@@ -307,7 +294,6 @@ class TestMatchesRepository:
         result = await repository.get_all()
 
         assert len(result) == 3
-        # Verificar que el query incluye order_by
         mock_db_session.execute.assert_called_once()
 
     @pytest.mark.asyncio
@@ -321,7 +307,7 @@ class TestMatchesRepository:
             player_away_name="Opponent",
             tournament_id="t1",
             tournament_name="Tournament",
-            tournament_surface=None,  # Superficie None
+            tournament_surface=None,
             date=datetime.now(),
         )
 
@@ -332,7 +318,7 @@ class TestMatchesRepository:
         result = await repository.get_by_id("match_no_surface")
 
         assert result is not None
-        assert result.tournament.surface == Surface.hard  # Valor por defecto
+        assert result.tournament.surface == Surface.HARD
 
     @pytest.mark.asyncio
     async def test_get_all_with_case_insensitive_tournament_filter(self, repository, mock_db_session):
