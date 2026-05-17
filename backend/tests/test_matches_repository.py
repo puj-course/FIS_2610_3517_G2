@@ -7,6 +7,8 @@ from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock, patch
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.base import Executable
+from sqlalchemy.engine.result import Result
 
 from app.repositories.matches_repository import MatchesRepository
 from app.models.match import Match, Player, Tournament, MatchStatus, Surface
@@ -90,8 +92,13 @@ class TestMatchesRepository:
     @pytest.mark.asyncio
     async def test_get_all_success(self, repository, mock_db_session, sample_match_db):
         """Test: Obtener todos los partidos exitosamente."""
-        mock_result = AsyncMock()
-        mock_result.scalars.return_value.all.return_value = [sample_match_db]
+        # Crear mock del resultado
+        mock_result = MagicMock(spec=Result)
+        mock_scalars = MagicMock()
+        mock_scalars.all.return_value = [sample_match_db]
+        mock_result.scalars.return_value = mock_scalars
+        
+        # Configurar execute para retornar el mock_result (no una corrutina)
         mock_db_session.execute.return_value = mock_result
 
         result = await repository.get_all()
@@ -104,8 +111,10 @@ class TestMatchesRepository:
     @pytest.mark.asyncio
     async def test_get_all_empty(self, repository, mock_db_session):
         """Test: Obtener todos los partidos cuando no hay datos."""
-        mock_result = AsyncMock()
-        mock_result.scalars.return_value.all.return_value = []
+        mock_result = MagicMock(spec=Result)
+        mock_scalars = MagicMock()
+        mock_scalars.all.return_value = []
+        mock_result.scalars.return_value = mock_scalars
         mock_db_session.execute.return_value = mock_result
 
         result = await repository.get_all()
@@ -116,32 +125,37 @@ class TestMatchesRepository:
     @pytest.mark.asyncio
     async def test_get_all_with_status_filter(self, repository, mock_db_session, sample_match_db):
         """Test: Filtrar partidos por estado."""
-        mock_result = AsyncMock()
-        mock_result.scalars.return_value.all.return_value = [sample_match_db]
+        mock_result = MagicMock(spec=Result)
+        mock_scalars = MagicMock()
+        mock_scalars.all.return_value = [sample_match_db]
+        mock_result.scalars.return_value = mock_scalars
         mock_db_session.execute.return_value = mock_result
 
         result = await repository.get_all(status="SCHEDULED")
 
         assert len(result) == 1
-        # Verificar que el query incluye el filtro de status
-        call_args = mock_db_session.execute.call_args
-        assert call_args is not None
+        assert result[0].status == MatchStatus.SCHEDULED
+        mock_db_session.execute.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_get_all_with_tournament_filter(self, repository, mock_db_session, sample_match_db):
         """Test: Filtrar partidos por torneo."""
-        mock_result = AsyncMock()
-        mock_result.scalars.return_value.all.return_value = [sample_match_db]
+        mock_result = MagicMock(spec=Result)
+        mock_scalars = MagicMock()
+        mock_scalars.all.return_value = [sample_match_db]
+        mock_result.scalars.return_value = mock_scalars
         mock_db_session.execute.return_value = mock_result
 
         result = await repository.get_all(tournament="Wimbledon")
 
         assert len(result) == 1
+        assert result[0].tournament.name == "Wimbledon"
+        mock_db_session.execute.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_get_by_id_success(self, repository, mock_db_session, sample_match_db):
         """Test: Obtener partido por ID exitosamente."""
-        mock_result = AsyncMock()
+        mock_result = MagicMock(spec=Result)
         mock_result.scalar_one_or_none.return_value = sample_match_db
         mock_db_session.execute.return_value = mock_result
 
@@ -155,7 +169,7 @@ class TestMatchesRepository:
     @pytest.mark.asyncio
     async def test_get_by_id_not_found(self, repository, mock_db_session):
         """Test: Intentar obtener partido que no existe."""
-        mock_result = AsyncMock()
+        mock_result = MagicMock(spec=Result)
         mock_result.scalar_one_or_none.return_value = None
         mock_db_session.execute.return_value = mock_result
 
@@ -231,8 +245,7 @@ class TestMatchesRepository:
         mock_db_session.rollback.assert_called_once()
         mock_db_session.execute.assert_called_once()
 
-    @pytest.mark.asyncio
-    async def test_to_pydantic_with_minimal_data(self, repository):
+    def test_to_pydantic_with_minimal_data(self, repository):
         """Test: Conversión a Pydantic con datos mínimos."""
         minimal_match = MatchDB(
             id="minimal_id",
@@ -248,13 +261,16 @@ class TestMatchesRepository:
         assert result.player_home.name == "Unknown"
         assert result.player_home.country == "Unknown"
         assert result.player_home.ranking == 0
+        assert result.player_away.name == "Unknown"
+        assert result.player_away.country == "Unknown"
+        assert result.player_away.ranking == 0
         assert result.tournament.name == "Unknown Tournament"
         assert result.tournament.surface == Surface.HARD
         assert result.tournament.category == "Unknown"
         assert result.tournament.location == "Unknown"
+        assert result.status == MatchStatus.SCHEDULED
 
-    @pytest.mark.asyncio
-    async def test_to_pydantic_with_full_data(self, repository, sample_match_db):
+    def test_to_pydantic_with_full_data(self, repository, sample_match_db):
         """Test: Conversión a Pydantic con datos completos."""
         result = repository._to_pydantic(sample_match_db)
 
@@ -263,8 +279,12 @@ class TestMatchesRepository:
         assert result.player_home.country == "Serbia"
         assert result.player_home.ranking == 1
         assert result.player_away.name == "Carlos Alcaraz"
+        assert result.player_away.country == "Spain"
+        assert result.player_away.ranking == 2
         assert result.tournament.name == "Wimbledon"
         assert result.tournament.surface == Surface.GRASS
+        assert result.tournament.category == "Grand Slam"
+        assert result.tournament.location == "London"
         assert result.status == MatchStatus.SCHEDULED
 
     @pytest.mark.asyncio
@@ -278,16 +298,17 @@ class TestMatchesRepository:
         match2 = MatchDB(id="m2", date=date2)
         match3 = MatchDB(id="m3", date=date3)
 
-        mock_result = AsyncMock()
-        mock_result.scalars.return_value.all.return_value = [match3, match2, match1]
+        mock_result = MagicMock(spec=Result)
+        mock_scalars = MagicMock()
+        mock_scalars.all.return_value = [match1, match2, match3]
+        mock_result.scalars.return_value = mock_scalars
         mock_db_session.execute.return_value = mock_result
 
         result = await repository.get_all()
 
-        # Verificar que el query ordena por fecha (la BD debería ordenar)
-        # Esto verifica que se aplica el order_by
-        call_args = mock_db_session.execute.call_args
-        assert call_args is not None
+        assert len(result) == 3
+        # Verificar que el query incluye order_by
+        mock_db_session.execute.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_get_by_id_with_nonexistent_tournament_surface(self, repository, mock_db_session):
@@ -304,7 +325,7 @@ class TestMatchesRepository:
             date=datetime.now(),
         )
 
-        mock_result = AsyncMock()
+        mock_result = MagicMock(spec=Result)
         mock_result.scalar_one_or_none.return_value = match_without_surface
         mock_db_session.execute.return_value = mock_result
 
@@ -316,11 +337,26 @@ class TestMatchesRepository:
     @pytest.mark.asyncio
     async def test_get_all_with_case_insensitive_tournament_filter(self, repository, mock_db_session):
         """Test: Filtro insensible a mayúsculas/minúsculas para torneo."""
-        mock_result = AsyncMock()
-        mock_result.scalars.return_value.all.return_value = []
+        mock_result = MagicMock(spec=Result)
+        mock_scalars = MagicMock()
+        mock_scalars.all.return_value = []
+        mock_result.scalars.return_value = mock_scalars
         mock_db_session.execute.return_value = mock_result
 
         await repository.get_all(tournament="wimbledon")
 
-        # Verificar que se usó ilike (insensible a mayúsculas)
+        mock_db_session.execute.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_get_all_with_status_and_tournament_filters(self, repository, mock_db_session, sample_match_db):
+        """Test: Aplicar múltiples filtros simultáneamente."""
+        mock_result = MagicMock(spec=Result)
+        mock_scalars = MagicMock()
+        mock_scalars.all.return_value = [sample_match_db]
+        mock_result.scalars.return_value = mock_scalars
+        mock_db_session.execute.return_value = mock_result
+
+        result = await repository.get_all(status="SCHEDULED", tournament="Wimbledon")
+
+        assert len(result) == 1
         mock_db_session.execute.assert_called_once()
