@@ -14,3 +14,8 @@ alembic==1.13.2
 python-dotenv==1.0.1
 #Latencia
 prometheus-fastapi-instrumentator==7.1.0
+# Autenticación JWT
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
+email-validator==2.1.1
