@@ -4,10 +4,12 @@ on:
     branches: [ "main", "develop" ]
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
   sonarqube:
     name: SonarCloud Scan
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,3 +31,8 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.python.coverage.reportPaths=backend/coverage.xml
+            -Dsonar.coverage.exclusions=**/tests/**,**/migrations/**,**/__pycache__/**
+            -Dsonar.python.coverage.ignoredLines=^import\\s+,^from\\s+.*\\s+import\\s+
