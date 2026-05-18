@@ -1,1 +1,6 @@
 frontend/node_modules/
+.env
+.coverage
+coverage.xml
+backend/.coverage
+backend/coverage.xml

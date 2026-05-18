@@ -1,8 +1,58 @@
-import re
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 from prometheus_client import generate_latest, REGISTRY
+
+_METRIC_PREFIXES = (
+    "http_request_duration_seconds_sum",
+    "http_request_duration_seconds_count",
+)
+
+
+def _parse_labels(labels_str: str) -> dict[str, str]:
+    """Parsea labels Prometheus 'key="value",key2="value2"' sin regex."""
+    labels: dict[str, str] = {}
+    for pair in labels_str.split(","):
+        if "=" not in pair:
+            continue
+        key, _, quoted_val = pair.partition("=")
+        key = key.strip()
+        val = quoted_val.strip().strip('"')
+        if key:
+            labels[key] = val
+    return labels
+
+
+def _parse_metric_line(linea: str):
+    """
+    Parsea una línea de métrica Prometheus sin regex.
+
+    Retorna (nombre_metrica, labels_dict, valor_float) o None.
+    """
+    brace_open = linea.find("{")
+    brace_close = linea.find("}", brace_open + 1) if brace_open != -1 else -1
+
+    if brace_open == -1 or brace_close == -1:
+        return None
+
+    metric_name = linea[:brace_open]
+    if metric_name not in _METRIC_PREFIXES:
+        return None
+
+    labels_str = linea[brace_open + 1:brace_close]
+    valor_str = linea[brace_close + 1:].strip()
+
+    if not valor_str:
+        return None
+
+    try:
+        valor = float(valor_str)
+    except ValueError:
+        return None
+
+    labels = _parse_labels(labels_str)
+    return metric_name, labels, valor
+
 
 def setup_metrics(app: FastAPI):
 
@@ -18,26 +68,22 @@ def setup_metrics(app: FastAPI):
         sumas_latencia = {}
         conteos_peticiones = {}
 
-        pattern = re.compile(r'(http_request_duration_seconds_(?:sum|count))\{([^}]+)\}\s+([\d.]+)')
-        label_pattern = re.compile(r'(\w+)="([^"]+)"')
-
         for linea in lineas:
-            match = pattern.search(linea)
-            if match:
-                metrica, labels_str, valor_str = match.groups()
-                valor = float(valor_str)
-                labels = dict(label_pattern.findall(labels_str))
-                
-                handler = labels.get("handler", "unknown")
-                method = labels.get("method", "unknown")
-                status = labels.get("status", "unknown")
-                    
-                key = (method, handler, status)
-                
-                if metrica == "http_request_duration_seconds_sum":
-                    sumas_latencia[key] = valor
-                elif metrica == "http_request_duration_seconds_count":
-                    conteos_peticiones[key] = int(valor)
+            parsed = _parse_metric_line(linea)
+            if parsed is None:
+                continue
+
+            metrica, labels, valor = parsed
+            handler = labels.get("handler", "unknown")
+            method = labels.get("method", "unknown")
+            status = labels.get("status", "unknown")
+
+            key = (method, handler, status)
+
+            if metrica == "http_request_duration_seconds_sum":
+                sumas_latencia[key] = valor
+            elif metrica == "http_request_duration_seconds_count":
+                conteos_peticiones[key] = int(valor)
 
         datos_consolidados = []
         for key in conteos_peticiones:
