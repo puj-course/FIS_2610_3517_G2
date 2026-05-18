@@ -43,10 +43,7 @@ async def complete_combination(combination_id: str):
     # Calcular resultado final
     result = await prob_service.calculate_combination(combination_id)
 
-    logger.info(
-        f"Combinada {combination_id} completada — "
-        f"Probabilidad: {result.total_probability}% ({result.risk_level.value})"
-    )
+    logger.info("Combinada completada correctamente")
 
     return {
         "message": f"Combinada completada con {result.total_matches} partidos",
@@ -96,5 +93,5 @@ async def export_combination(combination_id: str):
         ],
     }
 
-    logger.info(f"Exportada combinada {combination_id}")
+    logger.info("Exportación de combinada realizada")
     return export_data
