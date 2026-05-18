@@ -38,7 +38,7 @@ async def complete_combination(combination_id: str):
     comb_service = get_combination_service()
     prob_service = get_probability_service()
 
-    combination = await comb_service.get_combination(combination_id)
+    await comb_service.get_combination(combination_id)
 
     # Calcular resultado final
     result = await prob_service.calculate_combination(combination_id)

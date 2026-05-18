@@ -7,6 +7,7 @@ Los logs se escriben a consola con formato legible y a archivo para persistencia
 
 import logging
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -35,9 +36,6 @@ def setup_logging(log_level: str = "INFO", log_file: str = "oddsengine.log") -> 
     console_handler.setFormatter(console_format)
 
     # Handler de archivo
-    log_path = Path("logs")
-    # Fix: Usar /tmp que siempre tiene permisos de escritura
-    import tempfile
     log_path = Path(tempfile.gettempdir()) / "oddsengine_logs"
     log_path.mkdir(exist_ok=True, parents=True)
     file_handler = logging.FileHandler(log_path / log_file, encoding="utf-8")
