@@ -8,6 +8,8 @@ Endpoints:
 """
 
 import logging
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 
 from app.models.user import UserCreate, UserLogin, UserResponse, TokenResponse
@@ -69,7 +71,7 @@ async def login(data: UserLogin):
 
 
 @router.get("/me", response_model=UserResponse)
-async def get_me(current_user: dict = Depends(get_current_user)):
+async def get_me(current_user: Annotated[dict, Depends(get_current_user)]):
     """
     Retorna los datos del usuario autenticado.
 

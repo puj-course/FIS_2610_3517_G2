@@ -7,8 +7,9 @@ Endpoints:
 """
 
 import logging
+from typing import Annotated, Optional
+
 from fastapi import APIRouter, Query
-from typing import Optional
 
 from app.models.match import Match, MatchStatus
 from app.services.match_service import get_match_service
@@ -21,10 +22,10 @@ router = APIRouter(tags=["matches"])
 
 @router.get("/matches", response_model=list[Match])
 async def list_matches(
-    status: Optional[MatchStatus] = Query(None, description="Filtrar por estado del partido"),
-    tournament: Optional[str] = Query(None, description="Filtrar por nombre de torneo"),
-    page: int = Query(1, description="Número de página (desde 1)"),
-    limit: int = Query(10, description="Partidos por página"),
+    status: Annotated[Optional[MatchStatus], Query(description="Filtrar por estado del partido")] = None,
+    tournament: Annotated[Optional[str], Query(description="Filtrar por nombre de torneo")] = None,
+    page: Annotated[int, Query(description="Número de página (desde 1)")] = 1,
+    limit: Annotated[int, Query(description="Partidos por página")] = 10,
 ):
     """
     Lista los partidos de tenis disponibles.
