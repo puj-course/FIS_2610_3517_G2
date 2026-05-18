@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
             logger.exception("Error iniciando Telegram Bot")
             bot_app = None
 
-    logger.info(f"OddsEngine v1.0.0 iniciado — modo: {settings.data_mode}")
+    logger.info("OddsEngine v1.0.0 iniciado — modo: %s", settings.data_mode)
     yield
 
     if bot_app:
@@ -76,7 +76,7 @@ async def log_requests(request: Request, call_next):
     start = time.time()
     response = await call_next(request)
     duration = round((time.time() - start) * 1000, 1)
-    logger.info(f"{request.method} {request.url.path} → {response.status_code} ({duration}ms)")
+    logger.info("%s %s → %s (%sms)", request.method, request.url.path, response.status_code, duration)
     return response
 
 

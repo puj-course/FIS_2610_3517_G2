@@ -40,7 +40,7 @@ async def register(data: UserCreate):
     )
 
     token = create_access_token(data={"sub": user["id"]})
-    logger.info(f"POST /auth/register — usuario: {user['username']}")
+    logger.info("POST /auth/register — usuario registrado")
 
     return TokenResponse(
         access_token=token,
@@ -62,7 +62,7 @@ async def login(data: UserLogin):
         raise ValidationException(message="Email o contraseña incorrectos")
 
     token = create_access_token(data={"sub": user["id"]})
-    logger.info(f"POST /auth/login — usuario: {user['username']}")
+    logger.info("POST /auth/login — login exitoso")
 
     return TokenResponse(
         access_token=token,
@@ -77,5 +77,5 @@ async def get_me(current_user: Annotated[dict, Depends(get_current_user)]):
 
     Requiere token Bearer en el header Authorization.
     """
-    logger.info(f"GET /auth/me — usuario: {current_user['username']}")
+    logger.info("GET /auth/me — consulta de usuario autenticado")
     return UserResponse(**current_user)

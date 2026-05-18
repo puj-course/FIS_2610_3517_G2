@@ -62,7 +62,7 @@ class AuthService:
         self._users[user_id] = user
         self._email_index[email_lower] = user_id
 
-        logger.info(f"Usuario registrado: {username} ({email_lower})")
+        logger.info("Usuario registrado correctamente")
         return self._to_public(user)
 
     def authenticate_user(self, email: str, password: str) -> Optional[dict]:
@@ -84,7 +84,7 @@ class AuthService:
         if not verify_password(password, user["hashed_password"]):
             return None
 
-        logger.info(f"Login exitoso: {user['username']} ({email_lower})")
+        logger.info("Login exitoso")
         return self._to_public(user)
 
     def get_user_by_email(self, email: str) -> Optional[dict]:
