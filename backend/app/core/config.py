@@ -16,8 +16,6 @@ class Settings(BaseSettings):
     # PostgreSQL
     database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/oddsengine"
     database_sync_url: str = "postgresql://postgres:postgres@localhost:5432/oddsengine"
-    DATABASE_URL: str = "sqlite+aiosqlite:///./test.db"
-    DEBUG: bool = False
 
     # Modo de datos: "mock" usa datos en memoria, "database" usa PostgreSQL
     data_mode: str = "mock"
