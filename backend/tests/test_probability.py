@@ -114,7 +114,7 @@ async def test_combination_probability_needs_2_matches(client: AsyncClient):
 async def test_combination_probability_with_matches(client: AsyncClient):
     """Combinada con 2+ partidos calcula correctamente."""
     create_resp = await client.post("/api/combinations")
-    comb_id = create_resp.json()["combination"]["id"
+    comb_id = create_resp.json()["combination"]["id"]
 
     await client.post(f"/api/combinations/{comb_id}/matches", json={"match_id": "match_001"})
     await client.post(f"/api/combinations/{comb_id}/matches", json={"match_id": "match_002"})
