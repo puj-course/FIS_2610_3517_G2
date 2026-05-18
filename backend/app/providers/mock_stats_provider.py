@@ -9,65 +9,76 @@ from typing import Optional
 
 from app.models.stats import PlayerStats, HeadToHead, HeadToHeadMatch, MatchStats
 
+NAME_ALCARAZ = "Carlos Alcaraz"
+NAME_SINNER = "Jannik Sinner"
+NAME_DJOKOVIC = "Novak Djokovic"
+NAME_MEDVEDEV = "Daniil Medvedev"
+NAME_ZVEREV = "Alexander Zverev"
+NAME_RUUD = "Casper Ruud"
+NAME_RUNE = "Holger Rune"
+NAME_FRITZ = "Taylor Fritz"
+NAME_DE_MINAUR = "Alex de Minaur"
+NAME_TSITSIPAS = "Stefanos Tsitsipas"
+
 
 # Estadísticas por jugador (coherentes con ranking real)
 PLAYER_STATS = {
     "p_001": PlayerStats(
-        player_id="p_001", player_name="Carlos Alcaraz",
+        player_id="p_001", player_name=NAME_ALCARAZ,
         overall_win_rate=76.5, surface_win_rate=0,  # se ajusta por superficie
         recent_form=["W", "W", "L", "W", "W", "W", "L", "W", "W", "W"],
         recent_win_rate=80.0, total_matches=185, titles=16,
     ),
     "p_002": PlayerStats(
-        player_id="p_002", player_name="Jannik Sinner",
+        player_id="p_002", player_name=NAME_SINNER,
         overall_win_rate=78.2, surface_win_rate=0,
         recent_form=["W", "W", "W", "W", "L", "W", "W", "W", "L", "W"],
         recent_win_rate=80.0, total_matches=195, titles=18,
     ),
     "p_003": PlayerStats(
-        player_id="p_003", player_name="Novak Djokovic",
+        player_id="p_003", player_name=NAME_DJOKOVIC,
         overall_win_rate=83.1, surface_win_rate=0,
         recent_form=["L", "W", "W", "L", "W", "L", "W", "W", "W", "L"],
         recent_win_rate=60.0, total_matches=1320, titles=99,
     ),
     "p_004": PlayerStats(
-        player_id="p_004", player_name="Daniil Medvedev",
+        player_id="p_004", player_name=NAME_MEDVEDEV,
         overall_win_rate=66.8, surface_win_rate=0,
         recent_form=["W", "L", "W", "L", "W", "W", "L", "W", "L", "W"],
         recent_win_rate=60.0, total_matches=380, titles=20,
     ),
     "p_005": PlayerStats(
-        player_id="p_005", player_name="Alexander Zverev",
+        player_id="p_005", player_name=NAME_ZVEREV,
         overall_win_rate=68.5, surface_win_rate=0,
         recent_form=["W", "W", "W", "L", "W", "L", "W", "W", "L", "W"],
         recent_win_rate=70.0, total_matches=450, titles=22,
     ),
     "p_006": PlayerStats(
-        player_id="p_006", player_name="Casper Ruud",
+        player_id="p_006", player_name=NAME_RUUD,
         overall_win_rate=62.3, surface_win_rate=0,
         recent_form=["L", "W", "L", "W", "W", "L", "W", "L", "W", "W"],
         recent_win_rate=60.0, total_matches=280, titles=10,
     ),
     "p_007": PlayerStats(
-        player_id="p_007", player_name="Holger Rune",
+        player_id="p_007", player_name=NAME_RUNE,
         overall_win_rate=60.1, surface_win_rate=0,
         recent_form=["W", "L", "W", "W", "L", "L", "W", "W", "L", "W"],
         recent_win_rate=60.0, total_matches=160, titles=6,
     ),
     "p_008": PlayerStats(
-        player_id="p_008", player_name="Taylor Fritz",
+        player_id="p_008", player_name=NAME_FRITZ,
         overall_win_rate=63.7, surface_win_rate=0,
         recent_form=["W", "W", "L", "W", "L", "W", "L", "W", "W", "L"],
         recent_win_rate=60.0, total_matches=350, titles=8,
     ),
     "p_009": PlayerStats(
-        player_id="p_009", player_name="Alex de Minaur",
+        player_id="p_009", player_name=NAME_DE_MINAUR,
         overall_win_rate=61.2, surface_win_rate=0,
         recent_form=["L", "W", "W", "L", "W", "W", "L", "L", "W", "W"],
         recent_win_rate=60.0, total_matches=290, titles=7,
     ),
     "p_010": PlayerStats(
-        player_id="p_010", player_name="Stefanos Tsitsipas",
+        player_id="p_010", player_name=NAME_TSITSIPAS,
         overall_win_rate=65.4, surface_win_rate=0,
         recent_form=["W", "L", "L", "W", "W", "L", "W", "L", "W", "L"],
         recent_win_rate=50.0, total_matches=380, titles=12,
@@ -92,50 +103,50 @@ SURFACE_WIN_RATES = {
 H2H_DATA = {
     ("p_001", "p_002"): HeadToHead(
         player1_id="p_001", player2_id="p_002",
-        player1_name="Carlos Alcaraz", player2_name="Jannik Sinner",
+        player1_name=NAME_ALCARAZ, player2_name=NAME_SINNER,
         player1_wins=5, player2_wins=4, total_matches=9,
         last_matches=[
-            HeadToHeadMatch(date="2026-01-20", tournament="Australian Open", winner="Jannik Sinner", score="6-3, 7-5, 6-4"),
-            HeadToHeadMatch(date="2025-11-15", tournament="ATP Finals", winner="Carlos Alcaraz", score="6-4, 6-7, 6-3"),
-            HeadToHeadMatch(date="2025-07-14", tournament="Wimbledon", winner="Carlos Alcaraz", score="7-6, 6-4, 7-6"),
+            HeadToHeadMatch(date="2026-01-20", tournament="Australian Open", winner=NAME_SINNER, score="6-3, 7-5, 6-4"),
+            HeadToHeadMatch(date="2025-11-15", tournament="ATP Finals", winner=NAME_ALCARAZ, score="6-4, 6-7, 6-3"),
+            HeadToHeadMatch(date="2025-07-14", tournament="Wimbledon", winner=NAME_ALCARAZ, score="7-6, 6-4, 7-6"),
         ]
     ),
     ("p_003", "p_004"): HeadToHead(
         player1_id="p_003", player2_id="p_004",
-        player1_name="Novak Djokovic", player2_name="Daniil Medvedev",
+        player1_name=NAME_DJOKOVIC, player2_name=NAME_MEDVEDEV,
         player1_wins=12, player2_wins=5, total_matches=17,
         last_matches=[
-            HeadToHeadMatch(date="2025-09-08", tournament="US Open", winner="Novak Djokovic", score="6-3, 6-4, 6-2"),
-            HeadToHeadMatch(date="2025-06-10", tournament="Roland Garros", winner="Daniil Medvedev", score="7-5, 6-4, 6-3"),
-            HeadToHeadMatch(date="2025-03-15", tournament="Indian Wells", winner="Novak Djokovic", score="6-4, 7-6"),
+            HeadToHeadMatch(date="2025-09-08", tournament="US Open", winner=NAME_DJOKOVIC, score="6-3, 6-4, 6-2"),
+            HeadToHeadMatch(date="2025-06-10", tournament="Roland Garros", winner=NAME_MEDVEDEV, score="7-5, 6-4, 6-3"),
+            HeadToHeadMatch(date="2025-03-15", tournament="Indian Wells", winner=NAME_DJOKOVIC, score="6-4, 7-6"),
         ]
     ),
     ("p_005", "p_006"): HeadToHead(
         player1_id="p_005", player2_id="p_006",
-        player1_name="Alexander Zverev", player2_name="Casper Ruud",
+        player1_name=NAME_ZVEREV, player2_name=NAME_RUUD,
         player1_wins=7, player2_wins=3, total_matches=10,
         last_matches=[
-            HeadToHeadMatch(date="2025-10-05", tournament="Beijing", winner="Alexander Zverev", score="6-3, 6-4"),
-            HeadToHeadMatch(date="2025-05-12", tournament="Madrid Open", winner="Alexander Zverev", score="7-6, 6-3"),
-            HeadToHeadMatch(date="2025-04-20", tournament="Monte Carlo", winner="Casper Ruud", score="6-4, 7-5"),
+            HeadToHeadMatch(date="2025-10-05", tournament="Beijing", winner=NAME_ZVEREV, score="6-3, 6-4"),
+            HeadToHeadMatch(date="2025-05-12", tournament="Madrid Open", winner=NAME_ZVEREV, score="7-6, 6-3"),
+            HeadToHeadMatch(date="2025-04-20", tournament="Monte Carlo", winner=NAME_RUUD, score="6-4, 7-5"),
         ]
     ),
     ("p_007", "p_008"): HeadToHead(
         player1_id="p_007", player2_id="p_008",
-        player1_name="Holger Rune", player2_name="Taylor Fritz",
+        player1_name=NAME_RUNE, player2_name=NAME_FRITZ,
         player1_wins=2, player2_wins=3, total_matches=5,
         last_matches=[
-            HeadToHeadMatch(date="2025-08-20", tournament="Cincinnati", winner="Taylor Fritz", score="6-4, 6-3"),
-            HeadToHeadMatch(date="2025-06-28", tournament="Wimbledon", winner="Holger Rune", score="7-6, 3-6, 6-4, 6-3"),
+            HeadToHeadMatch(date="2025-08-20", tournament="Cincinnati", winner=NAME_FRITZ, score="6-4, 6-3"),
+            HeadToHeadMatch(date="2025-06-28", tournament="Wimbledon", winner=NAME_RUNE, score="7-6, 3-6, 6-4, 6-3"),
         ]
     ),
     ("p_009", "p_010"): HeadToHead(
         player1_id="p_009", player2_id="p_010",
-        player1_name="Alex de Minaur", player2_name="Stefanos Tsitsipas",
+        player1_name=NAME_DE_MINAUR, player2_name=NAME_TSITSIPAS,
         player1_wins=3, player2_wins=6, total_matches=9,
         last_matches=[
-            HeadToHeadMatch(date="2025-11-10", tournament="Paris Masters", winner="Stefanos Tsitsipas", score="6-3, 7-5"),
-            HeadToHeadMatch(date="2025-07-02", tournament="Wimbledon", winner="Alex de Minaur", score="6-4, 3-6, 7-6, 6-2"),
+            HeadToHeadMatch(date="2025-11-10", tournament="Paris Masters", winner=NAME_TSITSIPAS, score="6-3, 7-5"),
+            HeadToHeadMatch(date="2025-07-02", tournament="Wimbledon", winner=NAME_DE_MINAUR, score="6-4, 3-6, 7-6, 6-2"),
         ]
     ),
 }
