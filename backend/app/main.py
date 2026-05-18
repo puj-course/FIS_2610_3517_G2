@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.routes import matches, combinations, stats
 from app.routes import probability, history, auth
@@ -105,7 +106,7 @@ async def health_detailed():
             async with engine.connect() as conn:
                 await conn.execute(text("SELECT 1"))
             db_status = "connected"
-        except Exception:
+        except SQLAlchemyError:
             db_status = "disconnected"
     return {"status": "ok", "service": "OddsEngine", "version": "1.0.0", "data_mode": settings.data_mode, "database": db_status}
 
