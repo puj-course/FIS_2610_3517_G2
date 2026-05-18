@@ -10,6 +10,8 @@ import pytest
 from app.core.metrics import (
     _parse_labels, _parse_metric_line,
     _status_badge_class, _latency_evaluation,
+    _collect_latency_metrics, _consolidate_latency_data,
+    _build_latency_table_rows,
 )
 
 
@@ -139,3 +141,90 @@ class TestLatencyEvaluation:
 
     def test_lento(self):
         assert "Lento" in _latency_evaluation(600)
+
+
+SAMPLE_METRICS_TEXT = "\n".join([
+    "# HELP http_request_duration_seconds_sum Total duration",
+    "# TYPE http_request_duration_seconds_sum summary",
+    'http_request_duration_seconds_sum{method="GET",handler="/health",status="200"} 0.5',
+    'http_request_duration_seconds_count{method="GET",handler="/health",status="200"} 10.0',
+    'http_request_duration_seconds_sum{method="POST",handler="/api/auth/login",status="201"} 1.2',
+    'http_request_duration_seconds_count{method="POST",handler="/api/auth/login",status="201"} 4.0',
+    'python_gc_objects_collected_total{generation="0"} 1234.0',
+])
+
+
+class TestCollectLatencyMetrics:
+
+    def test_collects_sum_and_count(self):
+        sumas, conteos = _collect_latency_metrics(SAMPLE_METRICS_TEXT)
+        key = ("GET", "/health", "200")
+        assert key in sumas
+        assert sumas[key] == pytest.approx(0.5)
+        assert conteos[key] == 10
+
+    def test_ignores_unrelated_metrics(self):
+        sumas, conteos = _collect_latency_metrics(SAMPLE_METRICS_TEXT)
+        assert len(sumas) == 2
+        assert len(conteos) == 2
+
+    def test_empty_input(self):
+        sumas, conteos = _collect_latency_metrics("")
+        assert sumas == {}
+        assert conteos == {}
+
+
+class TestConsolidateLatencyData:
+
+    def test_calculates_average_ms(self):
+        sumas = {("GET", "/health", "200"): 0.5}
+        conteos = {("GET", "/health", "200"): 10}
+        datos = _consolidate_latency_data(sumas, conteos)
+        assert len(datos) == 1
+        method, handler, status, total, promedio = datos[0]
+        assert total == 10
+        assert promedio == pytest.approx(50.0)
+
+    def test_sorts_by_latency_descending(self):
+        sumas = {
+            ("GET", "/fast", "200"): 0.1,
+            ("GET", "/slow", "200"): 5.0,
+        }
+        conteos = {
+            ("GET", "/fast", "200"): 10,
+            ("GET", "/slow", "200"): 10,
+        }
+        datos = _consolidate_latency_data(sumas, conteos)
+        assert datos[0][1] == "/slow"
+        assert datos[1][1] == "/fast"
+
+    def test_zero_count_returns_zero_average(self):
+        sumas = {("GET", "/x", "200"): 1.0}
+        conteos = {("GET", "/x", "200"): 0}
+        datos = _consolidate_latency_data(sumas, conteos)
+        assert datos[0][4] == 0
+
+    def test_empty_input(self):
+        assert _consolidate_latency_data({}, {}) == []
+
+
+class TestBuildLatencyTableRows:
+
+    def test_empty_returns_placeholder(self):
+        result = _build_latency_table_rows([])
+        assert "No hay peticiones registradas" in result
+
+    def test_generates_html_rows(self):
+        datos = [("GET", "/health", "200", 10, 50.0)]
+        result = _build_latency_table_rows(datos)
+        assert "GET" in result
+        assert "/health" in result
+        assert "200" in result
+        assert "50.0 ms" in result
+        assert "bg-success" in result
+
+    def test_slow_endpoint_has_alert(self):
+        datos = [("POST", "/slow", "500", 5, 600.0)]
+        result = _build_latency_table_rows(datos)
+        assert "table-danger" in result
+        assert "bg-danger" in result
