@@ -92,7 +92,7 @@ class ProbabilityService:
                 indiv = await self.calculate_individual(sel.match_id)
                 prob = max(indiv.player_home_probability, indiv.player_away_probability)
                 favorite = indiv.get_favorite()
-            except Exception:
+            except NotFoundException:
                 prob = 50.0
                 favorite = "N/A"
 
