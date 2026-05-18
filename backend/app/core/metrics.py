@@ -23,6 +23,24 @@ def _parse_labels(labels_str: str) -> dict[str, str]:
     return labels
 
 
+def _status_badge_class(status: str) -> str:
+    if status.startswith("2"):
+        return "bg-success"
+    if status.startswith("5"):
+        return "bg-danger"
+    return "bg-warning text-dark"
+
+
+def _latency_evaluation(promedio: float) -> str:
+    if promedio <= 100:
+        return '<span class="badge bg-success">Excelente</span>'
+    if promedio <= 250:
+        return '<span class="badge bg-info text-dark">Bueno</span>'
+    if promedio <= 500:
+        return '<span class="badge bg-warning text-dark">Aceptable</span>'
+    return '<span class="badge bg-danger">Lento</span>'
+
+
 def _parse_metric_line(linea: str):
     """
     Parsea una línea de métrica Prometheus sin regex.
@@ -97,16 +115,8 @@ def setup_metrics(app: FastAPI):
 
         filas_tabla = ""
         for method, handler, status, total, promedio in datos_consolidados:
-            badge_status = "bg-success" if status.startswith('2') else "bg-danger" if status.startswith('5') else "bg-warning text-dark"
-            
-            if promedio <= 100:
-                evaluacion = '<span class="badge bg-success">Excelente</span>'
-            elif promedio <= 250:
-                evaluacion = '<span class="badge bg-info text-dark">Bueno</span>'
-            elif promedio <= 500:
-                evaluacion = '<span class="badge bg-warning text-dark">Aceptable</span>'
-            else:
-                evaluacion = '<span class="badge bg-danger">Lento</span>'
+            badge_status = _status_badge_class(status)
+            evaluacion = _latency_evaluation(promedio)
 
             alerta = "table-danger fw-bold" if promedio > 500 else ""
 
