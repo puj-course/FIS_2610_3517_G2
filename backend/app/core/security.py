@@ -11,7 +11,7 @@ Funciones:
 
 import logging
 from datetime import datetime, timedelta, timezone
-from typing import Optional
+from typing import Annotated, Optional
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -83,7 +83,7 @@ def decode_access_token(token: str) -> Optional[dict]:
 
 
 async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(bearer_scheme)],
 ):
     """
     Dependencia de FastAPI — extrae y valida el usuario del token Bearer.

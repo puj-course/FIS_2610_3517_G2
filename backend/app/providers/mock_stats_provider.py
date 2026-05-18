@@ -5,7 +5,6 @@ Datos ficticios pero coherentes con el ranking real ATP.
 Se usa para desarrollo sin depender de PostgreSQL o API externa.
 """
 
-import json
 from typing import Optional
 
 from app.models.stats import PlayerStats, HeadToHead, HeadToHeadMatch, MatchStats
