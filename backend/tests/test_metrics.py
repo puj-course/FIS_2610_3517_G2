@@ -7,7 +7,10 @@ No requiere red, Docker ni PostgreSQL.
 
 import pytest
 
-from app.core.metrics import _parse_labels, _parse_metric_line
+from app.core.metrics import (
+    _parse_labels, _parse_metric_line,
+    _status_badge_class, _latency_evaluation,
+)
 
 
 class TestParseLabels:
@@ -109,3 +112,30 @@ class TestParseMetricLine:
         _, labels, value = result
         assert labels.get("a") == "b"
         assert value == 1.0
+
+
+class TestStatusBadgeClass:
+
+    def test_status_2xx(self):
+        assert _status_badge_class("200") == "bg-success"
+
+    def test_status_5xx(self):
+        assert _status_badge_class("500") == "bg-danger"
+
+    def test_status_4xx(self):
+        assert _status_badge_class("404") == "bg-warning text-dark"
+
+
+class TestLatencyEvaluation:
+
+    def test_excelente(self):
+        assert "Excelente" in _latency_evaluation(50)
+
+    def test_bueno(self):
+        assert "Bueno" in _latency_evaluation(150)
+
+    def test_aceptable(self):
+        assert "Aceptable" in _latency_evaluation(300)
+
+    def test_lento(self):
+        assert "Lento" in _latency_evaluation(600)
