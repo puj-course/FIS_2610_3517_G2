@@ -97,7 +97,7 @@ async def test_combination_probability_needs_2_matches(client: AsyncClient):
     """Combinada con menos de 2 partidos da mensaje, no error."""
     # Crear combinada vacía
     create_resp = await client.post("/api/combinations")
-    comb_id = create_resp.json()["combination"]["id"]
+    comb_id = create_resp.json()["id"]
 
     # Agregar solo 1 partido
     await client.post(f"/api/combinations/{comb_id}/matches", json={"match_id": "match_001"})
@@ -114,7 +114,7 @@ async def test_combination_probability_needs_2_matches(client: AsyncClient):
 async def test_combination_probability_with_matches(client: AsyncClient):
     """Combinada con 2+ partidos calcula correctamente."""
     create_resp = await client.post("/api/combinations")
-    comb_id = create_resp.json()["combination"]["id"]
+    comb_id = create_resp.json()["id"]
 
     await client.post(f"/api/combinations/{comb_id}/matches", json={"match_id": "match_001"})
     await client.post(f"/api/combinations/{comb_id}/matches", json={"match_id": "match_002"})
@@ -132,7 +132,7 @@ async def test_combination_probability_with_matches(client: AsyncClient):
 async def test_combination_probability_multiplicative(client: AsyncClient):
     """Más partidos = menor probabilidad total (multiplicación)."""
     create_resp = await client.post("/api/combinations")
-    comb_id = create_resp.json()["combination"]["id"]
+    comb_id = create_resp.json()["id"]
 
     await client.post(f"/api/combinations/{comb_id}/matches", json={"match_id": "match_001"})
     await client.post(f"/api/combinations/{comb_id}/matches", json={"match_id": "match_002"})
@@ -153,7 +153,7 @@ async def test_combination_probability_multiplicative(client: AsyncClient):
 async def test_combination_result_endpoint(client: AsyncClient):
     """GET /combinations/{id}/result retorna resultado completo."""
     create_resp = await client.post("/api/combinations")
-    comb_id = create_resp.json()["combination"]["id"]
+    comb_id = create_resp.json()["id"]
 
     await client.post(f"/api/combinations/{comb_id}/matches", json={"match_id": "match_001"})
     await client.post(f"/api/combinations/{comb_id}/matches", json={"match_id": "match_002"})
@@ -171,7 +171,7 @@ async def test_combination_result_endpoint(client: AsyncClient):
 async def test_combination_risk_classification(client: AsyncClient):
     """Verificar que risk_level es válido."""
     create_resp = await client.post("/api/combinations")
-    comb_id = create_resp.json()["combination"]["id"]
+    comb_id = create_resp.json()["id"]
 
     await client.post(f"/api/combinations/{comb_id}/matches", json={"match_id": "match_001"})
     await client.post(f"/api/combinations/{comb_id}/matches", json={"match_id": "match_002"})
