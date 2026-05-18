@@ -53,4 +53,4 @@ def setup_logging(log_level: str = "INFO", log_file: str = "oddsengine.log") -> 
     logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
     logging.getLogger("httpx").setLevel(logging.WARNING)
 
-    logger.info(f"Logging configurado — nivel: {log_level}")
+    logger.info("Logging configurado — nivel: %s", log_level)

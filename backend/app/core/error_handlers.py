@@ -44,10 +44,8 @@ def register_error_handlers(app: FastAPI) -> None:
     async def oddsengine_exception_handler(request: Request, exc: OddsEngineException):
         """Maneja todas las excepciones del dominio OddsEngine."""
         logger.error(
-            f"OddsEngineException: {exc.message} | "
-            f"Status: {exc.status_code} | "
-            f"Path: {request.url.path} | "
-            f"Method: {request.method}"
+            "OddsEngineException: %s | Status: %s | Path: %s | Method: %s",
+            exc.message, exc.status_code, request.url.path, request.method,
         )
         return JSONResponse(
             status_code=exc.status_code,
@@ -62,9 +60,8 @@ def register_error_handlers(app: FastAPI) -> None:
     async def external_api_exception_handler(request: Request, exc: ExternalAPIException):
         """Maneja errores de comunicación con APIs externas."""
         logger.error(
-            f"ExternalAPIException: {exc.message} | "
-            f"Source: {exc.source} | "
-            f"Path: {request.url.path}"
+            "ExternalAPIException: %s | Source: %s | Path: %s",
+            exc.message, exc.source, request.url.path,
         )
         return JSONResponse(
             status_code=exc.status_code,
@@ -80,9 +77,8 @@ def register_error_handlers(app: FastAPI) -> None:
     async def api_timeout_exception_handler(request: Request, exc: APITimeoutException):
         """Maneja timeouts de APIs externas."""
         logger.warning(
-            f"APITimeoutException: {exc.message} | "
-            f"Source: {exc.source} | "
-            f"Path: {request.url.path}"
+            "APITimeoutException: %s | Source: %s | Path: %s",
+            exc.message, exc.source, request.url.path,
         )
         return JSONResponse(
             status_code=exc.status_code,
@@ -98,8 +94,8 @@ def register_error_handlers(app: FastAPI) -> None:
     async def validation_exception_handler(request: Request, exc: RequestValidationError):
         """Maneja errores de validación de FastAPI/Pydantic."""
         logger.warning(
-            f"ValidationError: {exc.errors()} | "
-            f"Path: {request.url.path}"
+            "ValidationError: %s | Path: %s",
+            exc.errors(), request.url.path,
         )
         return JSONResponse(
             status_code=422,
@@ -115,9 +111,8 @@ def register_error_handlers(app: FastAPI) -> None:
     async def generic_exception_handler(request: Request, exc: Exception):
         """Captura cualquier excepción no manejada para evitar fallos críticos."""
         logger.critical(
-            f"Unhandled Exception: {type(exc).__name__}: {str(exc)} | "
-            f"Path: {request.url.path} | "
-            f"Method: {request.method}",
+            "Unhandled Exception: %s: %s | Path: %s | Method: %s",
+            type(exc).__name__, exc, request.url.path, request.method,
             exc_info=True,
         )
         return JSONResponse(

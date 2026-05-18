@@ -43,7 +43,7 @@ class MatchService:
 
         matches.sort(key=lambda m: m.date)
 
-        logger.info(f"Retornando {len(matches)} partidos")
+        logger.info("Retornando %s partidos", len(matches))
         return matches
 
     async def get_match_by_id(self, match_id: str) -> Optional[Match]:
