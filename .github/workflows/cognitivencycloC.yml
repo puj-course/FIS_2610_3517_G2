@@ -1,4 +1,4 @@
-name: Análisis de Complejidad Ciclomática - Profundidad de anidado condicional
+name: Análisis de Complejidad Ciclomática - Complejidad Cognitiva
 
 on:
   push:
