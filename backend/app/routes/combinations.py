@@ -36,7 +36,7 @@ async def create_combination():
     """
     service = get_combination_service()
     combination = await service.create_combination()
-    logger.info(f"POST /combinations — creada: {combination.id}")
+    logger.info("POST /combinations — combinada creada")
 
     return CombinationResponse(
         id=combination.id,
@@ -53,7 +53,7 @@ async def list_combinations():
     """Lista todas las combinadas activas."""
     service = get_combination_service()
     combinations = await service.list_combinations()
-    logger.info(f"GET /combinations — total: {len(combinations)}")
+    logger.info("GET /combinations — listado solicitado")
 
     return [
         CombinationSummary(
@@ -75,7 +75,7 @@ async def get_combination(combination_id: str):
     """
     service = get_combination_service()
     combination = await service.get_combination(combination_id)
-    logger.info(f"GET /combinations/{combination_id}")
+    logger.info("GET /combinations — consulta por ID")
 
     return CombinationResponse(
         id=combination.id,
@@ -91,7 +91,7 @@ async def delete_combination(combination_id: str):
     """Elimina una combinada completa."""
     service = get_combination_service()
     await service.delete_combination(combination_id)
-    logger.info(f"DELETE /combinations/{combination_id}")
+    logger.info("DELETE /combinations — combinada eliminada")
 
     return {"message": f"Combinada '{combination_id}' eliminada correctamente"}
 
@@ -114,10 +114,7 @@ async def add_match_to_combination(
         combination_id=combination_id,
         match_id=request.match_id,
     )
-    logger.info(
-        f"POST /combinations/{combination_id}/matches — "
-        f"agregado: {request.match_id}"
-    )
+    logger.info("POST /combinations/matches — partido agregado")
     return result
 
 
@@ -138,9 +135,7 @@ async def remove_match_from_combination(combination_id: str, match_id: str):
         combination_id=combination_id,
         match_id=match_id,
     )
-    logger.info(
-        f"DELETE /combinations/{combination_id}/matches/{match_id}"
-    )
+    logger.info("DELETE /combinations/matches — partido eliminado")
     return result
 
 
@@ -154,5 +149,5 @@ async def save_combination(combination_id: str):
     """
     service = get_combination_service()
     result = await service.save_combination_to_db(combination_id)
-    logger.info(f"POST /combinations/{combination_id}/save — guardada en BD")
+    logger.info("POST /combinations/save — combinada guardada en BD")
     return result
