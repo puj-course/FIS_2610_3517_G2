@@ -72,55 +72,46 @@ def _parse_metric_line(linea: str):
     return metric_name, labels, valor
 
 
-def setup_metrics(app: FastAPI):
+def _collect_latency_metrics(metrics_text: str) -> tuple[dict, dict]:
+    sumas_latencia: dict = {}
+    conteos_peticiones: dict = {}
+    for linea in metrics_text.splitlines():
+        parsed = _parse_metric_line(linea)
+        if parsed is None:
+            continue
+        metrica, labels, valor = parsed
+        handler = labels.get("handler", "unknown")
+        method = labels.get("method", "unknown")
+        status = labels.get("status", "unknown")
+        key = (method, handler, status)
+        if metrica == "http_request_duration_seconds_sum":
+            sumas_latencia[key] = valor
+        elif metrica == "http_request_duration_seconds_count":
+            conteos_peticiones[key] = int(valor)
+    return sumas_latencia, conteos_peticiones
 
-    # 1. Monitoreo y exposición de métricas nativas
-    Instrumentator().instrument(app).expose(app)
 
-    # 2. Dashboard interactivo
-    @app.get("/dashboard", response_class=HTMLResponse, include_in_schema=False)
-    async def latencies_dashboard():
-        data_cruda = generate_latest(REGISTRY).decode("utf-8")
-        lineas = data_cruda.splitlines()
+def _consolidate_latency_data(sumas_latencia: dict, conteos_peticiones: dict) -> list[tuple]:
+    datos = []
+    for key in conteos_peticiones:
+        method, handler, status = key
+        total = conteos_peticiones[key]
+        suma = sumas_latencia.get(key, 0.0)
+        promedio = round((suma / total) * 1000, 1) if total > 0 else 0
+        datos.append((method, handler, status, total, promedio))
+    datos.sort(key=lambda x: x[4], reverse=True)
+    return datos
 
-        sumas_latencia = {}
-        conteos_peticiones = {}
 
-        for linea in lineas:
-            parsed = _parse_metric_line(linea)
-            if parsed is None:
-                continue
-
-            metrica, labels, valor = parsed
-            handler = labels.get("handler", "unknown")
-            method = labels.get("method", "unknown")
-            status = labels.get("status", "unknown")
-
-            key = (method, handler, status)
-
-            if metrica == "http_request_duration_seconds_sum":
-                sumas_latencia[key] = valor
-            elif metrica == "http_request_duration_seconds_count":
-                conteos_peticiones[key] = int(valor)
-
-        datos_consolidados = []
-        for key in conteos_peticiones:
-            method, handler, status = key
-            total = conteos_peticiones[key]
-            suma = sumas_latencia.get(key, 0.0)
-            promedio = round((suma / total) * 1000, 1) if total > 0 else 0
-            datos_consolidados.append((method, handler, status, total, promedio))
-            
-        datos_consolidados.sort(key=lambda x: x[4], reverse=True)
-
-        filas_tabla = ""
-        for method, handler, status, total, promedio in datos_consolidados:
-            badge_status = _status_badge_class(status)
-            evaluacion = _latency_evaluation(promedio)
-
-            alerta = "table-danger fw-bold" if promedio > 500 else ""
-
-            filas_tabla += f"""
+def _build_latency_table_rows(datos_consolidados: list[tuple]) -> str:
+    if not datos_consolidados:
+        return '<tr><td colspan="6" class="text-center text-muted py-4">No hay peticiones registradas aún. Presiona el botón de arriba para generar tráfico de prueba.</td></tr>'
+    filas = ""
+    for method, handler, status, total, promedio in datos_consolidados:
+        badge_status = _status_badge_class(status)
+        evaluacion = _latency_evaluation(promedio)
+        alerta = "table-danger fw-bold" if promedio > 500 else ""
+        filas += f"""
             <tr class="{alerta}">
                 <td><span class="badge bg-dark">{method}</span></td>
                 <td><code>{handler}</code></td>
@@ -130,6 +121,21 @@ def setup_metrics(app: FastAPI):
                 <td>{evaluacion}</td>
             </tr>
             """
+    return filas
+
+
+def setup_metrics(app: FastAPI):
+
+    # 1. Monitoreo y exposición de métricas nativas
+    Instrumentator().instrument(app).expose(app)
+
+    # 2. Dashboard interactivo
+    @app.get("/dashboard", response_class=HTMLResponse, include_in_schema=False)
+    async def latencies_dashboard():
+        data_cruda = generate_latest(REGISTRY).decode("utf-8")
+        sumas, conteos = _collect_latency_metrics(data_cruda)
+        datos = _consolidate_latency_data(sumas, conteos)
+        filas_tabla = _build_latency_table_rows(datos)
 
         html_template = """
         <!DOCTYPE html>
@@ -345,7 +351,4 @@ def setup_metrics(app: FastAPI):
         </html>
         """
         
-        if not filas_tabla:
-            filas_tabla = '<tr><td colspan="6" class="text-center text-muted py-4">No hay peticiones registradas aún. Presiona el botón de arriba para generar tráfico de prueba.</td></tr>'
-            
         return html_template.replace("{{FILAS_TABLA}}", filas_tabla)
