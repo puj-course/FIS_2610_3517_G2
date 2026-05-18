@@ -4,6 +4,8 @@ from typing import Optional
 from app.models.match import Match, Player, Tournament, MatchStatus, Surface
 from app.providers.base import BaseMatchProvider
 
+CATEGORY_GRAND_SLAM = "Grand Slam"
+
 
 class MockMatchProvider(BaseMatchProvider):
     """Proveedor de datos mock para desarrollo y testing."""
@@ -30,11 +32,11 @@ class MockMatchProvider(BaseMatchProvider):
         tournaments = {
             "rg": Tournament(
                 id="t_001", name="Roland Garros", surface=Surface.CLAY,
-                category="Grand Slam", location="Paris, France",
+                category=CATEGORY_GRAND_SLAM, location="Paris, France",
             ),
             "wimbledon": Tournament(
                 id="t_002", name="Wimbledon", surface=Surface.GRASS,
-                category="Grand Slam", location="London, UK",
+                category=CATEGORY_GRAND_SLAM, location="London, UK",
             ),
             "madrid": Tournament(
                 id="t_003", name="Madrid Open", surface=Surface.CLAY,
@@ -42,7 +44,7 @@ class MockMatchProvider(BaseMatchProvider):
             ),
             "uso": Tournament(
                 id="t_004", name="US Open", surface=Surface.HARD,
-                category="Grand Slam", location="New York, USA",
+                category=CATEGORY_GRAND_SLAM, location="New York, USA",
             ),
         }
 
