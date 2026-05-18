@@ -40,7 +40,7 @@ async def list_matches(
     if limit < 1:
         raise ValidationException("El parámetro 'limit' debe ser >= 1")
 
-    logger.info(f"GET /matches — status={status}, tournament={tournament}, page={page}, limit={limit}")
+    logger.info("GET /matches — listado con filtros solicitado")
     service = get_match_service()
     matches = await service.get_matches(status=status, tournament=tournament)
 
@@ -49,14 +49,14 @@ async def list_matches(
     end = start + limit
     paginated = matches[start:end]
 
-    logger.info(f"Retornando {len(paginated)} partidos (página {page}, total {len(matches)})")
+    logger.info("GET /matches — respuesta paginada enviada")
     return paginated
 
 
 @router.get("/matches/{match_id}", response_model=Match)
 async def get_match(match_id: str):
     """Obtiene un partido específico por su ID."""
-    logger.info(f"GET /matches/{match_id}")
+    logger.info("GET /matches — consulta por ID")
     service = get_match_service()
     match = await service.get_match_by_id(match_id)
     if not match:

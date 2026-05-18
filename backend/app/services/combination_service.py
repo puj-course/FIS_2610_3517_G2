@@ -41,7 +41,7 @@ class CombinationService:
         """Crea una nueva combinada vacía."""
         combination = Combination()
         self._storage.save_combination(combination)
-        logger.info(f"Combinada creada: {combination.id}")
+        logger.info("Combinada creada")
         return combination
 
     async def get_combination(self, combination_id: str) -> Combination:
@@ -91,10 +91,7 @@ class CombinationService:
         combination.updated_at = datetime.now(timezone.utc)
         self._storage.save_combination(combination)
 
-        logger.info(
-            f"Partido {match_id} agregado a combinada {combination_id} "
-            f"(total: {combination.total_selections})"
-        )
+        logger.info("Partido agregado a combinada")
 
         return CombinationResponse(
             id=combination.id,
@@ -132,10 +129,7 @@ class CombinationService:
         combination.updated_at = datetime.now(timezone.utc)
         self._storage.save_combination(combination)
 
-        logger.info(
-            f"Partido {match_id} eliminado de combinada {combination_id} "
-            f"(total: {combination.total_selections})"
-        )
+        logger.info("Partido eliminado de combinada")
 
         return CombinationResponse(
             id=combination.id,
@@ -152,7 +146,7 @@ class CombinationService:
         await self.get_combination(combination_id)
 
         deleted = self._storage.delete_combination(combination_id)
-        logger.info(f"Combinada {combination_id} eliminada")
+        logger.info("Combinada eliminada")
         return deleted
 
     async def list_combinations(self) -> list[Combination]:
@@ -176,10 +170,7 @@ class CombinationService:
         if settings.data_mode != "database":
             # En modo memoria no hay BD real — devolver confirmación igualmente
             # para no romper el flujo en desarrollo local sin PostgreSQL.
-            logger.warning(
-                f"save_combination_to_db llamado en modo '{settings.data_mode}': "
-                "sin persistencia real en BD."
-            )
+            logger.warning("save_combination_to_db llamado sin persistencia real en BD")
             return {
                 "message": (
                     f"Combinada '{combination_id}' guardada "
@@ -238,10 +229,7 @@ class CombinationService:
                     )
                     session.add(db_sel)
 
-        logger.info(
-            f"Combinada {combination_id} persistida en BD "
-            f"({combination.total_selections} selecciones)"
-        )
+        logger.info("Combinada persistida en BD")
 
         return {
             "message": f"Combinada guardada correctamente con {combination.total_selections} selecciones.",
