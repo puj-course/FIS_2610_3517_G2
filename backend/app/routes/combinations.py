@@ -90,7 +90,7 @@ async def get_combination(combination_id: str):
 async def delete_combination(combination_id: str):
     """Elimina una combinada completa."""
     service = get_combination_service()
-    await service.delete_combination(combination_id)
+    service.delete_combination(combination_id)
     logger.info("DELETE /combinations — combinada eliminada")
 
     return {"message": f"Combinada '{combination_id}' eliminada correctamente"}
@@ -131,7 +131,7 @@ async def remove_match_from_combination(combination_id: str, match_id: str):
     - El partido debe estar en la combinada
     """
     service = get_combination_service()
-    result = await service.remove_match_from_combination(
+    result = service.remove_match_from_combination(
         combination_id=combination_id,
         match_id=match_id,
     )

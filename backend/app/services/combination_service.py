@@ -102,7 +102,7 @@ class CombinationService:
             message=f"Partido agregado correctamente. Total: {combination.total_selections} selecciones.",
         )
 
-    async def remove_match_from_combination(
+    def remove_match_from_combination(
         self, combination_id: str, match_id: str
     ) -> CombinationResponse:
         """
@@ -140,7 +140,7 @@ class CombinationService:
             message=f"Partido eliminado correctamente. Total: {combination.total_selections} selecciones.",
         )
 
-    async def delete_combination(self, combination_id: str) -> bool:
+    def delete_combination(self, combination_id: str) -> bool:
         """Elimina una combinada completa."""
         # Verificar que existe
         self.get_combination(combination_id)
