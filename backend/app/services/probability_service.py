@@ -73,7 +73,7 @@ class ProbabilityService:
         from app.services.combination_service import get_combination_service
 
         comb_service = get_combination_service()
-        combination = await comb_service.get_combination(combination_id)
+        combination = comb_service.get_combination(combination_id)
 
         if combination.total_selections < 2:
             return CombinationProbability(

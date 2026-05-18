@@ -99,8 +99,7 @@ class TestDecodeAccessToken:
 
 class TestGetCurrentUser:
 
-    @pytest.mark.anyio
-    async def test_valid_token(self):
+    def test_valid_token(self):
         from app.services.auth_service import get_auth_service
 
         service = get_auth_service()
@@ -110,23 +109,21 @@ class TestGetCurrentUser:
         credentials = MagicMock()
         credentials.credentials = token
 
-        result = await get_current_user(credentials)
+        result = get_current_user(credentials)
         assert result["id"] == user["id"]
         assert result["username"] == "secuser"
 
-    @pytest.mark.anyio
-    async def test_invalid_token_raises_401(self):
+    def test_invalid_token_raises_401(self):
         from fastapi import HTTPException
 
         credentials = MagicMock()
         credentials.credentials = "bad.token.here"
 
         with pytest.raises(HTTPException) as exc_info:
-            await get_current_user(credentials)
+            get_current_user(credentials)
         assert exc_info.value.status_code == 401
 
-    @pytest.mark.anyio
-    async def test_token_without_sub_raises_401(self):
+    def test_token_without_sub_raises_401(self):
         from fastapi import HTTPException
 
         token = create_access_token(data={"role": "admin"})
@@ -134,11 +131,10 @@ class TestGetCurrentUser:
         credentials.credentials = token
 
         with pytest.raises(HTTPException) as exc_info:
-            await get_current_user(credentials)
+            get_current_user(credentials)
         assert exc_info.value.status_code == 401
 
-    @pytest.mark.anyio
-    async def test_user_not_found_raises_401(self):
+    def test_user_not_found_raises_401(self):
         from fastapi import HTTPException
 
         token = create_access_token(data={"sub": "nonexistent_user_id"})
@@ -146,11 +142,10 @@ class TestGetCurrentUser:
         credentials.credentials = token
 
         with pytest.raises(HTTPException) as exc_info:
-            await get_current_user(credentials)
+            get_current_user(credentials)
         assert exc_info.value.status_code == 401
 
-    @pytest.mark.anyio
-    async def test_inactive_user_raises_403(self):
+    def test_inactive_user_raises_403(self):
         from fastapi import HTTPException
         from app.services.auth_service import get_auth_service
 
@@ -164,5 +159,5 @@ class TestGetCurrentUser:
         credentials.credentials = token
 
         with pytest.raises(HTTPException) as exc_info:
-            await get_current_user(credentials)
+            get_current_user(credentials)
         assert exc_info.value.status_code == 403

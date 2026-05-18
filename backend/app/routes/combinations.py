@@ -35,7 +35,7 @@ async def create_combination():
     Retorna la combinada creada con su ID único para posteriores operaciones.
     """
     service = get_combination_service()
-    combination = await service.create_combination()
+    combination = service.create_combination()
     logger.info("POST /combinations — combinada creada")
 
     return CombinationResponse(
@@ -52,7 +52,7 @@ async def create_combination():
 async def list_combinations():
     """Lista todas las combinadas activas."""
     service = get_combination_service()
-    combinations = await service.list_combinations()
+    combinations = service.list_combinations()
     logger.info("GET /combinations — listado solicitado")
 
     return [
@@ -74,7 +74,7 @@ async def get_combination(combination_id: str):
     Retorna la lista de partidos seleccionados y el total.
     """
     service = get_combination_service()
-    combination = await service.get_combination(combination_id)
+    combination = service.get_combination(combination_id)
     logger.info("GET /combinations — consulta por ID")
 
     return CombinationResponse(

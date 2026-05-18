@@ -37,14 +37,14 @@ class CombinationService:
     def __init__(self, storage: Optional[InMemoryStorage] = None):
         self._storage = storage or get_storage()
 
-    async def create_combination(self) -> Combination:
+    def create_combination(self) -> Combination:
         """Crea una nueva combinada vacía."""
         combination = Combination()
         self._storage.save_combination(combination)
         logger.info("Combinada creada")
         return combination
 
-    async def get_combination(self, combination_id: str) -> Combination:
+    def get_combination(self, combination_id: str) -> Combination:
         """Obtiene una combinada por su ID."""
         combination = self._storage.get_combination(combination_id)
         if not combination:
@@ -63,7 +63,7 @@ class CombinationService:
         - El partido no debe estar duplicado en la combinada
         """
         # Validar que la combinada existe
-        combination = await self.get_combination(combination_id)
+        combination = self.get_combination(combination_id)
 
         # Validar duplicado
         if combination.has_match(match_id):
@@ -112,7 +112,7 @@ class CombinationService:
         - La combinada debe existir
         - El partido debe estar en la combinada
         """
-        combination = await self.get_combination(combination_id)
+        combination = self.get_combination(combination_id)
 
         # Buscar la selección
         selection = combination.get_selection_by_match(match_id)
@@ -143,13 +143,13 @@ class CombinationService:
     async def delete_combination(self, combination_id: str) -> bool:
         """Elimina una combinada completa."""
         # Verificar que existe
-        await self.get_combination(combination_id)
+        self.get_combination(combination_id)
 
         deleted = self._storage.delete_combination(combination_id)
         logger.info("Combinada eliminada")
         return deleted
 
-    async def list_combinations(self) -> list[Combination]:
+    def list_combinations(self) -> list[Combination]:
         """Lista todas las combinadas activas."""
         return self._storage.list_combinations()
 
@@ -165,7 +165,7 @@ class CombinationService:
         from app.core.config import get_settings
         settings = get_settings()
 
-        combination = await self.get_combination(combination_id)
+        combination = self.get_combination(combination_id)
 
         if settings.data_mode != "database":
             # En modo memoria no hay BD real — devolver confirmación igualmente

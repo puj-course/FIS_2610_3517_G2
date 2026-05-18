@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -138,6 +139,7 @@ class MockMatchProvider(BaseMatchProvider):
 
     async def get_match_by_id(self, match_id: str) -> Optional[Match]:
         """Buscar partido por ID."""
+        await asyncio.sleep(0)  # mantiene interfaz async del provider
         for match in self._matches:
             if match.id == match_id:
                 return match
