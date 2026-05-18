@@ -35,7 +35,7 @@ jobs:
   docker-build:
     name: Build Docker Images
     runs-on: ubuntu-latest
-    needs: [build-frontend]  # El backend no necesita build separado
+    needs: [build-frontend]
     
     steps:
       - uses: actions/checkout@v4
