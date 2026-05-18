@@ -1,0 +1,117 @@
+name: Análisis de Complejidad Ciclomática - Complejidad Cognitiva
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  radon-complexity:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+    
+    - name: Configurar Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    
+    - name: Instalar radon
+      run: pip install radon
+    
+    - name: Analizar complejidad ciclomática
+      run: |
+        echo "Analizando complejidad ciclomática..."
+        echo ""
+        
+        # Mostrar resumen en consola
+        radon cc backend/ src/ -s -a --total-average
+        echo ""
+        
+        # Guardar reportes
+        radon cc backend/ src/ -s -a --json > complejidad_report.json
+        radon cc backend/ src/ -s -a > complejidad_report.txt
+        
+        # Mostrar funciones problemáticas (si existen)
+        echo " Buscando funciones con alta complejidad (>10)..."
+        echo ""
+        
+        if radon cc backend/ src/ -s -n C 2>/dev/null | grep -q .; then
+          echo " Se encontraron funciones con complejidad > 10:"
+          echo "----------------------------------------"
+          radon cc backend/ src/ -s -n C
+          echo "----------------------------------------"
+          echo ""
+          echo " Esto es solo informativo. El pipeline NO fallará."
+        else
+          echo "No se encontraron funciones con complejidad > 10"
+        fi
+    
+    - name: Generar reporte HTML
+      run: |
+        python scripts/radon_to_html.py complejidad_report.json complejidad_report.html || true
+        echo "Reporte HTML generado"
+    
+    - name: Subir artefactos (siempre)
+      uses: actions/upload-artifact@v4
+      with:
+        name: complejidad-ciclomatica-reporte
+        path: |
+          complejidad_report.html
+          complejidad_report.json
+          complejidad_report.txt
+        retention-days: 30
+    
+    - name: Finalizar sin error
+      run: |
+        echo "========================================="
+        echo "     Análisis completado"
+        echo "  Este pipeline NUNCA falla"
+        echo "  Los reportes están en los artefactos"
+        echo "========================================="
+        
+  flake8-complexity:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+
+    - name: Configurar Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Instalar Extractor de Complejidad Cognitiva
+      run: pip install cognitive-complexity
+
+    - name: Generar Reporte JSON de todas las funciones
+      run: |
+        echo "Generando mapa completo de complejidad cognitiva en formato JSON..."
+        python scripts/cognitive_report.py
+        
+        # Nombre corregido y unificado
+        cat cognitive_report.json
+
+    - name: Generar Reporte HTML Dinámico
+      run: |
+        echo "Transformando el JSON a interfaz HTML..."
+        python scripts/cognitive_to_html.py cognitive_report.json cognitive_report.html || true
+
+    - name: Liberar permisos de los reportes generados
+      run: |
+        chmod 666 cognitive_report.json || true
+        chmod 666 cognitive_report.html || true
+
+    - name: Subir JSON y HTML como artefactos
+      if: github.actor != 'nektos'
+      uses: actions/upload-artifact@v4
+      with:
+        name: reporte-cognitivo
+        path: |
+          cognitive_report.json
+          cognitive_report.html
+        retention-days: 30
