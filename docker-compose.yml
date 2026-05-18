@@ -7,11 +7,12 @@ services:
       POSTGRES_DB: oddsengine
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks: 
+      - backend-net
     restart: unless-stopped
+    
 
   backend:
     image: juanpa1703/oddsengine-backend:latest
@@ -25,7 +26,11 @@ services:
       - .env
     depends_on:
       - db
+    networks:
+      - frontend-net
+      - backend-net
     restart: unless-stopped
+    
 
   frontend:
     image: juanpa1703/oddsengine-frontend:latest
@@ -37,7 +42,18 @@ services:
       - "80:80"
     depends_on:
       - backend
+    networks:
+      - frontend-net
     restart: unless-stopped
 
-volumes:
-  pgdata:
+  volumes:
+   pgdata:
+    driver: local
+  
+  networks:
+    frontend-net:
+      driver: bridge
+      name: oddsengine_frontend
+    backend-net:
+      driver: bridge
+      name: oddsengine_backend
