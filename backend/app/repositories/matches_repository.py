@@ -86,9 +86,9 @@ class MatchesRepository:
                 self.db.add(db_match)
             await self.db.commit()
             logger.info("Insertados %s partidos en PostgreSQL", len(matches))
-        except SQLAlchemyError as e:
+        except SQLAlchemyError:
             await self.db.rollback()
-            logger.error("Error al insertar partidos: %s", e)
+            logger.exception("Error al insertar partidos")
             raise
 
     async def delete_all(self):
@@ -102,9 +102,9 @@ class MatchesRepository:
             await self.db.execute(delete(MatchDB))
             await self.db.commit()
             logger.info("Todos los partidos eliminados de PostgreSQL")
-        except SQLAlchemyError as e:
+        except SQLAlchemyError:
             await self.db.rollback()
-            logger.error("Error al eliminar partidos: %s", e)
+            logger.exception("Error al eliminar partidos")
             raise
 
     def _to_pydantic(self, row: MatchDB) -> Match:
