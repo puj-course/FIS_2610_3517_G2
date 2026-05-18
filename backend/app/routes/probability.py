@@ -14,7 +14,7 @@ router = APIRouter(tags=["Probabilidad"])
 async def get_match_probability(match_id: str):
     service = get_probability_service()
     result = await service.calculate_individual(match_id)
-    logger.info(f"GET /matches/{match_id}/probability")
+    logger.info("GET /matches/probability — consulta realizada")
     return result
 
 
@@ -22,7 +22,7 @@ async def get_match_probability(match_id: str):
 async def get_combination_probability(combination_id: str):
     service = get_probability_service()
     result = await service.calculate_combination(combination_id)
-    logger.info(f"GET /combinations/{combination_id}/probability")
+    logger.info("GET /combinations/probability — consulta realizada")
     return result
 
 

@@ -22,5 +22,5 @@ async def get_match_stats(match_id: str):
     """
     service = get_stats_service()
     stats = await service.get_match_stats(match_id)
-    logger.info(f"GET /matches/{match_id}/stats — retornando estadísticas")
+    logger.info("GET /matches/stats — estadísticas retornadas")
     return stats
