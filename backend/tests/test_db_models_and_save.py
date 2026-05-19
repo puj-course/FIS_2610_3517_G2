@@ -103,6 +103,34 @@ class TestDbModelsDefaults:
         col = CombinationDB.__table__.c.updated_at
         assert col.onupdate is not None
 
+    def test_combination_created_at_default_callable(self):
+        from app.models.db_models import CombinationDB
+        col = CombinationDB.__table__.c.created_at
+        result = col.default.arg(None)
+        assert isinstance(result, datetime)
+        assert result.tzinfo is None
+
+    def test_combination_updated_at_default_callable(self):
+        from app.models.db_models import CombinationDB
+        col = CombinationDB.__table__.c.updated_at
+        result = col.default.arg(None)
+        assert isinstance(result, datetime)
+        assert result.tzinfo is None
+
+    def test_combination_updated_at_onupdate_callable(self):
+        from app.models.db_models import CombinationDB
+        col = CombinationDB.__table__.c.updated_at
+        result = col.onupdate.arg(None)
+        assert isinstance(result, datetime)
+        assert result.tzinfo is None
+
+    def test_selection_added_at_default_callable(self):
+        from app.models.db_models import SelectionDB
+        col = SelectionDB.__table__.c.added_at
+        result = col.default.arg(None)
+        assert isinstance(result, datetime)
+        assert result.tzinfo is None
+
 
 class TestCreateTables:
 
