@@ -50,6 +50,7 @@ async def get_db():
 
 async def create_tables():
     """Crear todas las tablas definidas en los modelos."""
+    import app.models.db_models  # noqa: F401 — registra modelos en Base.metadata
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 

@@ -160,13 +160,15 @@ async def save_combination(combination_id: str):
         prob_result = await prob_service.calculate_combination(combination_id)
 
         notifier = get_telegram_notification_service()
-        await notifier.send_combination_saved(
+        sent = await notifier.send_combination_saved(
             combination_id=combination_id,
             total_selections=combination.total_selections,
             total_probability=prob_result.total_probability,
             risk_level=prob_result.risk_level.value,
         )
-    except Exception:
-        logger.warning("No se pudo enviar notificación Telegram")
+        if not sent:
+            logger.info("Notificación Telegram no enviada (deshabilitado o no configurado)")
+    except Exception as exc:
+        logger.warning("No se pudo enviar notificación Telegram: %s", exc)
 
     return result
