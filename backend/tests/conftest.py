@@ -25,13 +25,16 @@ def reset_in_memory_state():
     import app.services.combination_service as _cs
     from app.core.storage import reset_storage
     from app.services.auth_service import reset_auth_service
+    from app.services.telegram_notification_service import reset_telegram_notification_service
 
     reset_storage()
     reset_auth_service()
+    reset_telegram_notification_service()
     _cs._combination_service = None
     yield
     reset_storage()
     reset_auth_service()
+    reset_telegram_notification_service()
     _cs._combination_service = None
 
 

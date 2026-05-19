@@ -27,6 +27,9 @@ class Settings(BaseSettings):
 
     # Telegram Bot (opcional — si vacío, el bot no inicia)
     telegram_bot_token: str = ""
+    telegram_enabled: bool = False
+    telegram_chat_id: str = ""
+    telegram_low_probability_threshold: float = 30.0
 
     class Config:
         env_file = ".env"

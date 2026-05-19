@@ -21,6 +21,8 @@ from app.models.combination import (
     CombinationSummary,
 )
 from app.services.combination_service import get_combination_service
+from app.services.probability_service import get_probability_service
+from app.services.telegram_notification_service import get_telegram_notification_service
 
 logger = logging.getLogger("oddsengine")
 
@@ -146,8 +148,25 @@ async def save_combination(combination_id: str):
 
     Guarda tanto la combinada como todas sus selecciones actuales.
     Si la combinada ya existía en BD, actualiza sus selecciones.
+    Envía notificación por Telegram si está configurado.
     """
     service = get_combination_service()
     result = await service.save_combination_to_db(combination_id)
     logger.info("POST /combinations/save — combinada guardada en BD")
+
+    try:
+        combination = service.get_combination(combination_id)
+        prob_service = get_probability_service()
+        prob_result = await prob_service.calculate_combination(combination_id)
+
+        notifier = get_telegram_notification_service()
+        await notifier.send_combination_saved(
+            combination_id=combination_id,
+            total_selections=combination.total_selections,
+            total_probability=prob_result.total_probability,
+            risk_level=prob_result.risk_level.value,
+        )
+    except Exception:
+        logger.warning("No se pudo enviar notificación Telegram")
+
     return result
