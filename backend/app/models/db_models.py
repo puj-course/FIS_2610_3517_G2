@@ -4,7 +4,7 @@ Modelos SQLAlchemy para las tablas de PostgreSQL.
 
 from sqlalchemy import Column, String, Integer, Float, DateTime, ForeignKey, Text
 from sqlalchemy.orm import relationship
-from datetime import datetime, timezone
+from datetime import datetime
 
 from app.core.database import Base
 
@@ -35,9 +35,9 @@ class CombinationDB(Base):
     __tablename__ = "combinations"
 
     id = Column(String(50), primary_key=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc),
-                        onupdate=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime, default=lambda: datetime.now())
+    updated_at = Column(DateTime, default=lambda: datetime.now(),
+                        onupdate=lambda: datetime.now())
 
     selections = relationship("SelectionDB", back_populates="combination",
                               cascade="all, delete-orphan")
@@ -54,7 +54,7 @@ class SelectionDB(Base):
     player_away_name = Column(String(100), nullable=False)
     tournament_name = Column(String(100), nullable=False)
     match_date = Column(DateTime, nullable=False)
-    added_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    added_at = Column(DateTime, default=lambda: datetime.now())
 
     combination = relationship("CombinationDB", back_populates="selections")
 

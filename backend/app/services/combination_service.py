@@ -11,7 +11,7 @@ Responsabilidades:
 """
 
 import logging
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Optional
 
 from app.models.combination import (
@@ -88,7 +88,7 @@ class CombinationService:
 
         # Agregar a la combinada
         combination.selections.append(selection)
-        combination.updated_at = datetime.now(timezone.utc)
+        combination.updated_at = datetime.now()
         self._storage.save_combination(combination)
 
         logger.info("Partido agregado a combinada")
@@ -126,7 +126,7 @@ class CombinationService:
         combination.selections = [
             s for s in combination.selections if s.match_id != match_id
         ]
-        combination.updated_at = datetime.now(timezone.utc)
+        combination.updated_at = datetime.now()
         self._storage.save_combination(combination)
 
         logger.info("Partido eliminado de combinada")
@@ -206,7 +206,7 @@ class CombinationService:
                     session.add(db_combination)
                 else:
                     # Actualizar timestamps
-                    db_combination.updated_at = datetime.now(timezone.utc)
+                    db_combination.updated_at = datetime.now()
 
                 # Borrar selecciones anteriores (para hacer upsert limpio)
                 await session.execute(

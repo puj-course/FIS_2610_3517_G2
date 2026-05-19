@@ -34,6 +34,7 @@ class TelegramNotificationService:
 
     def _is_configured(self) -> bool:
         if not self._enabled:
+            logger.debug("Telegram deshabilitado (TELEGRAM_ENABLED=false)")
             return False
         if not self._token:
             logger.warning("Telegram habilitado pero falta TELEGRAM_BOT_TOKEN")
