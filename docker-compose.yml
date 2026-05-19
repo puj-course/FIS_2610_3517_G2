@@ -46,11 +46,11 @@ services:
       - frontend-net
     restart: unless-stopped
 
-  volumes:
+volumes:
    pgdata:
     driver: local
   
-  networks:
+networks:
     frontend-net:
       driver: bridge
       name: oddsengine_frontend
