@@ -237,8 +237,8 @@ La documentación técnica y definición de endpoints se encuentra en:
 | GET | `/dashboard` | Ver analisis de latencia |
 | GET | `/metrics` | Datos crudos de latencia |
 | GET | `/openapi.json` | Interfaces de API |
-| GET | `/api/auth/login` | Inicio de sesion |
-| GET | `/api/combinations` | Guardar combinada |
+| POST | `/api/auth/login` | Inicio de sesion |
+| POST | `/api/combinations` | Guardar combinada |
 
 
 ```text
