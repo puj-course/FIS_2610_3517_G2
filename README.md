@@ -1,188 +1,315 @@
-<h1 align="center">🎾 OddsEngine</h1>
+# 🎾 OddsEngine
+
 <p align="center">
-  <img src="Odds%20Engine.png" alt="OddsEngine Logo" width="500"/>
+  <img src="./Odds%20Engine.png" alt="OddsEngine Logo" width="640">
 </p>
 
-<p align="center"><i>Un análisis, una combinada, una probabilidad real.</i></p>
-
-> **OddsEngine** es la plataforma analítica diseñada para transformar el análisis de apuestas en tenis en un proceso estructurado y basado en datos. Actuamos como un motor probabilístico que centraliza información deportiva y calcula automáticamente las probabilidades de acierto en apuestas individuales y combinadas, eliminando la consulta manual de múltiples fuentes y reemplazando la intuición por estadística real.
+<p align="center"><i>"Un análisis, una combinada, una probabilidad real."</i></p>
 
 ---
 
+# 📖 Descripción
 
-## 🏢 Indice
-- [Propuesta de Valor y Diferenciador](#-propuesta-de-valor-y-diferenciador)
-- [Lean Canvas](#-lean-canvas)
-- [Información General del Proyecto](#-información-general-del-proyecto)
-- [Equipo y Roles](#-equipo-y-roles)
-- [Roles SCRUM](#-roles-scrum)
-- [Descripción y Alcance del Proyecto](#-descripción-y-alcance-del-proyecto)
-- [Stack Tecnológico](#-stack-tecnológico-lenguaje)
-- [Enfoque Tecnológico](#-enfoque-tecnológico)
-- [Contexto Académico](#-contexto-académico)
+* **OddsEngine** es una plataforma enfocada en el análisis probabilístico de apuestas deportivas en tenis.
 
----
+* La plataforma centraliza información deportiva proveniente de APIs especializadas y procesa estadísticas para calcular probabilidades estimadas en apuestas individuales y combinadas.
 
-## 👥 Equipo del Proyecto
+* El sistema busca reducir el análisis manual realizado por los usuarios, automatizando el procesamiento de datos deportivos y permitiendo decisiones fundamentadas estadísticamente.
 
-| Nombre | Rol Técnico | Rol Scrum | GitHub / Perfil |
-|------|-------------|-----------|----------------|
-| **David Orjuela** | Quality Assurance Lead | Scrum Master | github.com/Kerosene21 |
-| **Juan Pablo Álvarez** | Backend Developer | Product Owner / Scrum Master | github.com/Sleppyhed |
-| **Nicolás Sánchez** | Frontend Lead | Sprint Planner / Configuration Manager | github.com/nicosanlucon |
-| **Lucas Rincón** | Frontend Developer | Documentation Lead | github.com/Lcks07 |
+* OddsEngine surge como respuesta a la necesidad de contar con herramientas analíticas estructuradas para apuestas deportivas, reemplazando procesos basados únicamente en intuición por modelos probabilísticos sustentados en datos.
+
+* La plataforma integra frontend, backend y persistencia de datos dentro de una arquitectura desacoplada y contenerizada, facilitando escalabilidad, mantenimiento y despliegue automatizado.
 
 ---
 
-## Tecnologías Utilizadas
-- **Frontend:** PyQt
-- **Backend:** Python 
-- **Base de Datos:** Oracle Database
-- **IA / Data Science:** Python, Pandas, Api-Tenis
-- **DevOps:** GitHub Actions, Docker, SonarQube
-- **Control de versiones:** Git
+# 👥 Equipo del Proyecto
+
+| Nombre             | Rol Scrum                               | GitHub                                                             |
+| ------------------ | --------------------------------------- | ------------------------------------------------------------------ |
+| David Orjuela      | Scrum Master / QA Lead                  | [https://github.com/Kerosene21](https://github.com/Kerosene21)     |
+| Juan Pablo Álvarez | Product Owner / Backend Developer       | [https://github.com/Sleppyhed](https://github.com/Sleppyhed)       |
+| Nicolás Sánchez    | Sprint Planner / Configuration Manager  | [https://github.com/nicosanlucon](https://github.com/nicosanlucon) |
+| Lucas Rincón       | Documentation Lead / Frontend Developer | [https://github.com/Lcks07](https://github.com/Lcks07)             |
 
 ---
 
-## Instalación y Ejecución
-**Requisitos**
-- Docker y Docker Compose
-- Git
-- Python 3.10+
+# 🛠 Tecnologías Utilizadas
+
+* **Frontend:** React + Vite
+* **Backend:** Python + FastAPI
+* **Base de Datos:** PostgreSQL
+* **Análisis de Datos:** Pandas
+* **Visualización:** Recharts
+* **Contenerización:** Docker + Docker Compose
+* **CI/CD:** GitHub Actions
+* **Calidad de Código:** SonarQube
+* **Control de versiones:** Git
+* **Arquitectura de repositorio:** Monorepo Fullstack
 
 ---
 
-# 🚀 Propuesta de Valor y Diferenciador
+# 🏗 Arquitectura del Sistema
+
+El proyecto sigue una arquitectura de **monorepo fullstack** compuesta por tres servicios principales orquestados mediante Docker Compose:
+
+```text
+Frontend (React + Vite :80)
+        ↓
+Backend API (FastAPI :8000)
+        ↓
+PostgreSQL (:5432)
+```
+
+## Componentes principales
+
+* Cliente frontend desarrollado con React.
+* API REST desarrollada en FastAPI.
+* Persistencia de datos mediante PostgreSQL.
+* Backend estructurado por capas utilizando servicios, rutas, repositorios y modelos.
+* Contenerización completa mediante Docker.
+* Orquestación de servicios con Docker Compose.
+* Pipeline automatizado de integración y despliegue continuo.
+
+---
+
+# 📂 Estructura del Proyecto
+
+```text
+FIS_2610_3517_G2/
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   └── workflows/
+│       ├── build.yml
+│       ├── cd.yml
+│       ├── ci.yml
+│       ├── docker-deploy.yml
+│       ├── friday-auto-pr.yml
+│       └── weekly-commits-report.yml
+├── backend/
+│   ├── app/
+│   │   ├── core/
+│   │   ├── metrics/
+│   │   ├── models/
+│   │   ├── providers/
+│   │   ├── repositories/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   └── main.py
+│   ├── scripts/
+│   ├── tests/
+│   ├── Dockerfile
+│   ├── pyproject.toml
+│   ├── requirements.txt
+│   └── .env.example
+├── frontend/
+│   ├── src/
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.js
+│   ├── nginx.conf
+│   └── Dockerfile
+├── docs/
+│   ├── architecture.md
+│   ├── endpoints.md
+│   ├── installation_guide.md
+│   ├── probability_engine.md
+│   ├── frontend_components.md
+│   ├── quality_metrics.md
+│   ├── Diagramas.md
+│   ├── DiagramasPatronGof.md
+│   ├── testing/
+│   ├── retrospectives/
+│   └── research/
+├── jupyter/
+│   ├── datasets/
+│   └── notebooks/
+├── scripts/
+│   ├── deploy.sh
+│   ├── setup.sh
+│   └── test.sh
+├── conf/
+├── src/
+│   ├── main/
+│   └── test/
+├── temp/
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── DOCKER.md
+├── LICENSE
+├── Makefile
+├── README.md
+├── SETUP.md
+├── docker-compose.yml
+└── sonar-project.properties
+```
+
+---
+
+# 🚀 Instalación y Ejecución
+
+## 🔹 Requisitos
+
+* Docker y Docker Compose
+* Git
+* Python 3.10+
+* Node.js
+
+---
+
+## 🔹 Clonar el repositorio
+
+```bash
+git clone https://github.com/puj-course/FIS_2610_3517_G2.git
+cd FIS_2610_3517_G2
+```
+
+---
+
+## 🔹 Configurar variables de entorno
+
+```bash
+cp backend/.env.example .env
+```
+
+Configura las variables necesarias para la conexión con PostgreSQL y servicios externos.
+
+---
+
+## 🔹 Ejecución con Docker
+
+```bash
+docker-compose up --build
+```
+
+## Servicios disponibles
+
+| Servicio   | Puerto |
+| ---------- | ------ |
+| Frontend   | 80     |
+| Backend    | 8000   |
+| PostgreSQL | 5432   |
+
+---
+
+## 🔹 Ejecución local del backend
+
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+---
+
+## 🔹 Ejecución local del frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+# 🌐 API REST
+
+La aplicación expone endpoints REST mediante FastAPI para operaciones relacionadas con:
+
+* Consulta y procesamiento de estadísticas deportivas.
+* Cálculo probabilístico.
+* Gestión de combinadas.
+* Integración con fuentes externas de datos deportivos.
+* Métricas y monitoreo.
+
+La documentación técnica y definición de endpoints se encuentra en:
+
+```text
+docs/endpoints.md
+```
+
+---
+
+# ⚙️ CI/CD y Calidad de Código
+
+El proyecto incorpora automatización mediante GitHub Actions.
+
+| Workflow                    | Descripción                                    |
+| --------------------------- | ---------------------------------------------- |
+| `ci.yml`                    | Integración continua y validación del proyecto |
+| `cd.yml`                    | Flujo de despliegue continuo                   |
+| `build.yml`                 | Construcción automatizada                      |
+| `docker-deploy.yml`         | Despliegue de contenedores Docker              |
+| `weekly-commits-report.yml` | Reporte automático semanal                     |
+| `friday-auto-pr.yml`        | Automatización de Pull Requests                |
+
+Además, el proyecto incluye:
+
+* Métricas de calidad.
+* Instrumentación Prometheus.
+* Cobertura de pruebas.
+* Configuración SonarQube.
+
+---
+
+# 🎯 Propuesta de Valor
 
 ## ¿Por qué usar OddsEngine?
 
-- Centraliza datos deportivos de tenis en una sola plataforma.
-- Calcula probabilidades combinadas de forma matemática y estructurada.
-- Reduce el análisis manual y la consulta de múltiples fuentes.
-- Permite tomar decisiones basadas en datos y no en intuición.
-- Mejora la precisión en predicciones deportivas.
-
-
----
-# 🚀 Lean Canvas
-
-![Lean Canvas](lean%20canvas%20oddsengine%202.png)
-
+* Centraliza información deportiva de tenis.
+* Calcula probabilidades combinadas automáticamente.
+* Reduce el análisis manual.
+* Permite decisiones basadas en datos.
+* Mejora la interpretación estadística de apuestas deportivas.
 
 ---
 
-## 🎯 Beneficio Principal
+# 🔎 Diferenciador
 
-Optimización del proceso de análisis de apuestas deportivas mediante un motor probabilístico que procesa datos históricos y actuales, generando porcentajes estimados de acierto fundamentados estadísticamente.
-
----
-
-## 🔎 Diferenciador
-
-- Plataforma especializada exclusivamente en tenis.
-- Cálculo automático de probabilidades combinadas.
-- Fundamentación estadística transparente.
-- Arquitectura web con backend robusto en Java.
-- Enfoque analítico y académico del modelo probabilístico.
+* Plataforma enfocada exclusivamente en tenis.
+* Motor probabilístico especializado.
+* Arquitectura desacoplada y contenerizada.
+* Integración con APIs deportivas.
+* Enfoque académico y analítico.
 
 ---
 
-# 📌 Información General del Proyecto
+# 📚 Contexto Académico
 
-| Elemento | Detalle |
-|----------|---------|
-| **Nombre Startup** | OddsEngine Analytics |
-| **Nombre del Proyecto** | OddsEngine Platform |
-| **Propuesta** | Plataforma web para análisis probabilístico deportivo enfocado en tenis |
-| **Usuarios** | Aficionados al tenis, analistas deportivos y usuarios de apuestas deportivas |
-| **Interfaz** | Plataforma web con ingreso de combinadas y visualización de probabilidad estimada |
-| **Entregables** | Presentación PDF, Lean Canvas, README, Wiki en GitHub y gestión Scrum |
+Proyecto desarrollado en el marco de la asignatura:
 
----
-
-
-# 🔄 Roles SCRUM
-
-Siguiendo la metodología SCRUM, se definen los siguientes roles para garantizar la gestión ágil y organizada del proyecto.
-
-| Nombre | Rol SCRUM | Responsabilidad |
-|--------|----------|----------------|
-| **David Orjuela** | Scrum Master / QA Lead |  Planificación y organización de Sprints, coordinación de ceremonias Scrum, gestión de impedimentos, aseguramiento de calidad y validación funcional del sistema.|
-| **Juan Pablo Álvarez** | Product Owner / Scrum Master | Definición y priorización de historias de usuario, gestión del Product Backlog, validación de entregables funcionales y supervisión del desarrollo backend. |
-| **Nicolás Sánchez** |  Sprint Planner / Configuration Manager | Organización del Sprint Backlog, administración del repositorio GitHub, control de versiones, gestión de ramas y soporte en el desarrollo frontend. |
-| **Lucas Rincón** | Documentation Lead / Frontend Developer | Desarrollo de la interfaz frontend, documentación técnica y funcional del proyecto, y apoyo en la implementación del sistema. |
+| Campo       | Detalle                               |
+| ----------- | ------------------------------------- |
+| Asignatura  | Fundamentos de Ingeniería de Software |
+| Código      | FIS 2610 – Grupo 3517 G2              |
+| Institución | Pontificia Universidad Javeriana      |
+| Facultad    | Ingeniería                            |
+| Año         | 2026                                  |
 
 ---
 
-# 🧩 Descripción y Alcance del Proyecto
+# 📩 Contacto
 
-📖 Descripción
+## Equipo de desarrollo
 
-**OddsEngine** es una plataforma web que integra datos deportivos de tenis provenientes de APIs especializadas, aplicando modelos estadísticos y probabilísticos para calcular probabilidades estimadas de acierto en apuestas individuales y combinadas.
+**David Orjuela**
+GitHub: [https://github.com/Kerosene21](https://github.com/Kerosene21)
 
----
+**Juan Pablo Álvarez**
+GitHub: [https://github.com/Sleppyhed](https://github.com/Sleppyhed)
 
-## ⚠ Problema Identificado
+**Nicolás Sánchez**
+GitHub: [https://github.com/nicosanlucon](https://github.com/nicosanlucon)
 
-En el análisis de apuestas deportivas en tenis:
-
-- No existe acceso centralizado a datos procesados.
-- Los usuarios consultan múltiples fuentes manualmente.
-- No hay herramientas que calculen probabilidades combinadas de forma estructurada.
-- Las decisiones se basan en intuición y sesgos subjetivos.
-
----
-
-## 🎯 Público Objetivo
-
-### Directo
-- Usuarios de apuestas deportivas.
-- Aficionados al tenis interesados en análisis avanzado.
-- Analistas deportivos.
-
-### Indirecto
-- Casas de apuestas interesadas en integrar análisis probabilístico.
-- Comunidades deportivas digitales.
+**Lucas Rincón**
+GitHub: [https://github.com/Lcks07](https://github.com/Lcks07)
 
 ---
 
-# 🧰 Stack Tecnológico (Lenguaje)
+# 📄 Licencia
 
-La solución es viable en dos stacks:
+Proyecto desarrollado con fines académicos en el marco de la asignatura Fundamentos de Ingeniería de Software — Pontificia Universidad Javeriana.
 
-- **Implementación principal:** **Python** (motor de cálculo probabilístico, consumo de APIs, procesamiento de datos).
-- **Alternativa viable:** **Java** (backend robusto y escalable para la lógica de negocio y servicios).
+Ver `LICENSE` para más detalles.
 
-Las herramientas que se utilizarán serán:
-
-- **Análisis probabilístico en Python** **Librería Pandas**
-- **Frontend** **PyQt QtDesigner**
-> Para el alcance académico del proyecto, el equipo a lo largo del semestre implementarara el backend en Python, manteniendo el diseño modular para permitir migración o extensión a Java si se requiere.
-
----
-
-# 🏗 Enfoque Tecnológico
-
-- Aplicación web responsive.
-- Backend implementado en **Python** (principal) o **Java** (alternativa viable).
-- Integración con APIs deportivas de tenis.
-- Implementación de modelos probabilísticos básicos.
-- Motor de cálculo de probabilidades combinadas.
-- Persistencia de datos para trazabilidad histórica.
-
----
-
-# 🎓 Contexto Académico
-
-Proyecto desarrollado para la materia:
-
-**Fundamentos de Ingeniería de Software**  
-Pontificia Universidad Javeriana  
-Facultad de Ingeniería  
-2026
-
----
-
-# 💼 Equipo de Trabajo
-Nicolás Sánchez https://github.com/Nicosanlucon
 
