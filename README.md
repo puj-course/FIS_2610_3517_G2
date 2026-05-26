@@ -170,6 +170,8 @@ cd FIS_2610_3517_G2
 
 ```bash
 cp backend/.env.example .env
+Editar `.env`: `DATA_MODE=database` y `DATABASE_URL=postgresql+asyncpg://postgres:PASSWORD@localhost:5432/oddsengine`
+
 ```
 
 Configura las variables necesarias para la conexión con PostgreSQL y servicios externos.
@@ -191,6 +193,7 @@ docker-compose up --build
 | PostgreSQL | 5432   |
 
 ---
+
 
 ## 🔹 Ejecución local del backend
 
@@ -223,6 +226,20 @@ La aplicación expone endpoints REST mediante FastAPI para operaciones relaciona
 * Métricas y monitoreo.
 
 La documentación técnica y definición de endpoints se encuentra en:
+
+# Endpoints disponibles
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/health` | Health check |
+| GET | `/api/matches` | Listar partidos |
+| GET | `/api/matches/{id}` | Obtener partido por ID |
+| GET | `/dashboard` | Ver analisis de latencia |
+| GET | `/metrics` | Datos crudos de latencia |
+| GET | `/openapi.json` | Interfaces de API |
+| GET | `/api/auth/login` | Inicio de sesion |
+| GET | `/api/combinations` | Guardar combinada |
+
 
 ```text
 docs/endpoints.md
